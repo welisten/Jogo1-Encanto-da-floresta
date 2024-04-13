@@ -34,12 +34,19 @@ export default class Preload extends Phaser.Scene{
         this.load.image(MapKeys.objConfigTilesetMap[8].key, MapKeys.objConfigTilesetMap[8].url, { frameWidth: 16 })        
         
         // User Interface
-        // Heart Bar
+            // Heart Bar
         this.load.spritesheet(
             SpriteSheets.HeartBarKey,
             SpriteSheets.HeartBarURL,
             SpriteSheets.Heart_FrameSettings,
             SpriteSheets.HeartBar_FrameAmount
+        )
+            //Dialog Box
+        this.load.spritesheet(
+            SpriteSheets.Large_DialogoBox_Key,
+            SpriteSheets.Large_DialogoBox_URL,
+            SpriteSheets.Large_DialogoBox_FrameSettings,
+            SpriteSheets.Large_DialogoBox__FrameAmount,
         )
         // Timer
         this.load.image(ImageKey.TimerKey, ImageKey.Timer_URL)
@@ -95,6 +102,6 @@ export default class Preload extends Phaser.Scene{
     
 
     create(){
-        this.scene.start(Level1)
+        this.scene.start(MapaMain)
     }
 }

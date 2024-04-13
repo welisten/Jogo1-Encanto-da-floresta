@@ -2,7 +2,7 @@ import Phaser from "phaser";
 
 //Consts
 import {containerGameWidth, containerGameHeight} from "../Consts/Sizes"
-import { HeartBarKey } from "../Consts/SpriteSheets";
+import { HeartBarKey, Large_DialogoBox_Key } from "../Consts/SpriteSheets";
 import { TimerKey } from "../Consts/ImagesKeys";
 import {levelData} from "../Scenes/Level1"
 
@@ -62,7 +62,12 @@ export default class GameBackground extends Phaser.Scene
             color: '0x000000'
         })
             .setOrigin(0)
+            //Caixa de dialogo
+        this.caixaDialogo = this.add.sprite( 40, containerGameHeight - 120, Large_DialogoBox_Key, 1 )
+            .setOrigin(0)
+            .setScale(7, 3)
 
+        this.caixaDialogo.setAlpha(1)
     }
 
     update(){
