@@ -25,6 +25,9 @@ const RecStart_URL = "public/assets/bg/rec_start.png"
 const TimerKey = 'timer'
 const Timer_URL = 'public/assets/ui/timer32.png'
 
+const DialogBox_Key = 'dialog_box'
+const DialogBox_URL = 'public/assets/ui/dialogBox/big_dialogBox.png'
+
 export {
     Background,
     Background_URL,
@@ -47,6 +50,8 @@ export {
     RecStart,
     RecStart_URL,
     TimerKey,
-    Timer_URL
+    Timer_URL,
+    DialogBox_Key,
+    DialogBox_URL
     
 }

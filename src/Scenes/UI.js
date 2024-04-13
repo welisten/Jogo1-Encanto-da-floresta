@@ -1,9 +1,11 @@
+// Pensar na compartimentalização de alguns parametros (SCALA)
+
 import Phaser from "phaser";
 
 //Consts
 import {containerGameWidth, containerGameHeight} from "../Consts/Sizes"
 import { HeartBarKey, Large_DialogoBox_Key } from "../Consts/SpriteSheets";
-import { TimerKey } from "../Consts/ImagesKeys";
+import { DialogBox_Key, TimerKey } from "../Consts/ImagesKeys";
 import {levelData} from "../Scenes/Level1"
 
 let timeUI = levelData.timer
@@ -63,9 +65,9 @@ export default class GameBackground extends Phaser.Scene
         })
             .setOrigin(0)
             //Caixa de dialogo
-        this.caixaDialogo = this.add.sprite( 40, containerGameHeight - 120, Large_DialogoBox_Key, 1 )
-            .setOrigin(0)
-            .setScale(7, 3)
+        this.caixaDialogo = this.add.image( (containerGameWidth / 2) , (containerGameHeight - 70), DialogBox_Key, 1 )
+            .setOrigin(0.5)
+            .setScale(1.7, 0.6)
 
         this.caixaDialogo.setAlpha(1)
     }
