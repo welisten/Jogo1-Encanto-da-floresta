@@ -16,12 +16,13 @@ import * as SongsKey from '../Consts/SongsKey'
 import { timeUI } from "../Scenes/UI";
 
 
-const GameState = {
+let GameState = {
     Running: 'running',
     Finished: 'finished',
     isPaused: false,
     timer: 0
 }
+let textUI = ''
 
 export default class Game extends Phaser.Scene
 {
@@ -74,6 +75,8 @@ export default class Game extends Phaser.Scene
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
 
+        this.sendTextToInterface('...Ola, seja Bemvindo ao Encantos da Floresta !\nEssa é a cidade de Guapimirim, e será nela que nós teremos nossas aventuras')
+
         this.createNeededAnimation()
         
         var initPoint = this.getObjectById(2)
@@ -107,10 +110,15 @@ export default class Game extends Phaser.Scene
         this.physics.world.collide(this.player, this.collisionObjects)
 
     }
+    sendTextToInterface(text){
+        textUI = text
+        this.time.addEvent({
+            delay: 1000,
+            callback: () => { textUI = '' },
+            loop: false
 
-    // worldBoundsHandler(e) {
-    //     console.log(e)
-    // }
+        })
+    }
 
     getObjectById(objectId) {
         var objectLayer = this.map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1);
@@ -264,5 +272,6 @@ export default class Game extends Phaser.Scene
 }
 
 export{
-    GameState
+    GameState,
+    textUI
 }

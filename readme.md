@@ -30,4 +30,5 @@
 
 
  - SCALE para Level1
- - Animação da caixa de dialogo 
+ - Animação da caixa de dialogo
+  
