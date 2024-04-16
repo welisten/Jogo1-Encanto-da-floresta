@@ -6,10 +6,13 @@ import Phaser from "phaser";
 import { containerGameWidth, containerGameHeight } from "../Consts/Sizes"
 import { HeartBarKey, Large_DialogoBox_Key } from "../Consts/SpriteSheets";
 import { DialogBox_Key, TimerKey } from "../Consts/ImagesKeys";
-import { levelData } from "../Scenes/Level1"
-import { textUI } from "../Scenes/MapaMain"
+import { level_data } from "../Scenes/Level1"
+import { text_UI } from "../Scenes/MapaMain"
 
-let timeUI = levelData.timer
+var time_UI = level_data.timer
+// var isWriting = controlTextObj.interfaceText_stt == 'writing'
+// var isQueueEmpty = !this.queue[0]
+
 
 export default class GameBackground extends Phaser.Scene
 {
@@ -17,6 +20,10 @@ export default class GameBackground extends Phaser.Scene
         this.textFuncCall = 0
         this.auxText = ''
         this.currentIndex = 0
+        this.controlTextObj = {
+            interfaceText_stt: 'paused'
+        }
+        this.queue = []
 
     }
     create() 
@@ -61,7 +68,7 @@ export default class GameBackground extends Phaser.Scene
             .setTintFill("0x000000")
         
     //      Tempo(string)
-        this.timer = this.add.text(containerGameWidth - 65, 23, timeUI < 10 ? `0${timeUI}`: `${timeUI}`, {
+        this.timer = this.add.text(containerGameWidth - 65, 23, time_UI < 10 ? `0${time_UI}`: `${time_UI}`, {
             fontSize: 35,
             color: '0x000000'
         })
@@ -86,70 +93,110 @@ export default class GameBackground extends Phaser.Scene
     }
 
     update(){
-        //Externalizar
-        if(timeUI != levelData.timer && levelData.running){
-            timeUI = levelData.timer   
-            this.timer.setText( timeUI < 10 ? `0${timeUI}`: `${timeUI}`)
-        }
-
-        this.handleTextInterface(textUI)
+        this.handel_timerEl(time_UI, level_data)
+        this.check_Add_textToQueue(text_UI)
+        this.handel_Queue(this.queue, this.controlTextObj.interfaceText_stt)
     }
-    // Verifica se o text que esta sendo recebido de outros módulos, já foi renderizado ou não
-    //      se não, chama a função writeText
-    handleTextInterface(string){
-        if ( string !== '' && this.textFuncCall == 0){
-            
-            this.auxText = string
-            
-            this.writeText(string)
-            this.textFuncCall++
-        } 
-        else if(string == this.auxText && this.textFuncCall > 0){
 
+    check_Add_textToQueue(text){        //  VERIFICA se o texto é repetido, caso não seja ADICIONA texto na fila para renderização
+       if(this.auxText != text){
+           this.auxText = text
+           this.addToQueue(this.queue, text)
+       }
+       return
+    }
+
+
+    handel_Queue(queue, state){         //  Faz a fila andar se houver elemento na 1° posição da fila E SE a maquina de escrever estiver pausada
+        var isPaused = state == 'paused'
+
+        if(queue[0] && isPaused){ // se houver elemento na 1° posição E a maquina de escrever estiver pausada
+            this.currentIndex = 0
+            this.writeText(this.removeFromQueue(this.queue))
+        }
+        else
+        {
             return
         }
     }
+ 
+    writeText(string){                  //  Recebe uma string e ADICIONA letra por letra ao texto da caixa de diálogo(textOnInterface)
+        var lenght = string.length
 
-    //Recebe uma string e adiciona letra por letra ao texto da caixa de diálogo(textOnInterface)
-    writeText(string){
-        let lenght = string.length
-        let aux = ""
-        let alpha = 1
-        this.textTimer = this.time.addEvent({
-            delay: 50, // compartimentalizar (ou não se for ser alterado dentro desse escopo)
+        this.controlTextObj.interfaceText_stt = 'writing'
+        
+        this.typewriter = this.time.addEvent({ 
+            delay: 50, 
             callback: () => {
-                if (string[this.currentIndex] == '.' || string[this.currentIndex] == '!')
-                {
-                    this.textTimer.delay = 1000        
-                }
-                else
-                {
-                    this.textTimer.delay = 50           
-                }
+                this.controlTextVelocity(string)
+                this.handle_endOfString(this.currentIndex, lenght)
 
                 this.textOnInterface.text += string[this.currentIndex]
                 this.currentIndex++
-
-                if(this.currentIndex >= lenght){
-                    this.time.removeEvent(this.textTimer)
-                    this.currentIndex = 0
-                    
-                    this.fadeOut = this.time.addEvent({
-                        delay: 100,
-                        callback: () => {
-                            this.caixaDialogo.setAlpha(alpha)
-                            this.textOnInterface.setAlpha(alpha)
-                            alpha -= .1
-
-                            if (alpha == 0){
-                                this.time.removeEvent(this.fadeOut)
-                            }
-                        },
-                        loop: true
-                    })
-                }
             },
             loop: true
         })
+    }
+
+    handle_endOfString(currentIndex, lenght){       //  VERIFICA se é a ultima letra do texto e dispara função de configuração de controles após 1 seg
+        if ( currentIndex >= lenght - 1 ) 
+        {
+            this.typewriter.delay = 1000
+            this.time.removeEvent(this.typewriter)
+            this.time.addEvent({
+                delay: 1000,
+                callback: () => {
+                    this.controlTextObj.interfaceText_stt = 'paused'
+                    this.currentIndex = 0
+                    this.textOnInterface.text = ''
+                },
+                loop: false
+            })
+
+            // this.fadeOut = this.time.addEvent({
+            //     delay: 100,
+            //     callback: () => {
+            //         this.caixaDialogo.setAlpha(alpha)
+            //         this.textOnInterface.setAlpha(alpha)
+            //         alpha -= .1
+            //         if (alpha == 0){
+            //             this.time.removeEvent(this.fadeOut)
+            //         }
+            //     },
+            //     loop: true
+            // })
+        }
+        return
+    }
+
+    controlTextVelocity(text){          //  Controla a velocidade de escrita do texto da Caixa de dialogo
+        if (text[this.currentIndex] == '.' || text[this.currentIndex] == '!')
+        {
+            this.typewriter.delay = 1000        
+        }
+        else
+        {
+            this.typewriter.delay = 50           
+        }
+    }
+
+    addToQueue(queue, element) {        //  Adiciona o elemento ao final da fila
+        queue.push(element);
+    }
+
+    removeFromQueue(queue) {            //  Remove e retorna o primeiro elemento da fila
+        if(queue[0]){
+            const removedElement = queue.shift();
+
+            return removedElement; // Retorna o elemento removido
+        }  
+        return
+    }
+
+    handel_timerEl(time_str, level_data){ // Configura o timer diacordo com dados passados do modulo dos Level, e lida com renderização da str do timer
+        if(time_str != level_data.timer && level_data.running){
+            time_str = level_data.timer   
+            this.timer.setText( time_str < 10 ? `0${time_str}`: `${time_str}`)
+        }
     }
 }

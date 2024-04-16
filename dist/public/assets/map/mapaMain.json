@@ -2819,6 +2819,94 @@
                  "width":2.24239,
                  "x":1678.753805,
                  "y":670.28409
+                }, 
+                {
+                 "height":47.3333333333333,
+                 "id":281,
+                 "name":"info",
+                 "properties":[
+                        {
+                         "name":"info",
+                         "type":"string",
+                         "value":"- Cachoeira da Prainha\n- Floresta do Wesley\n- Desenvolvedor"
+                        }, 
+                        {
+                         "name":"tipo",
+                         "type":"string",
+                         "value":"placa"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":30.6666666666666,
+                 "x":880,
+                 "y":640
+                }, 
+                {
+                 "height":47.3333333333333,
+                 "id":284,
+                 "name":"info",
+                 "properties":[
+                        {
+                         "name":"info",
+                         "type":"string",
+                         "value":"- Floresta da Lagoa\n- Cachoeira da Concordia\n- Fase 1"
+                        }, 
+                        {
+                         "name":"tipo",
+                         "type":"string",
+                         "value":"placa"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":30.6666666666666,
+                 "x":1137.33333333333,
+                 "y":638.666666666667
+                }, 
+                {
+                 "height":29.9999666666667,
+                 "id":285,
+                 "name":"info",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":30.6667,
+                 "x":399.333316666667,
+                 "y":399.666683333333
+                }, 
+                {
+                 "height":63.9999666666666,
+                 "id":286,
+                 "name":"info",
+                 "rotation":-90,
+                 "type":"",
+                 "visible":true,
+                 "width":30.6667,
+                 "x":449.333316666667,
+                 "y":353.666683333333
+                }, 
+                {
+                 "height":47.3333,
+                 "id":287,
+                 "name":"info",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":30.6667,
+                 "x":1425.99998333333,
+                 "y":491.000016666667
+                }, 
+                {
+                 "height":47.3333,
+                 "id":288,
+                 "name":"info",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":30.6667,
+                 "x":1553.99998333333,
+                 "y":487.666683333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2827,7 +2915,7 @@
          "y":0
         }],
  "nextlayerid":14,
- "nextobjectid":281,
+ "nextobjectid":289,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

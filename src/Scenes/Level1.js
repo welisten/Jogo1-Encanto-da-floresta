@@ -11,7 +11,7 @@ import * as Animation from '../Consts/Animations'
 import * as CharactersKey from '../Consts/CharacterKeys'
 import * as SongsKey from '../Consts/SongsKey'
 
-const levelData = {
+var level_data = {
     timer: 0,
     running: false
 }
@@ -95,7 +95,7 @@ export default class Game extends Phaser.Scene
         this.cronometro = this.time.addEvent({
             delay: 1000,
             callback: () => {
-                levelData.timer += 1
+                level_data.timer += 1
             },
             loop: true
         })
@@ -187,7 +187,7 @@ export default class Game extends Phaser.Scene
             this.cameras.main.scrollY -= Difficulty.SpeedMapScrolling
             this.GameStatesObj.isMapScrolling = true
             this.GameStatesObj.isPaused = false
-            levelData.running = true
+            level_data.running = true
         } 
         else
         {
@@ -195,7 +195,7 @@ export default class Game extends Phaser.Scene
             this.GameStatesObj.isMapScrolling = false
             this.GameStatesObj.hasMapScrolled =  true
             this.time.removeEvent(this.cronometro)
-            levelData.running = false
+            level_data.running = false
             
 
             // this.currentGameState = this.GameStatesObj.Running
@@ -244,5 +244,5 @@ export default class Game extends Phaser.Scene
 }
 
 export{
-    levelData
+    level_data
 }

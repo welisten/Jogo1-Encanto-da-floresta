@@ -16,13 +16,13 @@ import * as SongsKey from '../Consts/SongsKey'
 import { timeUI } from "../Scenes/UI";
 
 
-let GameState = {
+var GameState = {
     Running: 'running',
     Finished: 'finished',
     isPaused: false,
     timer: 0
 }
-let textUI = ''
+var text_UI = ''
 
 export default class Game extends Phaser.Scene
 {
@@ -68,14 +68,16 @@ export default class Game extends Phaser.Scene
         this.layer_shadowsf2 =  this.map.createLayer(MapKeys.mapaMainLayerID.layer10, tilesArray, 0, 0).setScale(Sizes.mapScale)
         this.layer_vegetationf2 =  this.map.createLayer(MapKeys.mapaMainLayerID.layer11, tilesArray, 0, 0).setScale(Sizes.mapScale)
         this.layer_buildingsf2 =  this.map.createLayer(MapKeys.mapaMainLayerID.layer12, tilesArray, 0, 0).setScale(Sizes.mapScale)
-              
+        
+        this.map.getObjectLayer
+
         this.cameras.main.setBounds(0, 0, (this.map.widthInPixels * Sizes.mapScale), (this.map.heightInPixels * Sizes.mapScale), true) // limites da camera
         this.physics.world.setBounds(0, 0, (this.map.widthInPixels * Sizes.L1MapScale), (this.map.heightInPixels * Sizes.L1MapScale))
 
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
-
-        this.sendTextToInterface('...Ola, seja Bemvindo ao Encantos da Floresta !\nEssa é a cidade de Guapimirim, e será nela que nós teremos nossas aventuras')
+        // TIMELINE
+        this.sendTextToInterface('...Ola, seja Bemvindo ao Encantos da Floresta !\nEssa é a cidade de Guapimirim, e será nela que nós teremos nossas aventuras\n')
 
         this.createNeededAnimation()
         
@@ -84,21 +86,32 @@ export default class Game extends Phaser.Scene
         this.player = this.physics.add.sprite( (initPoint.x * Sizes.mapScale), (initPoint.y * Sizes.mapScale), CharactersKey.ManDownKey).setDepth(2).setScale(Sizes.characterScale)
         this.player.setCollideWorldBounds(true);
 
-        this.collisionObjects = this.map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1)['objects']
-        this.collisionObjects.forEach(object => {
-            if(object.rectangle){
-                this.objRec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0).setDepth(10)
-                this.physics.add.existing(this.objRec, true)
-                this.physics.add.collider(this.player, this.objRec)
-            
-            }else if(object.ellipse){
-                this.objEllips = this.add.circle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.height * Sizes.L1MapScale / 2)).setOrigin(0)
-                this.physics.add.existing(this.objEllips, true)
-                this.physics.add.collider(this.player, this.objEllips)
+        this.mapObjects = this.map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1)['objects']
+        this.mapObjects.forEach(object => {
+            if (object.name != 'info'){
+                if(object.rectangle){
+                    this.objRec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0).setDepth(10)
+                    this.physics.add.existing(this.objRec, true)
+                    this.physics.add.collider(this.player, this.objRec)
+                    
+                 }else if(object.ellipse){
+                     this.objEllips = this.add.circle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.height * Sizes.L1MapScale / 2)).setOrigin(0)
+                     this.physics.add.existing(this.objEllips, true)
+                     this.physics.add.collider(this.player, this.objEllips)
+                }
             }
+            
         })
         
-        this.physics.world.on('worldbounds', () => console.log('colidiu'), this);
+        this.physics.world.on('worldbounds', () => console.log('colidiu'), this);        // Atenção
+
+        this.infoObjects = this.mapObjects.filter(obj => obj.name == 'info')
+        
+        this.infoObjects.forEach(obj => {
+            const rec = this.add.rectangle((obj.x * Sizes.L1MapScale), (obj.y * Sizes.L1MapScale), (obj.width * Sizes.L1MapScale), (obj.height * Sizes.L1MapScale)).setDisplayOrigin(0)
+            this.physics.add.existing(rec, true)
+            this.physics.add.overlap(rec, this.player,() => this.on_Info_Overlap(obj))
+        })
         
         this.cameras.main.startFollow(this.player) // configurando posicionamento da camera
         this.cursor = this.input.keyboard.createCursorKeys() 
@@ -107,17 +120,17 @@ export default class Game extends Phaser.Scene
     update() {
         this.handleMainCharacterMovements()
         this.setLayersDepth(this.getPlayerFloor())
-        this.physics.world.collide(this.player, this.collisionObjects)
+        this.physics.world.collide(this.player, this.mapObjects)
 
     }
-    sendTextToInterface(text){
-        textUI = text
-        this.time.addEvent({
-            delay: 1000,
-            callback: () => { textUI = '' },
-            loop: false
 
-        })
+    sendTextToInterface(string){
+        text_UI = string
+        // this.time.addEvent({
+        //     delay: 1000,
+        //     callback: () => { text_UI = '' },
+        //     loop: false
+        // })
     }
 
     getObjectById(objectId) {
@@ -269,9 +282,17 @@ export default class Game extends Phaser.Scene
 
         }
     }
+
+    on_Info_Overlap(e){
+        if(e.properties[1].value == 'placa'){
+            this.sendTextToInterface(e.properties[0].value)
+            // console.log(e.properties[0].value)
+
+        }
+    }
 }
 
 export{
     GameState,
-    textUI
+    text_UI
 }
