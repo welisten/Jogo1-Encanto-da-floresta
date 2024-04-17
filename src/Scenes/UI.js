@@ -75,18 +75,18 @@ export default class GameBackground extends Phaser.Scene
             .setOrigin(0)
         
     //  Caixa de dialogo
-        this.caixaDialogo = this.add.image( (containerGameWidth / 2) , (containerGameHeight - 70), DialogBox_Key)
+        this.dialogBox = this.add.image( (containerGameWidth / 2) , (containerGameHeight - 70), DialogBox_Key)
             .setOrigin(0.5)
             .setScale(1.7, 0.6)
 
-        this.caixaDialogo.setAlpha(1)
+        this.dialogBox.setAlpha(0)
 
     //      Texto da caixa de dialogo
         this.textOnInterface = this.add.text((containerGameWidth / 2), containerGameHeight - 110, '', {
             fontSize: 20,
             color: "0xffffff",
             wordWrap: {
-                width: (this.caixaDialogo.width * 1.7) - 40,
+                width: (this.dialogBox.width * 1.7) - 40,
                 useAdvancedWrap: true
             }
         }).setOrigin(.5, 0)
@@ -112,6 +112,7 @@ export default class GameBackground extends Phaser.Scene
 
         if(queue[0] && isPaused){ // se houver elemento na 1° posição E a maquina de escrever estiver pausada
             this.currentIndex = 0
+            this.displayDialogBox(this.dialogBox)
             this.writeText(this.removeFromQueue(this.queue))
         }
         else
@@ -124,6 +125,8 @@ export default class GameBackground extends Phaser.Scene
         var lenght = string.length
 
         this.controlTextObj.interfaceText_stt = 'writing'
+        this.displayDialogBox(this.dialogBox)
+        this.displayDialogBox(this.textOnInterface)
         
         this.typewriter = this.time.addEvent({ 
             delay: 50, 
@@ -142,29 +145,27 @@ export default class GameBackground extends Phaser.Scene
         if ( currentIndex >= lenght - 1 ) 
         {
             this.typewriter.delay = 1000
-            this.time.removeEvent(this.typewriter)
-            this.time.addEvent({
-                delay: 1000,
-                callback: () => {
-                    this.controlTextObj.interfaceText_stt = 'paused'
-                    this.currentIndex = 0
-                    this.textOnInterface.text = ''
-                },
-                loop: false
-            })
 
-            // this.fadeOut = this.time.addEvent({
-            //     delay: 100,
-            //     callback: () => {
-            //         this.caixaDialogo.setAlpha(alpha)
-            //         this.textOnInterface.setAlpha(alpha)
-            //         alpha -= .1
-            //         if (alpha == 0){
-            //             this.time.removeEvent(this.fadeOut)
-            //         }
-            //     },
-            //     loop: true
-            // })
+            this.time.removeEvent(this.typewriter)
+            this.dialogBox.setAlpha(1)
+            this.textOnInterface.setAlpha(1)
+
+            this.time.addEvent(
+                {
+                    delay: 1000,
+                    callback: () => {
+                        this.controlTextObj.interfaceText_stt = 'paused'
+                        this.currentIndex = 0
+                        this.textOnInterface.text = ''
+                    },
+                    loop: false
+                }
+            )
+            if(!this.queue[0]){
+                this.hideDialogBox(this.dialogBox)
+                this.hideDialogBox(this.textOnInterface)
+            }
+            
         }
         return
     }
@@ -198,5 +199,49 @@ export default class GameBackground extends Phaser.Scene
             time_str = level_data.timer   
             this.timer.setText( time_str < 10 ? `0${time_str}`: `${time_str}`)
         }
+    }
+
+    displayDialogBox(dialogBox){    // Torna a Caixa de dialogos visivel
+    var alpha = dialogBox.alpha
+        if(alpha == 0){//  Se não ha caixa de dialogo
+            //FADE IN
+            var fadeIn = this.time.addEvent(
+            {
+                delay: 50,
+                callback: () => {
+                    if(alpha >= 1){
+                        this.time.removeEvent(fadeIn)
+                        return
+                    }
+                    alpha += 0.1
+                    dialogBox.setAlpha(alpha)
+                },
+                loop: true
+            })
+        }
+        return
+    }
+
+    hideDialogBox(dialog_Box){      // Retira a visibilidade da caixa de Dialogo
+        var alpha = dialog_Box.alpha
+        if(alpha == 1){//  Se há uma caixa de dialogo na tela
+            //FADE OUT
+            var fadeOut = this.time.addEvent(
+            {
+                delay: 50,
+                callback: () => {
+                    if(alpha <= 0){
+                        dialog_Box.setAlpha(0)
+                        this.time.removeEvent(fadeOut)
+                        return
+                    }
+                    alpha -= 0.1
+                    dialog_Box.setAlpha(alpha)
+                },
+                loop: true
+            })
+        }
+
+        return
     }
 }
