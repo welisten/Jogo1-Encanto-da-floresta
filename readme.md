@@ -1,9 +1,23 @@
 # aqui serão relatadas as atividades semanais:
- 
- 1(INVIAVEL) - compartimentalizar as funções que serão usadas por outros módulos:
-        - scroll dos levels
-        - Movimentações que se diferenciam da usada no mapaMain
+-----------------------------------------------(ANDAMENTO)-----------------------------------------------------
 
+ 3 (ANDAMENTO) - Implementar LOGICAS fundamentais ao mapaMain:
+              3.1 - PONTOS
+   (OK)          - Implementar pausa das funçoes motoras do personagem
+(ANDAMENTO)      - Timeline de inicio de jogo Mapa Main (será sempre ativada ? dar a opção de NÃO)
+   (OK)          - Fases
+(ANDAMENTO)      - Movimentação alternativa
+(ANDAMENTO)      - UI -> setas de direção nas placas de localização
+(ANDAMENTO)      - UI -> Explorar & Desenvolvedor & Mapa de Guapi
+              
+                                OBS: nesse caso se fará necessário a identificação de cada ponto e ter a trativa necessária pra cada tipo
+        
+(CONCLUIDO)   3.2 - PLACAS        
+       (CONCLUIDO)   - adicionar ouvinte ao se passar pelas placa e exibir informações das placas nas caixas de dialogo
+
+ AS ATIVIDASDES DESSA SEMANA SERÃO FOCADAS NO MAPA MAIN
+-----------------------------------------------(CONCLUIDO)-----------------------------------------------------
+ 
  2 - Interface do jogador no Jogo UI/UX Design (Será necessária a criação de uma segunda interface dentro da interface do jogo. uma interface que se comunique com o jogador atual, o mostrando informaçoes pertinentes aquela instancias de jogo)
         -Assets para UI/UX
         - Quais serão os elementos ?
@@ -12,23 +26,21 @@
             - Borda
             - Caixa de Dialogo(atenção a esse elemento visto que muitas coisas acionarão a caixa de dialogos)
                                 OBS: para forma em que iremos tornar tal elementos visíveis ou não.
- 
- 3 - Implementar LOGICAS fundamentais ao mapaMain:
-        3.1 - PONTOS
-                - Fases
-                - Explorar
-                - Direção
-                - Informação
-                                OBS: nesse caso se fará necessário a identificação de cada ponto e ter a trativa necessária pra cada tipo
-        
-        3.2 - PLACAS
-                - adicionar ouvinte ao se passar pelas placa e exibir informações das placas nas caixas de dialogo
 
- AS ATIVIDASDES DESSA SEMANA SERÃO FOCADAS NO MAPA MAIN
+ ----------------------------------------------(INVIAVEL)------------------------------------------------------
+
+ 1 - compartimentalizar as funções que serão usadas por outros módulos:
+        - scroll dos levels
+        -  Algoritmos de movimentações que se diferenciam da usada no mapaMain
 
 
 
+
+
+
+AJUSTES:
 
  - SCALE para Level1
- - Animação da caixa de dialogo
-  
+
+PROXIMAS ATIVIDADES:
+ - Salvar processos no localStorage

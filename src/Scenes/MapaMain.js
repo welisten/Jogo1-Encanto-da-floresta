@@ -3,7 +3,7 @@
 import Phaser from "phaser";
 
 // Scenes
-import {MainUserInterface} from '../Consts/SceneKeys'                                                // ATENCION
+import {MainUserInterface, Level1} from '../Consts/SceneKeys'                                                // ATENCION
 
 // Constants
 import * as MapKeys from '../Consts/MapKeys'
@@ -13,19 +13,25 @@ import * as Animation from '../Consts/Animations'
 import * as CharactersKey from '../Consts/CharacterKeys'
 import * as SongsKey from '../Consts/SongsKey'
 
-import { timeUI } from "../Scenes/UI";
+import { addToUIQueue } from "../Scenes/UI";
 
 
 var GameState = {
     Running: 'running',
     Finished: 'finished',
     isPaused: false,
+    isPlayerAbleToMove: false,
     timer: 0
 }
 var text_UI = ''
 
-export default class Game extends Phaser.Scene
+export default class MapaMain extends Phaser.Scene
 {
+    constructor() {
+        super({ key: 'mapaMain' });
+        // this.score = 0; // Pontuação do jogo
+    }
+
     preload(){
         
         
@@ -42,6 +48,27 @@ export default class Game extends Phaser.Scene
 
     create()
     { 
+        var initStrLength = 204
+        const timeline_1 = this.add.timeline([
+                                                {
+                                                    at:0,
+                                                    run: () => this.cameras.main.fadeIn(1500, 0, 0, 0)
+                                                },
+                                                {
+                                                    at: 1500,
+                                                    run: () =>{
+                                                        //204
+                                                        var param ='...Ola, seja Bemvindo ao Encantos da Floresta !\nEssa é a cidade de Guapimirim, e será nela que nós teremos nossas aventuras\n'
+                                                        addToUIQueue(param)
+
+                                                    } 
+                                                },
+                                                {
+                                                    from: initStrLength * 50 + 500,
+                                                    run: () =>{ GameState.isPlayerAbleToMove = true } 
+                                                
+                                                }
+                                            ])
         this.map = this.make.tilemap({key: MapKeys.MapKey})
         
         this.tile_1 = this.map.addTilesetImage(MapKeys.objConfigTilesetMap[0].name, MapKeys.objConfigTilesetMap[0].key, 16, 16)
@@ -77,8 +104,7 @@ export default class Game extends Phaser.Scene
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
         // TIMELINE
-        this.sendTextToInterface('...Ola, seja Bemvindo ao Encantos da Floresta !\nEssa é a cidade de Guapimirim, e será nela que nós teremos nossas aventuras\n')
-
+        timeline_1.play()
         this.createNeededAnimation()
         
         var initPoint = this.getObjectById(2)
@@ -88,7 +114,8 @@ export default class Game extends Phaser.Scene
 
         this.mapObjects = this.map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1)['objects']
         this.mapObjects.forEach(object => {
-            if (object.name != 'info'){
+
+            if (object.name != 'info' & object.name != 'level'){
                 if(object.rectangle){
                     this.objRec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0).setDepth(10)
                     this.physics.add.existing(this.objRec, true)
@@ -104,9 +131,35 @@ export default class Game extends Phaser.Scene
         })
         
         this.physics.world.on('worldbounds', () => console.log('colidiu'), this);        // Atenção
+        
+        // Serão usados posteriomente para movimentação alternativa
+        this.decision_breaks =  this.mapObjects.filter(obj => obj.name == 'decision_break') 
+    
+        this.objs_levels =  this.mapObjects.filter(obj => obj.name == 'level')
+        var hasOverlapOccurred = false
+        this.objs_levels.forEach(level => {
+            const rec = this.add.rectangle((level.x * Sizes.L1MapScale), (level.y * Sizes.L1MapScale), (level.width * Sizes.L1MapScale), (level.height * Sizes.L1MapScale)).setDisplayOrigin(0)
+            this.physics.add.existing(rec, true)
+            this.physics.add.overlap(rec, this.player, () => {
+                if(!hasOverlapOccurred){
+                    if(this.player.x - this.player.width / 2 > rec.x && this.player.x + this.player.width / 2  < rec.x + rec.width){
+                        hasOverlapOccurred = true
+                        GameState.isPlayerAbleToMove = false
+                        
+                        this.time.addEvent({
+                            delay: 1500,
+                            callback: () => {
+                                this.transitionToNewScene(Level1)
+                                this.time.delayedCall(1000, () => GameState.isPlayerAbleToMove = true)
+                            },
+                            loop: false
+                        })
+                    }
+                }
+            })
+        })
 
         this.infoObjects = this.mapObjects.filter(obj => obj.name == 'info')
-        
         this.infoObjects.forEach(obj => {
             const rec = this.add.rectangle((obj.x * Sizes.L1MapScale), (obj.y * Sizes.L1MapScale), (obj.width * Sizes.L1MapScale), (obj.height * Sizes.L1MapScale)).setDisplayOrigin(0)
             this.physics.add.existing(rec, true)
@@ -118,6 +171,7 @@ export default class Game extends Phaser.Scene
     }
 
     update() {
+        // console.log(this.initStrLength)
         this.handleMainCharacterMovements()
         this.setLayersDepth(this.getPlayerFloor())
         this.physics.world.collide(this.player, this.mapObjects)
@@ -145,48 +199,53 @@ export default class Game extends Phaser.Scene
     }
 
     handleMainCharacterMovements(){
-        
-        if(this.cursor.up.isDown)
-        {
-            this.player.key = CharactersKey.ManUpKey
-            this.player.play({key: Animation.ManWalkUpKey, repeat: 0}, true)
-            this.player.setVelocity(0, -100)        
+        if(GameState.isPlayerAbleToMove){
+            if(this.cursor.up.isDown)
+            {
+                this.player.key = CharactersKey.ManUpKey
+                this.player.play({key: Animation.ManWalkUpKey, repeat: 0}, true)
+                this.player.setVelocity(0, -100)        
 
+            }
+            else if (this.cursor.down.isDown)
+            {
+                this.player.key = CharactersKey.ManDownKey
+                this.player.play(Animation.ManWalkDownKey, true)
+                this.player.setVelocity(0, 100)        
+            }
+            else if( this.cursor.left.isDown )
+            {   
+                this.player.key =  CharactersKey.ManLeftKey
+                this.player.play(Animation.ManWalkLeftKey, true)
+                this.player.setVelocity(-100, 0)        
+            }
+            else if (this.cursor.right.isDown)
+            {
+                this.player.key = CharactersKey.ManRightKey
+                this.player.play(Animation.ManWalkRightKey, true)
+                this.player.setVelocity(100, 0)        
+            }else{
+                this.player.setVelocity(0)
+            }
+
+
+            if(!this.isScrolling && this.cursor.up.isDown)
+            {
+                this.player.key = CharactersKey.ManUpKey
+                this.player.play({key: Animation.ManWalkUpKey, repeat: 0}, true)
+                this.player.setVelocityY(-100)        
+            } 
+            else if(!this.isScrolling && this.cursor.down.isDown)
+            {
+                this.player.key = CharactersKey.ManDownKey
+                this.player.play(Animation.ManWalkDownKey, true)
+                this.player.setVelocityY(100)        
+            }
         }
-        else if (this.cursor.down.isDown)
-        {
-            this.player.key = CharactersKey.ManDownKey
-            this.player.play(Animation.ManWalkDownKey, true)
-            this.player.setVelocity(0, 100)        
-        }
-        else if( this.cursor.left.isDown )
-        {   
-            this.player.key =  CharactersKey.ManLeftKey
-            this.player.play(Animation.ManWalkLeftKey, true)
-            this.player.setVelocity(-100, 0)        
-        }
-        else if (this.cursor.right.isDown)
-        {
-            this.player.key = CharactersKey.ManRightKey
-            this.player.play(Animation.ManWalkRightKey, true)
-            this.player.setVelocity(100, 0)        
-        }else{
+        else{
             this.player.setVelocity(0)
         }
-
         
-        if(!this.isScrolling && this.cursor.up.isDown)
-        {
-            this.player.key = CharactersKey.ManUpKey
-            this.player.play({key: Animation.ManWalkUpKey, repeat: 0}, true)
-            this.player.setVelocityY(-100)        
-        } 
-        else if(!this.isScrolling && this.cursor.down.isDown)
-        {
-            this.player.key = CharactersKey.ManDownKey
-            this.player.play(Animation.ManWalkDownKey, true)
-            this.player.setVelocityY(100)        
-        }
     }
      
     createNeededAnimation() {
@@ -289,6 +348,14 @@ export default class Game extends Phaser.Scene
             // console.log(e.properties[0].value)
 
         }
+    }
+
+    transitionToNewScene(newSceneKey) {
+        this.cameras.main.fadeOut(1000, 0, 0, 0); // Fade para preto em 1 segundo
+    
+        this.cameras.main.once('camerafadeoutcomplete', (camera) => {
+          this.scene.start(newSceneKey);
+        })
     }
 }
 

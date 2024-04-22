@@ -1233,7 +1233,7 @@
                  "visible":true,
                  "width":139.3333,
                  "x":1568.50001666667,
-                 "y":469.666666666667
+                 "y":465
                 }, 
                 {
                  "height":1.33333333333337,
@@ -2327,150 +2327,6 @@
                  "y":480.5
                 }, 
                 {
-                 "height":0,
-                 "id":233,
-                 "name":"decision_break",
-                 "point":true,
-                 "properties":[
-                        {
-                         "name":"\"data\"",
-                         "type":"string",
-                         "value":""
-                        }, 
-                        {
-                         "name":"direction",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"fase",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"info",
-                         "type":"bool",
-                         "value":false
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1023,
-                 "y":658.5
-                }, 
-                {
-                 "height":0,
-                 "id":236,
-                 "name":"decision_break",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":479.5,
-                 "y":426
-                }, 
-                {
-                 "height":0,
-                 "id":237,
-                 "name":"decision_break",
-                 "point":true,
-                 "properties":[
-                        {
-                         "name":"\"data\"",
-                         "type":"string",
-                         "value":""
-                        }, 
-                        {
-                         "name":"direction",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"fase",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"info",
-                         "type":"bool",
-                         "value":false
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":479.5,
-                 "y":120
-                }, 
-                {
-                 "height":0,
-                 "id":238,
-                 "name":"decision_break",
-                 "point":true,
-                 "properties":[
-                        {
-                         "name":"\"data\"",
-                         "type":"string",
-                         "value":""
-                        }, 
-                        {
-                         "name":"direction",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"fase",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"info",
-                         "type":"bool",
-                         "value":false
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1503.5,
-                 "y":520
-                }, 
-                {
-                 "height":0,
-                 "id":239,
-                 "name":"decision_break",
-                 "point":true,
-                 "properties":[
-                        {
-                         "name":"\"data\"",
-                         "type":"string",
-                         "value":""
-                        }, 
-                        {
-                         "name":"direction",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"fase",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"info",
-                         "type":"bool",
-                         "value":false
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1678,
-                 "y":440
-                }, 
-                {
                  "height":6.16666666666667,
                  "id":240,
                  "name":"trunk",
@@ -2930,6 +2786,113 @@
                  "width":30.6667,
                  "x":1697.99998333333,
                  "y":399.666683333333
+                }, 
+                {
+                 "height":0,
+                 "id":297,
+                 "name":"decision_break",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":""
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1502.66666666667,
+                 "y":524
+                }, 
+                {
+                 "height":0,
+                 "id":298,
+                 "name":"decision_break",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"fase",
+                         "type":"string",
+                         "value":"level_1"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1680,
+                 "y":442
+                }, 
+                {
+                 "height":0,
+                 "id":299,
+                 "name":"decision_break",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":""
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1023.33333333333,
+                 "y":667.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":300,
+                 "name":"decision_break",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":""
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":478.666666666667,
+                 "y":428
+                }, 
+                {
+                 "height":0,
+                 "id":301,
+                 "name":"decision_break",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":"info"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":480.666666666667,
+                 "y":123.333333333333
+                }, 
+                {
+                 "height":28,
+                 "id":302,
+                 "name":"level",
+                 "properties":[
+                        {
+                         "name":"N\u00famero",
+                         "type":"string",
+                         "value":"1"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":31.3333333333335,
+                 "x":1664.66666666667,
+                 "y":418
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2938,7 +2901,7 @@
          "y":0
         }],
  "nextlayerid":14,
- "nextobjectid":294,
+ "nextobjectid":303,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

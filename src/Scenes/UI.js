@@ -10,8 +10,7 @@ import { level_data } from "../Scenes/Level1"
 import { text_UI } from "../Scenes/MapaMain"
 
 var time_UI = level_data.timer
-// var isWriting = controlTextObj.interfaceText_stt == 'writing'
-// var isQueueEmpty = !this.queue[0]
+var queue = []
 
 
 export default class GameBackground extends Phaser.Scene
@@ -23,7 +22,7 @@ export default class GameBackground extends Phaser.Scene
         this.controlTextObj = {
             interfaceText_stt: 'paused'
         }
-        this.queue = []
+        
 
     }
     create() 
@@ -95,13 +94,13 @@ export default class GameBackground extends Phaser.Scene
     update(){
         this.handel_timerEl(time_UI, level_data)
         this.check_Add_textToQueue(text_UI)
-        this.handel_Queue(this.queue, this.controlTextObj.interfaceText_stt)
+        this.handel_Queue(queue, this.controlTextObj.interfaceText_stt)
     }
 
     check_Add_textToQueue(text){        //  VERIFICA se o texto é repetido, caso não seja ADICIONA texto na fila para renderização
        if(this.auxText != text){
            this.auxText = text
-           this.addToQueue(this.queue, text)
+           this.addToQueue(queue, text)
        }
        return
     }
@@ -112,8 +111,9 @@ export default class GameBackground extends Phaser.Scene
 
         if(queue[0] && isPaused){ // se houver elemento na 1° posição E a maquina de escrever estiver pausada
             this.currentIndex = 0
+
             this.displayDialogBox(this.dialogBox)
-            this.writeText(this.removeFromQueue(this.queue))
+            this.writeText(queue[queue.length - 1])
         }
         else
         {
@@ -145,6 +145,7 @@ export default class GameBackground extends Phaser.Scene
         if ( currentIndex >= lenght - 1 ) 
         {
             this.typewriter.delay = 1000
+            this.removeFromQueue(queue)
 
             this.time.removeEvent(this.typewriter)
             this.dialogBox.setAlpha(1)
@@ -161,7 +162,7 @@ export default class GameBackground extends Phaser.Scene
                     loop: false
                 }
             )
-            if(!this.queue[0]){
+            if(!queue[0]){
                 this.hideDialogBox(this.dialogBox)
                 this.hideDialogBox(this.textOnInterface)
             }
@@ -244,4 +245,10 @@ export default class GameBackground extends Phaser.Scene
 
         return
     }
+    
+}
+const addToUIQueue = (text) => GameBackground.prototype.addToQueue(queue, text)
+export{
+    queue,
+    addToUIQueue
 }

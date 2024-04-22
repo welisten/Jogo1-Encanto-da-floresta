@@ -44,6 +44,13 @@ export default class Game extends Phaser.Scene
 
     create()
     { 
+        this.cameras.main.fadeIn(1000, 0, 0, 0); // Fade a partir do preto em 1 segundo
+        
+        this.cameras.main.once('camerafadeoutcomplete', (camera) => {
+            return
+            // implementar timeline de instruçoes para level 1
+
+        })
         this.map = this.make.tilemap({key: MapKeys.MapL1Key})
         
         this.tile_1 = this.map.addTilesetImage(MapKeys.L1_ObjConfigTileset[0].name, MapKeys.L1_ObjConfigTileset[0].key, 16, 16)
