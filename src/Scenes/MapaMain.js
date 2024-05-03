@@ -21,7 +21,8 @@ var GameState = {
     Finished: 'finished',
     isPaused: false,
     isPlayerAbleToMove: false,
-    timer: 0
+    timer: 0,
+    player_point: 'init'
 }
 var text_UI = ''
 
@@ -43,13 +44,24 @@ export default class MapaMain extends Phaser.Scene
         gameCanvas.style.borderRadius = "20px"
 
         this.timerUi = 0
+        this.playerState = {
+            isMoving: false,
+            point_id: 2,
+            point_x: undefined,
+            point_y: undefined,
+            targetID: undefined,
+            targetY: undefined,
+            targetX: undefined,
+            isOnTarget: false,
+            direction: undefined,
+        }
 
     }
 
     create()
     { 
         var initStrLength = 204
-        const timeline_1 = this.add.timeline([
+        const timeline_1 = this.add.timeline([      // Compartimentalizar
                                                 {
                                                     at:0,
                                                     run: () => this.cameras.main.fadeIn(1500, 0, 0, 0)
@@ -96,26 +108,35 @@ export default class MapaMain extends Phaser.Scene
         this.layer_vegetationf2 =  this.map.createLayer(MapKeys.mapaMainLayerID.layer11, tilesArray, 0, 0).setScale(Sizes.mapScale)
         this.layer_buildingsf2 =  this.map.createLayer(MapKeys.mapaMainLayerID.layer12, tilesArray, 0, 0).setScale(Sizes.mapScale)
         
-        this.map.getObjectLayer
-
         this.cameras.main.setBounds(0, 0, (this.map.widthInPixels * Sizes.mapScale), (this.map.heightInPixels * Sizes.mapScale), true) // limites da camera
         this.physics.world.setBounds(0, 0, (this.map.widthInPixels * Sizes.L1MapScale), (this.map.heightInPixels * Sizes.L1MapScale))
 
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
-        // TIMELINE
-        timeline_1.play()
+
+        //---------------------------    TIMELINE      -------------------------------
+        // timeline_1.play()
+        GameState.isPlayerAbleToMove = true  //retirar
+
+        //----------------------------------------------------------------------------
         this.createNeededAnimation()
         
         var initPoint = this.getObjectById(2)
 
-        this.player = this.physics.add.sprite( (initPoint.x * Sizes.mapScale), (initPoint.y * Sizes.mapScale), CharactersKey.ManDownKey).setDepth(2).setScale(Sizes.characterScale)
+        this.player = this.physics.add.sprite( Math.floor(initPoint.x * Sizes.mapScale), Math.floor(initPoint.y * Sizes.mapScale), CharactersKey.ManDownKey).setDepth(2).setScale(Sizes.characterScale)
+        this.playerState.point_x = this.player.x
+        this.playerState.point_y = this.player.y
         this.player.setCollideWorldBounds(true);
+        this.player.body.setSize(4, 4)
 
         this.mapObjects = this.map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1)['objects']
+        console.log(this.mapObjects)
+
+
+        //----------------------       USUAL OBJECTS       -----------------------
         this.mapObjects.forEach(object => {
 
-            if (object.name != 'info' & object.name != 'level'){
+            if (object.name != 'info' & object.name != 'level' & object.name != 'fence' ){// PROCESSAMENTO
                 if(object.rectangle){
                     this.objRec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0).setDepth(10)
                     this.physics.add.existing(this.objRec, true)
@@ -129,20 +150,71 @@ export default class MapaMain extends Phaser.Scene
             }
             
         })
-        
         this.physics.world.on('worldbounds', () => console.log('colidiu'), this);        // Atenção
         
-        // Serão usados posteriomente para movimentação alternativa
+        //-----------------       DECISIONS BREAKS        -----------------------
         this.decision_breaks =  this.mapObjects.filter(obj => obj.name == 'decision_break') 
-    
+        this.decision_breaks.forEach(point => {
+            const circle = this.add.circle(Math.round(point.x * Sizes.L1MapScale), Math.round(point.y * Sizes.L1MapScale), .5).setOrigin(0)
+            this.physics.add.existing(circle, true)
+            this.physics.add.overlap(this.player, circle, () => {
+                
+                if(this.playerState.point_id == point.id){
+                    return    
+                }
+                // console.log('OVERLAP')
+
+                if(this.isCompletelyInside(circle, this.player)){
+                    // console.log('Completamente dentro')
+                    this.playerState.point_id = point.id
+                    switch(this.playerState.direction){
+                        case('up'):
+                            this.player.y += 1
+
+                        break
+                        case('down'):
+                            this.player.y += 4
+
+                        break
+                        case('left'):
+                            this.player.x += 1
+
+                        break
+                        case('right'):
+                            this.player.x += 4
+                        break
+                        // configurar defaut
+                    }
+
+                    if (point.id == this.playerState.targetID){
+                        this.player.setVelocity(0, 0);
+                        this.playerState.isMoving = false;
+                        this.playerState.direction = undefined
+                        console.log(`Player alcançou o alvo\nPonto atual: ${this.playerState.point_id}   alvo:${this.playerState.targetID}`)
+                        
+                        this.player.anims.stop()
+                        return
+                    }
+                    else
+                        console.log(`Ainda nao !!!    REDEFININDO ROTA\nPonto atual: ${this.playerState.point_id}   alvo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
+                        this.player.setVelocity(0, 0);
+                        this.defineRoute()
+
+                }
+            })
+        })
+           
+        //----------------------       LEVELS        -----------------------
         this.objs_levels =  this.mapObjects.filter(obj => obj.name == 'level')
+        
         var hasOverlapOccurred = false
+        
         this.objs_levels.forEach(level => {
             const rec = this.add.rectangle((level.x * Sizes.L1MapScale), (level.y * Sizes.L1MapScale), (level.width * Sizes.L1MapScale), (level.height * Sizes.L1MapScale)).setDisplayOrigin(0)
             this.physics.add.existing(rec, true)
             this.physics.add.overlap(rec, this.player, () => {
                 if(!hasOverlapOccurred){
-                    if(this.player.x - this.player.width / 2 > rec.x && this.player.x + this.player.width / 2  < rec.x + rec.width){
+                    if(this.player.x - this.player.width / 2 > rec.x && this.player.x + this.player.width / 2  < rec.x + rec.width){// melhorar legibilidade
                         hasOverlapOccurred = true
                         GameState.isPlayerAbleToMove = false
                         
@@ -158,21 +230,26 @@ export default class MapaMain extends Phaser.Scene
                 }
             })
         })
-
+        //----------------------       SIGNS        -----------------------
         this.infoObjects = this.mapObjects.filter(obj => obj.name == 'info')
         this.infoObjects.forEach(obj => {
             const rec = this.add.rectangle((obj.x * Sizes.L1MapScale), (obj.y * Sizes.L1MapScale), (obj.width * Sizes.L1MapScale), (obj.height * Sizes.L1MapScale)).setDisplayOrigin(0)
             this.physics.add.existing(rec, true)
-            this.physics.add.overlap(rec, this.player,() => this.on_Info_Overlap(obj))
+            this.physics.add.overlap(rec, this.player, () => this.on_Info_Overlap(obj))
         })
+
+        //------------------------------------------------------------------
         
         this.cameras.main.startFollow(this.player) // configurando posicionamento da camera
         this.cursor = this.input.keyboard.createCursorKeys() 
+
+        console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
+
     }
 
     update() {
-        // console.log(this.initStrLength)
-        this.handleMainCharacterMovements()
+        // this.handleMainCharacterMovements()
+        this.alternativeCharacterMoveControl()
         this.setLayersDepth(this.getPlayerFloor())
         this.physics.world.collide(this.player, this.mapObjects)
 
@@ -204,26 +281,26 @@ export default class MapaMain extends Phaser.Scene
             {
                 this.player.key = CharactersKey.ManUpKey
                 this.player.play({key: Animation.ManWalkUpKey, repeat: 0}, true)
-                this.player.setVelocity(0, -100)        
+                this.player.setVelocity(0, -Difficulty.Char_velocity)        
 
             }
             else if (this.cursor.down.isDown)
             {
                 this.player.key = CharactersKey.ManDownKey
                 this.player.play(Animation.ManWalkDownKey, true)
-                this.player.setVelocity(0, 100)        
+                this.player.setVelocity(0, Difficulty.Char_velocity)        
             }
             else if( this.cursor.left.isDown )
             {   
                 this.player.key =  CharactersKey.ManLeftKey
                 this.player.play(Animation.ManWalkLeftKey, true)
-                this.player.setVelocity(-100, 0)        
+                this.player.setVelocity(-Difficulty.Char_velocity, 0)        
             }
             else if (this.cursor.right.isDown)
             {
                 this.player.key = CharactersKey.ManRightKey
                 this.player.play(Animation.ManWalkRightKey, true)
-                this.player.setVelocity(100, 0)        
+                this.player.setVelocity(Difficulty.Char_velocity, 0)        
             }else{
                 this.player.setVelocity(0)
             }
@@ -357,6 +434,251 @@ export default class MapaMain extends Phaser.Scene
           this.scene.start(newSceneKey);
         })
     }
+
+    alternativeCharacterMoveControl(){
+        if(GameState.isPlayerAbleToMove){
+            if(this.cursor.up.isDown & !this.playerState.isMoving)      // UP
+            {   
+//              Ajusta a localização do personagem no sentido da direção para criar uma contingência.
+//              (dependendo da velocidade, numeros decimais podem vazar gerando erro depois de um tempo)
+                this.player.y = Math.floor(this.player.y)
+                
+//              Identificar o ponto relativo a direção
+                var current_Point =  this.getObjectById(this.playerState.point_id)
+                var up_propertie = current_Point.properties.find(obj => obj.name === 'up')
+
+//              Assegurar que existe caminho pela referida direção                
+                if(!up_propertie.value){
+                    console.log("caminho inexistente ! você está se equivocando")
+                    return
+                }
+
+//              Resgata o ponto alvo e atualiza as coordenadas do alvo no obj de controle do jogador               
+                var next_Point = this.getObjectById(up_propertie.value)
+
+                this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
+                this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
+                this.playerState.targetID = up_propertie.value
+                
+//              Dispara o personagem na direção desejada usando a respectiva animação
+                this.player.key = CharactersKey.ManUpKey
+                this.player.play({key: Animation.ManWalkUpKey, repeat: -1}, true)
+                this.player.setVelocity(0, -Difficulty.Char_velocity)
+                
+//              Atualiza o estado do personagem em: "movimentando" e "direção"
+                this.playerState.isMoving = true 
+                this.playerState.direction = 'up'
+
+                console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)                     
+            }
+            else if(this.cursor.down.isDown & !this.playerState.isMoving)       // DOWN
+            {
+                this.player.y = Math.floor(this.player.y)
+
+                var current_point =  this.getObjectById(this.playerState.point_id)
+                var down_propertie = current_point.properties.find(obj => obj.name === 'down')
+                
+                if(!down_propertie.value){
+                    console.log("caminho inexistente ! você está se equivocando")
+                    return
+                }
+
+                var next_Point = this.getObjectById(down_propertie.value)
+
+                this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
+                this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
+                this.playerState.targetID = down_propertie.value
+                
+                this.player.key = CharactersKey.ManDownKey
+                this.player.play({key: Animation.ManWalkDownKey, repeat: -1}, true)
+                this.player.setVelocity(0, Difficulty.Char_velocity)
+
+                this.playerState.isMoving = true 
+                this.playerState.direction = 'down'
+
+                console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
+               
+            }
+            else if(this.cursor.left.isDown & !this.playerState.isMoving)       // LEFT
+            {
+                this.player.x = Math.floor(this.player.x)
+
+                var current_Point =  this.getObjectById(this.playerState.point_id)
+                var left_propertie = current_Point.properties.find(obj => obj.name === 'left')
+                
+                if(!left_propertie.value){
+                    console.log("caminho inexistente ! você está se equivocando")
+                    return
+                }
+                
+                var next_Point = this.getObjectById(left_propertie.value)
+                
+                this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
+                this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
+                this.playerState.targetID = left_propertie.value
+                
+                this.player.key = CharactersKey.ManLeftKey
+                this.player.play({key: Animation.ManWalkLeftKey, repeat: -1}, true)
+                this.player.setVelocity(-Difficulty.Char_velocity, 0)
+                
+                this.playerState.isMoving = true 
+                this.playerState.direction = 'left'
+
+                console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
+            }
+            else if(this.cursor.right.isDown & !this.playerState.isMoving)      // RIGHT
+            {
+                this.player.x = Math.floor(this.player.x)
+                
+                var current_Point =  this.getObjectById(this.playerState.point_id)
+                var right_propertie = current_Point.properties.find(obj => obj.name === 'right')
+                
+                if(!right_propertie.value){
+                    console.log("caminho inexistente ! você está se equivocando")
+                    return
+                }
+
+                var next_Point = this.getObjectById(right_propertie.value)
+
+                this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
+                this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
+                this.playerState.targetID = right_propertie.value
+                
+                this.player.key = CharactersKey.ManRightKey
+                this.player.play({key: Animation.ManWalkRightKey, repeat: -1}, true)
+                this.player.setVelocity(Difficulty.Char_velocity, 0)
+                
+                this.playerState.isMoving = true 
+                this.playerState.direction = 'right'
+
+                console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
+            }    
+        }     
+    }
+
+    defineRoute(){
+        switch(this.playerState.direction)
+        {// Você vai ter que concertar isso daqui sua safada .... Porque 8 ?
+            case('up'):        
+            if(this.player.y <= this.playerState.targetY + 8 && this.player.y >= this.playerState.targetY + 8) 
+            {
+                this.playerState.direction = 'up'
+                this.player.key = CharactersKey.ManUpKey
+                this.player.play({key: Animation.ManWalkUpKey, repeat: -1}, true)
+                this.player.setVelocity(0, -Difficulty.Char_velocity)
+            }
+            else
+            {
+                if ( this.player.x > this.playerState.targetX)
+                {
+                    this.playerState.direction = 'left'
+                    this.player.key = CharactersKey.ManLeftKey
+                    this.player.play({key: Animation.ManWalkLeftKey, repeat: -1}, true)
+                    this.player.setVelocity(-Difficulty.Char_velocity, 0)
+                } 
+                else                           
+                {                                                                           
+                    this.playerState.direction = 'right'
+                    this.player.key = CharactersKey.ManRightKey
+                    this.player.play({key: Animation.ManWalkRightKey, repeat: -1}, true)
+                    this.player.setVelocity(Difficulty.Char_velocity, 0)
+                }                
+            }                                                                
+            break
+            case('down'):
+            if(this.player.y <= this.playerState.targetY + 8 && this.player.y >= this.playerState.targetY + 8)
+            {
+                this.playerState.direction = 'down'
+                this.player.key = CharactersKey.ManDownKey
+                this.player.play({key: Animation.ManWalkDownKey, repeat: -1}, true)
+                this.player.setVelocity(0, Difficulty.Char_velocity)
+            }
+            else
+            {
+                if(this.player.x > this.playerState.targetX)                                
+                {                                   
+                    this.playerState.direction = 'left'
+                    this.player.key = CharactersKey.ManLeftKey
+                    this.player.play({key: Animation.ManWalkLeftKey, repeat: -1}, true)
+                    this.player.setVelocity(-Difficulty.Char_velocity, 0)
+                } 
+                else                          
+                {                                                                           
+                    this.playerState.direction = 'right'
+                    this.player.key = CharactersKey.ManRightKey
+                    this.player.play({key: Animation.ManWalkRightKey, repeat: -1}, true)
+                    this.player.setVelocity(Difficulty.Char_velocity, 0)
+                }
+            }
+            break
+            case('left'): 
+            if(this.player.x <= this.playerState.targetX + 8 && this.player.x >= this.playerState.targetX + 8)
+            {   
+                this.playerState.direction = 'left'
+                this.player.key = CharactersKey.ManLeftKey
+                this.player.play({key: Animation.ManWalkLeftKey, repeat: -1}, true)
+                this.player.setVelocity(-Difficulty.Char_velocity, 0)
+
+            }
+            else
+            {
+                if(this.player.y > this.playerState.targetY)                                
+                {                                                                        
+                    this.playerState.direction = 'up'
+                    this.player.key = CharactersKey.ManUpKey
+                    this.player.play({key: Animation.ManWalkUpKey, repeat: -1}, true)
+                    this.player.setVelocity(0, -Difficulty.Char_velocity)
+                }
+                else                           
+                {                                                                           
+                    this.playerState.direction = 'down'
+                    this.player.key = CharactersKey.ManDownKey
+                    this.player.play({key: Animation.ManWalkDownKey, repeat: -1}, true)
+                    this.player.setVelocity(0, Difficulty.Char_velocity)
+                }
+            }                                                                     
+            break
+            case('right'):
+            if(this.player.x <= this.playerState.targetX + 8 && this.player.x >= this.playerState.targetX + 8)
+            {
+                this.playerState.direction = 'right'
+                this.player.key = CharactersKey.ManRightKey
+                this.player.play({key: Animation.ManWalkRightKey, repeat: -1}, true)
+                this.player.setVelocity(Difficulty.Char_velocity, 0)
+            }
+            else
+            {
+                if(this.player.y > this.playerState.targetY)                                
+                {                                 
+                    this.playerState.direction = 'up'
+                    this.player.key = CharactersKey.ManUpKey
+                    this.player.play({key: Animation.ManWalkUpKey, repeat: -1}, true)
+                    this.player.setVelocity(0, -Difficulty.Char_velocity)
+                }
+                else if(this.player.y < this.playerState.targetY)                           
+                {                                                                           
+                    this.playerState.direction = 'down'
+                    this.player.key = CharactersKey.ManDownKey
+                    this.player.play({key: Animation.ManWalkDownKey, repeat: -1}, true)
+                    this.player.setVelocity(0, Difficulty.Char_velocity)
+                }
+            }
+            break
+        }
+    }
+
+    isCompletelyInside(inner, outer) { // Verifica se os limites de "inner" estão dentro dos limites de "outer"
+        // console.log(`${inner.x >= outer.x} - ${inner.y >= outer.y} - ${inner.x + inner.width <= outer.x + outer.width} - ${inner.y + inner.height <= outer.y + outer.height}\ni-left :  -> ${inner.x} | o-left: ${outer.x}\ni-top :  -> ${inner.y} | o-top: ${outer.y}\ni-right: ${inner.x + inner.width} | o-right: ${outer.x + outer.width}\ni-down: ${inner.y + inner.height} | o-down: ${outer.y + outer.height}\n`);
+        return (
+          inner.x >= (outer.x - 2) &&
+          inner.y >= (outer.y - 2) &&
+          inner.x + inner.width <= (outer.x - 2) + outer.width &&
+          inner.y + inner.height <= (outer.y - 2) + outer.height
+        );
+    }
+
+
+
 }
 
 export{

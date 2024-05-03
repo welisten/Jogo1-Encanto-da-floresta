@@ -27,7 +27,8 @@ const ScreenHeight =  window.innerHeight - 20
 
 const mapScale = 1.2
 const L1MapScale = 1.2
-const characterScale = 1.7
+const characterScale = 2.3
+
 
 export {
     GameWidth,
@@ -46,7 +47,7 @@ export {
     characterScale,
     L1MapWidth,
     L1MapHeight,
-    L1MapScale
+    L1MapScale,
 
     // mapF1Width  
     // mapF1height  

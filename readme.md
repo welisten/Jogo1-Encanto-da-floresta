@@ -4,9 +4,9 @@
  3 (ANDAMENTO) - Implementar LOGICAS fundamentais ao mapaMain:
               3.1 - PONTOS
    (OK)          - Implementar pausa das funçoes motoras do personagem
-(ANDAMENTO)      - Timeline de inicio de jogo Mapa Main (será sempre ativada ? dar a opção de NÃO)
+   (OK)          - Timeline de inicio de jogo Mapa Main (será sempre ativada ? dar a opção de NÃO)
    (OK)          - Fases
-(ANDAMENTO)      - Movimentação alternativa
+   (OK)          - Movimentação alternativa
 (ANDAMENTO)      - UI -> setas de direção nas placas de localização
 (ANDAMENTO)      - UI -> Explorar & Desenvolvedor & Mapa de Guapi
               
@@ -41,6 +41,15 @@
 AJUSTES:
 
  - SCALE para Level1
+ - Limpeza de codigo
+ - Ajustar função alternativa de movimentação
 
 PROXIMAS ATIVIDADES:
  - Salvar processos no localStorage
+ - Adicionar botão para ativar movimentação alternativa
+
+ OTIMIZAÇÃO:
+ - Fazer os imports apenas das contantes necessárias
+ - Estudar as circunstâncias e possibilidades de substituir as variaveis de classe das Cenasdo jogo (Phaser.Scene) 
+       por variaveis de escopo mais  abstratos
+ - tentar substitur as varias interaçoes sobre o array de objetos por apenas uma interação ontodos os outros array já são definidos
