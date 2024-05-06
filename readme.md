@@ -45,8 +45,9 @@ AJUSTES:
  - Ajustar função alternativa de movimentação
 
 PROXIMAS ATIVIDADES:
- - Salvar processos no localStorage
- - Adicionar botão para ativar movimentação alternativa
+ -          Gravar video da ultima atualização
+ -          Salvar processos no localStorage
+ -    (OK)  Adicionar botão para ativar movimentação alternativa
 
  OTIMIZAÇÃO:
  - Fazer os imports apenas das contantes necessárias

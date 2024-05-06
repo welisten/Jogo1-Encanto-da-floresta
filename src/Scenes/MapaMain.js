@@ -22,7 +22,9 @@ var GameState = {
     isPaused: false,
     isPlayerAbleToMove: false,
     timer: 0,
-    player_point: 'init'
+    player_point: 'init',
+    alternativeMoveControls: undefined,
+    originalMoveControl: undefined
 }
 var text_UI = ''
 
@@ -117,7 +119,8 @@ export default class MapaMain extends Phaser.Scene
         //---------------------------    TIMELINE      -------------------------------
         // timeline_1.play()
         GameState.isPlayerAbleToMove = true  //retirar
-
+        GameState.originalMoveControl = true
+        GameState.alternativeMoveControls = false
         //----------------------------------------------------------------------------
         this.createNeededAnimation()
         
@@ -130,8 +133,7 @@ export default class MapaMain extends Phaser.Scene
         this.player.body.setSize(4, 4)
 
         this.mapObjects = this.map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1)['objects']
-        console.log(this.mapObjects)
-
+        // console.log(this.mapObjects)
 
         //----------------------       USUAL OBJECTS       -----------------------
         this.mapObjects.forEach(object => {
@@ -243,15 +245,29 @@ export default class MapaMain extends Phaser.Scene
         this.cameras.main.startFollow(this.player) // configurando posicionamento da camera
         this.cursor = this.input.keyboard.createCursorKeys() 
 
-        console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
+        const accessible_btn = document.getElementById('alternativeMovements')
+        accessible_btn.onclick = () => {
+            accessible_btn.classList.toggle('active')
+
+            GameState.alternativeMoveControls = !GameState.alternativeMoveControls
+            GameState.originalMoveControl = !GameState.originalMoveControl
+        }
+
+        // console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
 
     }
 
     update() {
-        // this.handleMainCharacterMovements()
-        this.alternativeCharacterMoveControl()
-        this.setLayersDepth(this.getPlayerFloor())
-        this.physics.world.collide(this.player, this.mapObjects)
+
+        if(GameState.alternativeMoveControls) {
+            this.alternativeCharacterMoveControl()   
+        }
+        if(GameState.originalMoveControl){
+            this.handleMainCharacterMovements()
+        } 
+
+        this.setLayersDepth(this.getPlayerFloor()) // Processamento
+        // this.physics.world.collide(this.player, this.mapObjects)
 
     }
 
@@ -469,7 +485,7 @@ export default class MapaMain extends Phaser.Scene
                 this.playerState.isMoving = true 
                 this.playerState.direction = 'up'
 
-                console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)                     
+                // console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)                     
             }
             else if(this.cursor.down.isDown & !this.playerState.isMoving)       // DOWN
             {
@@ -496,7 +512,7 @@ export default class MapaMain extends Phaser.Scene
                 this.playerState.isMoving = true 
                 this.playerState.direction = 'down'
 
-                console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
+                // console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
                
             }
             else if(this.cursor.left.isDown & !this.playerState.isMoving)       // LEFT
@@ -524,7 +540,7 @@ export default class MapaMain extends Phaser.Scene
                 this.playerState.isMoving = true 
                 this.playerState.direction = 'left'
 
-                console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
+                // console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
             }
             else if(this.cursor.right.isDown & !this.playerState.isMoving)      // RIGHT
             {

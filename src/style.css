@@ -4,6 +4,7 @@
     box-sizing: border-box;
 }
 
+
 body {
     height: 100vh;
     width: 100vw;
@@ -13,3 +14,67 @@ body {
     justify-content: center;
     overflow: hidden;
 }
+
+#gameContainer{
+    position: relative 
+}
+
+#gameControls{
+    position: absolute;
+    top: 0;
+    left: -8vh;
+    height: 60vh;
+    width:  7vh;
+    padding-top: 5vh;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+#gameControls .btn{
+    padding: 5px;
+    width: 5vh;
+    height: 5vh;
+
+    background-color: white;
+    border: 1px solid #459fe9;
+    border-radius: 8px;
+    transition: all ease .25s;
+
+    cursor: pointer;
+
+}
+
+#gameControls .btn:hover{
+    border-color: #0000ff;
+    transform: scale(1.05);
+
+}
+#gameControls .active{
+    background-color: #459fe9;
+    border: 1px solid #ffffff;
+    
+}
+
+#gameControls .active:hover{
+    border: 1px solid #ffffff;
+    color: #ffffff;
+}
+
+
+i{
+    font-size: 1.5rem;
+    color: #459fe9;
+    transition: all ease .5s;
+    
+}
+
+#gameControls .btn:hover i{
+    color: #0000ff
+}
+#gameControls .active i, #gameControls .active:hover i{
+    color: #ffffff;    
+}
+
+
