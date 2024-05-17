@@ -19,6 +19,13 @@ const MusicG1Config = {
     rate: 1,
     loop: true
 }
+const MMMusicKey = 'MapaMain_music'
+const MMMusicURL = 'public/assets/songs/Protótipo 1.2 Audio 80Bpm Gmajor.mp3'
+const MMMusicConfig = {
+    volume: 1,
+    rate: 1,
+    loop: true
+}
 
 export {
     KeyFootstepsOnWater,
@@ -31,5 +38,9 @@ export {
     
     MusicG1Key,
     MusicG1URL,
-    MusicG1Config
+    MusicG1Config,
+
+    MMMusicKey,
+    MMMusicURL,
+    MMMusicConfig,
 }

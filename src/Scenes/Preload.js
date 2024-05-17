@@ -31,7 +31,10 @@ export default class Preload extends Phaser.Scene{
         this.load.image(MapKeys.objConfigTilesetMap[5].key, MapKeys.objConfigTilesetMap[5].url, { frameWidth: 16 })
         this.load.image(MapKeys.objConfigTilesetMap[6].key, MapKeys.objConfigTilesetMap[6].url, { frameWidth: 16 })
         this.load.image(MapKeys.objConfigTilesetMap[7].key, MapKeys.objConfigTilesetMap[7].url, { frameWidth: 16 })        
-        this.load.image(MapKeys.objConfigTilesetMap[8].key, MapKeys.objConfigTilesetMap[8].url, { frameWidth: 16 })        
+        this.load.image(MapKeys.objConfigTilesetMap[8].key, MapKeys.objConfigTilesetMap[8].url, { frameWidth: 16 })  
+            //Songs
+        this.load.audio(SongsKey.MMMusicKey, SongsKey.MMMusicURL, SongsKey.MMMusicConfig)
+              
         
         // User Interface
             // Heart Bar
@@ -43,9 +46,20 @@ export default class Preload extends Phaser.Scene{
         )
             //Dialog Box
         this.load.image(ImageKey.DialogBox_Key, ImageKey.DialogBox_URL)
+            
+            //CityMap_information
+        this.load.image(ImageKey.CityMap_Key, ImageKey.CityMap_URL)
+            //GuapiMap
+        this.load.image(ImageKey.GuapiMapObj.key, ImageKey.GuapiMapObj.url)
 
         // Timer
         this.load.image(ImageKey.TimerKey, ImageKey.Timer_URL)
+
+        //UI - images
+        this.load.image(ImageKey.directionsImagesObj.up_key , ImageKey.directionsImagesObj.up_URL)
+        this.load.image(ImageKey.directionsImagesObj.down_key , ImageKey.directionsImagesObj.down_URL)
+        this.load.image(ImageKey.directionsImagesObj.left_key , ImageKey.directionsImagesObj.left_URL)
+        this.load.image(ImageKey.directionsImagesObj.right_key , ImageKey.directionsImagesObj.right_URL)
 
 
         // F_1

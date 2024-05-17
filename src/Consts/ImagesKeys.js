@@ -23,10 +23,31 @@ const RecStart = 'Rec_Start'
 const RecStart_URL = "public/assets/bg/rec_start.png"
 
 const TimerKey = 'timer'
-const Timer_URL = 'public/assets/ui/timer32.png'
+const Timer_URL = 'public/assets/ui/timer/timer32.png'
 
 const DialogBox_Key = 'dialog_box'
 const DialogBox_URL = 'public/assets/ui/dialogBox/big_dialogBox.png'
+
+const CityMap_Key = 'guapimirim_mapa_placa'
+const CityMap_URL = 'public/assets/ui/top_informations/PlacaMapa.png'
+
+const GuapiMapObj = {
+    key: 'guapimirim_mapa',
+    url: 'public/assets/imgs/Guapimirim.png',
+    width: 400,
+    height: 300
+}
+
+const directionsImagesObj = {
+    up_key: "up_arrow",
+    up_URL: "public/assets/imgs/up.png",
+    down_key: "down_arrow",
+    down_URL: "public/assets/imgs/down.png",
+    left_key: "left_arrow",
+    left_URL: "public/assets/imgs/left.png",
+    right_key: "right_arrow",
+    right_URL: "public/assets/imgs/right.png"
+}
 
 export {
     Background,
@@ -52,6 +73,10 @@ export {
     TimerKey,
     Timer_URL,
     DialogBox_Key,
-    DialogBox_URL
+    DialogBox_URL,
+    directionsImagesObj,
+    CityMap_Key,
+    CityMap_URL,
+    GuapiMapObj
     
 }

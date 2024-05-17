@@ -32,6 +32,10 @@ body {
     justify-content: center;
 }
 
+#accessible_controls .btn{
+    margin: 10px 0;
+}
+
 #gameControls .btn{
     padding: 5px;
     width: 5vh;

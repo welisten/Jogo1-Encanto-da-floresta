@@ -13,7 +13,8 @@ import * as Animation from '../Consts/Animations'
 import * as CharactersKey from '../Consts/CharacterKeys'
 import * as SongsKey from '../Consts/SongsKey'
 
-import { addToUIQueue } from "../Scenes/UI";
+import { addToUIQueue, bringMapToScrean, queue } from "../Scenes/UI";
+import GameBackground from "../Scenes/UI";
 
 
 var GameState = {
@@ -24,7 +25,14 @@ var GameState = {
     timer: 0,
     player_point: 'init',
     alternativeMoveControls: undefined,
-    originalMoveControl: undefined
+    originalMoveControl: undefined,
+    General_songs_volume: 1,
+    isGuapimirimSignAble: false,
+    isTopInformationAble: false,
+    isGuapimirimSignVisible: false,
+    isTopInformationVisible: false,
+    topInformationType: '',
+    counter_1: 0
 }
 var text_UI = ''
 
@@ -71,14 +79,14 @@ export default class MapaMain extends Phaser.Scene
                                                 {
                                                     at: 1500,
                                                     run: () =>{
-                                                        //204
-                                                        var param ='...Ola, seja Bemvindo ao Encantos da Floresta !\nEssa é a cidade de Guapimirim, e será nela que nós teremos nossas aventuras\n'
-                                                        addToUIQueue(param)
+                                                        //203
+                                                        var param ='...Ola, seja Bemvindo ao Encantos da Floresta ! Essa é a cidade de Guapimirim, e será nela que nós teremos nossas aventuras\n'
+                                                        addToUIQueue(param, 'justify')
 
                                                     } 
                                                 },
                                                 {
-                                                    from: initStrLength * 50 + 500,
+                                                    from: initStrLength * 50 + 500, //
                                                     run: () =>{ GameState.isPlayerAbleToMove = true } 
                                                 
                                                 }
@@ -115,12 +123,11 @@ export default class MapaMain extends Phaser.Scene
 
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
-
         //---------------------------    TIMELINE      -------------------------------
-        // timeline_1.play()
-        GameState.isPlayerAbleToMove = true  //retirar
-        GameState.originalMoveControl = true
-        GameState.alternativeMoveControls = false
+        timeline_1.play()
+        // GameState.isPlayerAbleToMove = true  //retirar
+        GameState.originalMoveControl = false
+        GameState.alternativeMoveControls = true
         //----------------------------------------------------------------------------
         this.createNeededAnimation()
         
@@ -135,10 +142,11 @@ export default class MapaMain extends Phaser.Scene
         this.mapObjects = this.map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1)['objects']
         // console.log(this.mapObjects)
 
+        //----------------------       FENCE       -----------------------
         //----------------------       USUAL OBJECTS       -----------------------
         this.mapObjects.forEach(object => {
 
-            if (object.name != 'info' & object.name != 'level' & object.name != 'fence' ){// PROCESSAMENTO
+            if (object.name != 'info' & object.name != 'level' & object.name != 'fence' & object.name != 'cityMap' ){// PROCESSAMENTO
                 if(object.rectangle){
                     this.objRec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0).setDepth(10)
                     this.physics.add.existing(this.objRec, true)
@@ -152,10 +160,11 @@ export default class MapaMain extends Phaser.Scene
             }
             
         })
+        this.sound.play(SongsKey.MMMusicKey, {volume: GameState.General_songs_volume})
         this.physics.world.on('worldbounds', () => console.log('colidiu'), this);        // Atenção
         
         //-----------------       DECISIONS BREAKS        -----------------------
-        this.decision_breaks =  this.mapObjects.filter(obj => obj.name == 'decision_break') 
+        this.decision_breaks =  this.mapObjects.filter(obj => obj.name == 'decision_break' && obj.id != 2) 
         this.decision_breaks.forEach(point => {
             const circle = this.add.circle(Math.round(point.x * Sizes.L1MapScale), Math.round(point.y * Sizes.L1MapScale), .5).setOrigin(0)
             this.physics.add.existing(circle, true)
@@ -192,13 +201,19 @@ export default class MapaMain extends Phaser.Scene
                         this.player.setVelocity(0, 0);
                         this.playerState.isMoving = false;
                         this.playerState.direction = undefined
-                        console.log(`Player alcançou o alvo\nPonto atual: ${this.playerState.point_id}   alvo:${this.playerState.targetID}`)
+                        // console.log(`Player alcançou o alvo\nPonto atual: ${this.playerState.point_id}   alvo:${this.playerState.targetID}`)
                         
                         this.player.anims.stop()
+                        // if(this.playerState.point_id == 334){ // PASSO 1
+                        //     console.log('Id 34 - p1')
+
+                        //     GameState.isTopInformationAble = true
+                        //     GameState.topInformationType = 'CityMap'
+                        // }
                         return
                     }
                     else
-                        console.log(`Ainda nao !!!    REDEFININDO ROTA\nPonto atual: ${this.playerState.point_id}   alvo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
+                        // console.log(`Ainda nao !!!    REDEFININDO ROTA\nPonto atual: ${this.playerState.point_id}   alvo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
                         this.player.setVelocity(0, 0);
                         this.defineRoute()
 
@@ -206,6 +221,23 @@ export default class MapaMain extends Phaser.Scene
             })
         })
            
+        //----------------------       CityMap        -----------------------
+        const CityMap_point = this.mapObjects.filter( obj => obj.id == 335)[0]
+        console.log(CityMap_point)
+        let recX = CityMap_point.x * Sizes.mapScale
+        let recY = CityMap_point.y * Sizes.mapScale
+        let recW = CityMap_point.width * Sizes.mapScale
+        let recH = CityMap_point.height * Sizes.mapScale 
+        let rec = this.add.rectangle(recX, recY, recW, recH).setOrigin(0)
+        
+        this.physics.add.existing(rec, true)
+        this.physics.add.overlap(this.player, rec, () => {
+            if(!GameState.isTopInformationAble && GameState.counter_1 == 0){
+                GameState.isTopInformationAble = true
+                GameState.topInformationType = 'CityMap'
+                GameState.counter_1++
+            }
+        })
         //----------------------       LEVELS        -----------------------
         this.objs_levels =  this.mapObjects.filter(obj => obj.name == 'level')
         
@@ -219,10 +251,13 @@ export default class MapaMain extends Phaser.Scene
                     if(this.player.x - this.player.width / 2 > rec.x && this.player.x + this.player.width / 2  < rec.x + rec.width){// melhorar legibilidade
                         hasOverlapOccurred = true
                         GameState.isPlayerAbleToMove = false
+                        this.sendTextToInterface('')
+                        // queue = []
                         
                         this.time.addEvent({
-                            delay: 1500,
+                            delay: 500,
                             callback: () => {
+                                this.song
                                 this.transitionToNewScene(Level1)
                                 this.time.delayedCall(1000, () => GameState.isPlayerAbleToMove = true)
                             },
@@ -252,6 +287,19 @@ export default class MapaMain extends Phaser.Scene
             GameState.alternativeMoveControls = !GameState.alternativeMoveControls
             GameState.originalMoveControl = !GameState.originalMoveControl
         }
+        const mute_btn = document.getElementById('mute')
+        mute_btn.onclick = () => {
+            mute_btn.classList.toggle('active')
+            const icone = document.querySelector("#mute_icon")
+            icone.classList.toggle('fa-volume-high')
+            icone.classList.toggle('fa-volume-xmark')
+            
+            if(this.sound.volume == 1){
+                this.sound.volume = 0
+            } else {
+                this.sound.volume = 1
+            }
+        }
 
         // console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
 
@@ -264,7 +312,15 @@ export default class MapaMain extends Phaser.Scene
         }
         if(GameState.originalMoveControl){
             this.handleMainCharacterMovements()
-        } 
+        }
+
+        if(GameState.isTopInformationVisible&& !GameState.isGuapimirimSignAble){
+           if(this.cursor.space.isDown){
+            console.log('O usuario quer o mapa')
+            GameState.isGuapimirimSignAble = true
+            GameState.isTopInformationVisible = false
+           }
+        }
 
         this.setLayersDepth(this.getPlayerFloor()) // Processamento
         // this.physics.world.collide(this.player, this.mapObjects)
@@ -283,7 +339,7 @@ export default class MapaMain extends Phaser.Scene
     getObjectById(objectId) {
         var objectLayer = this.map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1);
         if (!objectLayer) {
-            console.error("Camada de objetos não encontrada.");
+            // console.error("Camada de objetos não encontrada.");
             return null;
         }
         
@@ -465,26 +521,29 @@ export default class MapaMain extends Phaser.Scene
 
 //              Assegurar que existe caminho pela referida direção                
                 if(!up_propertie.value){
-                    console.log("caminho inexistente ! você está se equivocando")
+                    // console.log("caminho inexistente ! você está se equivocando")
                     return
                 }
 
-//              Resgata o ponto alvo e atualiza as coordenadas do alvo no obj de controle do jogador               
-                var next_Point = this.getObjectById(up_propertie.value)
+                if(up_propertie.value != 'guapimirim_sign'){
+//                  Resgata o ponto alvo e atualiza as coordenadas do alvo no obj de controle do jogador               
+                    var next_Point = this.getObjectById(up_propertie.value)
+    
+                    this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
+                    this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
+                    this.playerState.targetID = up_propertie.value
 
-                this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
-                this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
-                this.playerState.targetID = up_propertie.value
-                
-//              Dispara o personagem na direção desejada usando a respectiva animação
-                this.player.key = CharactersKey.ManUpKey
-                this.player.play({key: Animation.ManWalkUpKey, repeat: -1}, true)
-                this.player.setVelocity(0, -Difficulty.Char_velocity)
-                
-//              Atualiza o estado do personagem em: "movimentando" e "direção"
-                this.playerState.isMoving = true 
-                this.playerState.direction = 'up'
+//                  Dispara o personagem na direção desejada usando a respectiva animação
+                    this.player.key = CharactersKey.ManUpKey
+                    this.player.play({key: Animation.ManWalkUpKey, repeat: -1}, true)
+                    this.player.setVelocity(0, -Difficulty.Char_velocity)
+                    
+//                  Atualiza o estado do personagem em: "movimentando" e "direção"
+                    this.playerState.isMoving = true 
+                    this.playerState.direction = 'up'
 
+                } else {
+                }
                 // console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)                     
             }
             else if(this.cursor.down.isDown & !this.playerState.isMoving)       // DOWN
@@ -495,7 +554,7 @@ export default class MapaMain extends Phaser.Scene
                 var down_propertie = current_point.properties.find(obj => obj.name === 'down')
                 
                 if(!down_propertie.value){
-                    console.log("caminho inexistente ! você está se equivocando")
+                    // console.log("caminho inexistente ! você está se equivocando")
                     return
                 }
 
@@ -523,7 +582,7 @@ export default class MapaMain extends Phaser.Scene
                 var left_propertie = current_Point.properties.find(obj => obj.name === 'left')
                 
                 if(!left_propertie.value){
-                    console.log("caminho inexistente ! você está se equivocando")
+                    // console.log("caminho inexistente ! você está se equivocando")
                     return
                 }
                 
@@ -550,7 +609,7 @@ export default class MapaMain extends Phaser.Scene
                 var right_propertie = current_Point.properties.find(obj => obj.name === 'right')
                 
                 if(!right_propertie.value){
-                    console.log("caminho inexistente ! você está se equivocando")
+                    // console.log("caminho inexistente ! você está se equivocando")
                     return
                 }
 
@@ -567,8 +626,8 @@ export default class MapaMain extends Phaser.Scene
                 this.playerState.isMoving = true 
                 this.playerState.direction = 'right'
 
-                console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
-            }    
+                // console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
+            }
         }     
     }
 

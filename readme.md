@@ -1,14 +1,14 @@
 # aqui serão relatadas as atividades semanais:
------------------------------------------------(ANDAMENTO)-----------------------------------------------------
+-----------------------------------------------(CONCLUIDO)-----------------------------------------------------
 
- 3 (ANDAMENTO) - Implementar LOGICAS fundamentais ao mapaMain:
+ 3 () - ImpleCONCLUIDOmentar LOGICAS fundamentais ao mapaMain:
               3.1 - PONTOS
    (OK)          - Implementar pausa das funçoes motoras do personagem
    (OK)          - Timeline de inicio de jogo Mapa Main (será sempre ativada ? dar a opção de NÃO)
    (OK)          - Fases
    (OK)          - Movimentação alternativa
-(ANDAMENTO)      - UI -> setas de direção nas placas de localização
-(ANDAMENTO)      - UI -> Explorar & Desenvolvedor & Mapa de Guapi
+   (OK)          - UI -> setas de direção nas placas de localização
+   (OK)          - UI -> Explorar & Desenvolvedor & Mapa de Guapi
               
                                 OBS: nesse caso se fará necessário a identificação de cada ponto e ter a trativa necessária pra cada tipo
         
@@ -42,12 +42,16 @@ AJUSTES:
 
  - SCALE para Level1
  - Limpeza de codigo
- - Ajustar função alternativa de movimentação
+ - Ajustar função alternativa de movimentação para ajustar a posição na troca de movimentação
 
 PROXIMAS ATIVIDADES:
  -          Gravar video da ultima atualização
  -          Salvar processos no localStorage
+ -          Movimentação acesível para fases
  -    (OK)  Adicionar botão para ativar movimentação alternativa
+ -          Ajustar personagem ao mudar movimentação(a sprite deve ser posta no local do current_point)
+ -          Desenvolvedor e Explorar
+ -          L1
 
  OTIMIZAÇÃO:
  - Fazer os imports apenas das contantes necessárias
