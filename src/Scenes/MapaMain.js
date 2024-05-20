@@ -24,8 +24,8 @@ var GameState = {
     isPlayerAbleToMove: false,
     timer: 0,
     player_point: 'init',
-    alternativeMoveControls: undefined,
-    originalMoveControl: undefined,
+    accessibleMotionControls: undefined,
+    defaultMotionControls: undefined,
     General_songs_volume: 1,
     isGuapimirimSignAble: false,
     isTopInformationAble: false,
@@ -126,8 +126,8 @@ export default class MapaMain extends Phaser.Scene
         //---------------------------    TIMELINE      -------------------------------
         timeline_1.play()
         // GameState.isPlayerAbleToMove = true  //retirar
-        GameState.originalMoveControl = false
-        GameState.alternativeMoveControls = true
+        GameState.defaultMotionControls = false
+        GameState.accessibleMotionControls = true
         //----------------------------------------------------------------------------
         this.createNeededAnimation()
         
@@ -284,8 +284,8 @@ export default class MapaMain extends Phaser.Scene
         accessible_btn.onclick = () => {
             accessible_btn.classList.toggle('active')
 
-            GameState.alternativeMoveControls = !GameState.alternativeMoveControls
-            GameState.originalMoveControl = !GameState.originalMoveControl
+            GameState.accessibleMotionControls = !GameState.accessibleMotionControls
+            GameState.defaultMotionControls = !GameState.defaultMotionControls
         }
         const mute_btn = document.getElementById('mute')
         mute_btn.onclick = () => {
@@ -307,10 +307,10 @@ export default class MapaMain extends Phaser.Scene
 
     update() {
 
-        if(GameState.alternativeMoveControls) {
+        if(GameState.accessibleMotionControls) {
             this.alternativeCharacterMoveControl()   
         }
-        if(GameState.originalMoveControl){
+        if(GameState.defaultMotionControls){
             this.handleMainCharacterMovements()
         }
 
