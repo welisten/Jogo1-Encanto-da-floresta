@@ -34,6 +34,7 @@ var GameState = {
     topInformationType: '',
     counter_1: 0
 }
+
 var text_UI = ''
 
 export default class MapaMain extends Phaser.Scene
@@ -70,7 +71,7 @@ export default class MapaMain extends Phaser.Scene
 
     create()
     { 
-        var initStrLength = 204
+        const initStrLength = 204
         const timeline_1 = this.add.timeline([      // Compartimentalizar
                                                 {
                                                     at:0,
@@ -80,72 +81,75 @@ export default class MapaMain extends Phaser.Scene
                                                     at: 1500,
                                                     run: () =>{
                                                         //203
-                                                        var param ='...Ola, seja Bemvindo ao Encantos da Floresta ! Essa é a cidade de Guapimirim, e será nela que nós teremos nossas aventuras\n'
-                                                        addToUIQueue(param, 'justify')
+                                                        let text_1 ='...Ola, seja Bemvindo ao Encantos da Floresta ! Essa é a cidade de Guapimirim, e será nela que nós teremos nossas aventuras\n'
+                                                        addToUIQueue(text_1, 'justify')
 
                                                     } 
                                                 },
                                                 {
-                                                    from: initStrLength * 50 + 500, //
+                                                    from: initStrLength * 50 + 500, // cada letra tem 50 milisegundos + 500 de gap
                                                     run: () =>{ GameState.isPlayerAbleToMove = true } 
                                                 
                                                 }
                                             ])
-        this.map = this.make.tilemap({key: MapKeys.MapKey})
+        const map = this.make.tilemap({key: MapKeys.MapKey})
         
-        this.tile_1 = this.map.addTilesetImage(MapKeys.objConfigTilesetMap[0].name, MapKeys.objConfigTilesetMap[0].key, 16, 16)
-        this.tile_2 = this.map.addTilesetImage(MapKeys.objConfigTilesetMap[1].name, MapKeys.objConfigTilesetMap[1].key, 16, 16)
-        this.tile_3 = this.map.addTilesetImage(MapKeys.objConfigTilesetMap[2].name, MapKeys.objConfigTilesetMap[2].key, 16, 16)
-        this.tile_4 = this.map.addTilesetImage(MapKeys.objConfigTilesetMap[3].name, MapKeys.objConfigTilesetMap[3].key, 16, 16)
-        this.tile_5 = this.map.addTilesetImage(MapKeys.objConfigTilesetMap[4].name, MapKeys.objConfigTilesetMap[4].key, 16, 16)
-        this.tile_6 = this.map.addTilesetImage(MapKeys.objConfigTilesetMap[5].name, MapKeys.objConfigTilesetMap[5].key, 16, 16)
-        this.tile_7 = this.map.addTilesetImage(MapKeys.objConfigTilesetMap[6].name, MapKeys.objConfigTilesetMap[6].key, 16, 16)
-        this.tile_8 = this.map.addTilesetImage(MapKeys.objConfigTilesetMap[7].name, MapKeys.objConfigTilesetMap[7].key, 16, 16)
-        this.tile_9 = this.map.addTilesetImage(MapKeys.objConfigTilesetMap[8].name, MapKeys.objConfigTilesetMap[8].key, 16, 16)
+        const tile_1 = map.addTilesetImage(MapKeys.objConfigTilesetMap[0].name, MapKeys.objConfigTilesetMap[0].key, 16, 16)
+        const tile_2 = map.addTilesetImage(MapKeys.objConfigTilesetMap[1].name, MapKeys.objConfigTilesetMap[1].key, 16, 16)
+        const tile_3 = map.addTilesetImage(MapKeys.objConfigTilesetMap[2].name, MapKeys.objConfigTilesetMap[2].key, 16, 16)
+        const tile_4 = map.addTilesetImage(MapKeys.objConfigTilesetMap[3].name, MapKeys.objConfigTilesetMap[3].key, 16, 16)
+        const tile_5 = map.addTilesetImage(MapKeys.objConfigTilesetMap[4].name, MapKeys.objConfigTilesetMap[4].key, 16, 16)
+        const tile_6 = map.addTilesetImage(MapKeys.objConfigTilesetMap[5].name, MapKeys.objConfigTilesetMap[5].key, 16, 16)
+        const tile_7 = map.addTilesetImage(MapKeys.objConfigTilesetMap[6].name, MapKeys.objConfigTilesetMap[6].key, 16, 16)
+        const tile_8 = map.addTilesetImage(MapKeys.objConfigTilesetMap[7].name, MapKeys.objConfigTilesetMap[7].key, 16, 16)
+        const tile_9 = map.addTilesetImage(MapKeys.objConfigTilesetMap[8].name, MapKeys.objConfigTilesetMap[8].key, 16, 16)
         
-        const tilesArray = [this.tile_1, this.tile_2, this.tile_3, this.tile_4, this.tile_5, this.tile_6, this.tile_7, this.tile_8, this.tile_9, this.tile_10]
+        const tilesArray = [tile_1, tile_2, tile_3, tile_4, tile_5, tile_6, tile_7, tile_8, tile_9]
         
-        this.layer_ground = this.map.createLayer(MapKeys.mapaMainLayerID.layer1, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_levels =  this.map.createLayer(MapKeys.mapaMainLayerID.layer2, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_trunksRoots =  this.map.createLayer(MapKeys.mapaMainLayerID.layer3, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_train =  this.map.createLayer(MapKeys.mapaMainLayerID.layer4, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_floor1 =  this.map.createLayer(MapKeys.mapaMainLayerID.layer5, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_fence =  this.map.createLayer(MapKeys.mapaMainLayerID.layer6, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_vegetationf1 =  this.map.createLayer(MapKeys.mapaMainLayerID.layer7, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_floor2 =  this.map.createLayer(MapKeys.mapaMainLayerID.layer8, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_treetops1 =  this.map.createLayer(MapKeys.mapaMainLayerID.layer9, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_shadowsf2 =  this.map.createLayer(MapKeys.mapaMainLayerID.layer10, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_vegetationf2 =  this.map.createLayer(MapKeys.mapaMainLayerID.layer11, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_buildingsf2 =  this.map.createLayer(MapKeys.mapaMainLayerID.layer12, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_ground       =  map.createLayer(MapKeys.mapaMainLayerID.layer1, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_levels       =  map.createLayer(MapKeys.mapaMainLayerID.layer2, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_trunksRoots  =  map.createLayer(MapKeys.mapaMainLayerID.layer3, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_train        =  map.createLayer(MapKeys.mapaMainLayerID.layer4, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_floor1       =  map.createLayer(MapKeys.mapaMainLayerID.layer5, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_fence        =  map.createLayer(MapKeys.mapaMainLayerID.layer6, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_vegetationf1 =  map.createLayer(MapKeys.mapaMainLayerID.layer7, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_floor2       =  map.createLayer(MapKeys.mapaMainLayerID.layer8, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_treetops1    =  map.createLayer(MapKeys.mapaMainLayerID.layer9, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_shadowsf2    =  map.createLayer(MapKeys.mapaMainLayerID.layer10, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_vegetationf2 =  map.createLayer(MapKeys.mapaMainLayerID.layer11, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_buildingsf2  =  map.createLayer(MapKeys.mapaMainLayerID.layer12, tilesArray, 0, 0).setScale(Sizes.mapScale)
         
-        this.cameras.main.setBounds(0, 0, (this.map.widthInPixels * Sizes.mapScale), (this.map.heightInPixels * Sizes.mapScale), true) // limites da camera
-        this.physics.world.setBounds(0, 0, (this.map.widthInPixels * Sizes.L1MapScale), (this.map.heightInPixels * Sizes.L1MapScale))
+        this.cameras.main.setBounds(0, 0, (map.widthInPixels * Sizes.mapScale), (map.heightInPixels * Sizes.mapScale), true) // limites da camera
+        this.physics.world.setBounds(0, 0, (map.widthInPixels * Sizes.L1MapScale), (map.heightInPixels * Sizes.L1MapScale))
 
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
+        
         //---------------------------    TIMELINE      -------------------------------
         timeline_1.play()
         // GameState.isPlayerAbleToMove = true  //retirar
         GameState.defaultMotionControls = false
         GameState.accessibleMotionControls = true
         //----------------------------------------------------------------------------
+        
         this.createNeededAnimation()
         
-        var initPoint = this.getObjectById(2)
+        const initPoint = this.getObjectById(2)
 
         this.player = this.physics.add.sprite( Math.floor(initPoint.x * Sizes.mapScale), Math.floor(initPoint.y * Sizes.mapScale), CharactersKey.ManDownKey).setDepth(2).setScale(Sizes.characterScale)
-        this.playerState.point_x = this.player.x
-        this.playerState.point_y = this.player.y
         this.player.setCollideWorldBounds(true);
         this.player.body.setSize(4, 4)
+        
+        this.playerState.point_x = this.player.x
+        this.playerState.point_y = this.player.y
 
-        this.mapObjects = this.map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1)['objects']
-        // console.log(this.mapObjects)
+        const mapObjects = map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1)['objects']
+        // console.log(mapObjects)
 
         //----------------------       FENCE       -----------------------
         //----------------------       USUAL OBJECTS       -----------------------
-        this.mapObjects.forEach(object => {
-
+        mapObjects.forEach(object => {
+            // switch / case
             if (object.name != 'info' & object.name != 'level' & object.name != 'fence' & object.name != 'cityMap' ){// PROCESSAMENTO
                 if(object.rectangle){
                     this.objRec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0).setDepth(10)
@@ -164,7 +168,7 @@ export default class MapaMain extends Phaser.Scene
         this.physics.world.on('worldbounds', () => console.log('colidiu'), this);        // Atenção
         
         //-----------------       DECISIONS BREAKS        -----------------------
-        this.decision_breaks =  this.mapObjects.filter(obj => obj.name == 'decision_break' && obj.id != 2) 
+        this.decision_breaks =  mapObjects.filter(obj => obj.name == 'decision_break' && obj.id != 2) 
         this.decision_breaks.forEach(point => {
             const circle = this.add.circle(Math.round(point.x * Sizes.L1MapScale), Math.round(point.y * Sizes.L1MapScale), .5).setOrigin(0)
             this.physics.add.existing(circle, true)
@@ -222,7 +226,7 @@ export default class MapaMain extends Phaser.Scene
         })
            
         //----------------------       CityMap        -----------------------
-        const CityMap_point = this.mapObjects.filter( obj => obj.id == 335)[0]
+        const CityMap_point = mapObjects.filter( obj => obj.id == 335)[0]
         console.log(CityMap_point)
         let recX = CityMap_point.x * Sizes.mapScale
         let recY = CityMap_point.y * Sizes.mapScale
@@ -239,7 +243,7 @@ export default class MapaMain extends Phaser.Scene
             }
         })
         //----------------------       LEVELS        -----------------------
-        this.objs_levels =  this.mapObjects.filter(obj => obj.name == 'level')
+        this.objs_levels =  mapObjects.filter(obj => obj.name == 'level')
         
         var hasOverlapOccurred = false
         
@@ -268,7 +272,7 @@ export default class MapaMain extends Phaser.Scene
             })
         })
         //----------------------       SIGNS        -----------------------
-        this.infoObjects = this.mapObjects.filter(obj => obj.name == 'info')
+        this.infoObjects = mapObjects.filter(obj => obj.name == 'info')
         this.infoObjects.forEach(obj => {
             const rec = this.add.rectangle((obj.x * Sizes.L1MapScale), (obj.y * Sizes.L1MapScale), (obj.width * Sizes.L1MapScale), (obj.height * Sizes.L1MapScale)).setDisplayOrigin(0)
             this.physics.add.existing(rec, true)
@@ -323,7 +327,7 @@ export default class MapaMain extends Phaser.Scene
         }
 
         this.setLayersDepth(this.getPlayerFloor()) // Processamento
-        // this.physics.world.collide(this.player, this.mapObjects)
+        // this.physics.world.collide(this.player, mapObjects)
 
     }
 
@@ -337,7 +341,7 @@ export default class MapaMain extends Phaser.Scene
     }
 
     getObjectById(objectId) {
-        var objectLayer = this.map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1);
+        var objectLayer = this.make.tilemap({key: MapKeys.MapKey}).getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1);
         if (!objectLayer) {
             // console.error("Camada de objetos não encontrada.");
             return null;
@@ -433,21 +437,19 @@ export default class MapaMain extends Phaser.Scene
     }
     
     getPlayerFloor(){
-        var upEdge = 321 * Sizes.mapScale 
-        var downEdge = 559 * Sizes.mapScale
-        var leftEdge = 770 * Sizes.mapScale
-        var rightEdge = 1248 * Sizes.mapScale
-
-        
+        var upEdge      = 321 * Sizes.mapScale 
+        var downEdge    = 559 * Sizes.mapScale
+        var leftEdge    = 770 * Sizes.mapScale
+        var rightEdge   = 1248 * Sizes.mapScale
 
         if(this.player.x > leftEdge && this.player.x < rightEdge && this.player.y > upEdge && this.player.y < downEdge)
         {
-            // console.log("O player está no SEGUNDO andar -> ",this.player.x > leftEdge && this.player.y < rightEdge && this.player.y > upEdge && this.player.y < downEdge)
+            // O player está no SEGUNDO andar
             return 'floor_2'
         } 
         else 
         {
-            // console.log("O player está no PRIMEIRO andar -> ", this.player.x > leftEdge && this.player.y < rightEdge && this.player.y > upEdge && this.player.y < downEdge)        
+            // O player está no PRIMEIRO andar
             return 'floor_1'
         }
     }
