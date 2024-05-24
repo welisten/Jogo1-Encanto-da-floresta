@@ -131,7 +131,7 @@ export default class MapaMain extends Phaser.Scene
         GameState.defaultMotionControls     = false
         GameState.accessibleMotionControls  = true
         
-        this.createNeededAnimation()
+        this.createAllNeededAnimation()
         
         const initPoint = this.getObjectById(2)
 
@@ -224,13 +224,13 @@ export default class MapaMain extends Phaser.Scene
                             {
                                 hasOverlapOccurred = true
                                 GameState.isPlayerAbleToMove = false
-                                this.sendTextToInterface('')
+                                this.sendTextToUI('')
                                 
                                 this.time.addEvent({
                                     delay: 500,
                                     callback: () => {
                                         this.song
-                                        this.transitionToNewScene(Level1)
+                                        this.transitToNewScene(Level1)
                                         this.time.delayedCall(1000, () => GameState.isPlayerAbleToMove = true)
                                     },
                                     loop: false
@@ -345,28 +345,26 @@ export default class MapaMain extends Phaser.Scene
         }
     }
 
-    sendTextToInterface(string){
+    sendTextToUI(string){
         text_UI = string
-        // this.time.addEvent({
-        //     delay: 1000,
-        //     callback: () => { text_UI = '' },
-        //     loop: false
-        // })
     }
 
     getObjectById(objectId) {
-        var objectLayer = this.make.tilemap({key: MapKeys.MapKey}).getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1);
-        if (!objectLayer) {
-            // console.error("Camada de objetos não encontrada.");
+        let objectLayer = this.make.tilemap({key: MapKeys.MapKey}).getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1);
+        
+        if (!objectLayer) 
+        {
+            console.error("Camada de objetos não encontrada.");
             return null;
         }
         
-        var object = objectLayer.objects.find(obj => obj.id === objectId);
+        let object = objectLayer.objects.find(obj => obj.id === objectId);
         return object;
     }
 
     handleMainCharacterMovements(){
-        if(GameState.isPlayerAbleToMove){
+        if(GameState.isPlayerAbleToMove)
+        {
             if(this.cursor.up.isDown)
             {
                 this.player.key = CharactersKey.ManUpKey
@@ -409,13 +407,13 @@ export default class MapaMain extends Phaser.Scene
                 this.player.setVelocityY(100)        
             }
         }
-        else{
+        else
+        {
             this.player.setVelocity(0)
         }
-        
     }
      
-    createNeededAnimation() {
+    createAllNeededAnimation() {
         const ManWalkUpConfig = {
             key: Animation.ManWalkUpKey,
             frames: this.anims.generateFrameNumbers(CharactersKey.ManUpKey, {frame: [0, 1, 2, 3]}),
@@ -447,7 +445,6 @@ export default class MapaMain extends Phaser.Scene
             repeat: 0,
         }
         this.anims.create(ManWalkDownConfig)
-
     }
     
     getPlayerFloor(){
@@ -469,7 +466,6 @@ export default class MapaMain extends Phaser.Scene
     }
 
     setLayersDepth(data){
-
         if(data == 'floor_1')
         {
             this.layer_ground.setDepth(0)
@@ -488,7 +484,8 @@ export default class MapaMain extends Phaser.Scene
             this.player.setDepth(2)
             this.playerState.floor = 'floor_1'
         }
-        else if(data == 'floor_2'){
+        else if(data == 'floor_2')
+        {
             this.layer_ground.setDepth(0)
             this.layer_levels.setDepth(0)
             this.layer_trunksRoots.setDepth(0)
@@ -508,14 +505,13 @@ export default class MapaMain extends Phaser.Scene
     }
 
     on_Info_Overlap(e){
-        if(e.properties[1].value == 'placa'){
-            this.sendTextToInterface(e.properties[0].value)
-            // console.log(e.properties[0].value)
-
+        if(e.properties[1].value == 'placa')
+        {
+            this.sendTextToUI(e.properties[0].value)
         }
     }
 
-    transitionToNewScene(newSceneKey) {
+    transitToNewScene(newSceneKey) {
         this.cameras.main.fadeOut(1000, 0, 0, 0); // Fade para preto em 1 segundo
     
         this.cameras.main.once('camerafadeoutcomplete', (camera) => {
@@ -769,9 +765,6 @@ export default class MapaMain extends Phaser.Scene
           inner.y + inner.height <= (outer.y - 2) + outer.height
         );
     }
-
-
-
 }
 
 export{

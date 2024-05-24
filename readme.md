@@ -6,7 +6,7 @@
       1 - Limpeza de codigo
             - deixar os nomes dos dados e funções todas em ingles
             - verificar a conformidade entre a ATIVIDADE e o NOME DAS FUNÇÕES que as executas
-            - verificar a conformidade entre O DADO e o NOME DAS VARIAVEIS  que os carregam
+            - verificar a conformidade entre O DADO e o NOME DAS VARIAVEIS que os carregam
             - excluir dados e logicas irrelevantes
             - verificar formatação do código
             - eliminar console.logs

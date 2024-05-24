@@ -232,7 +232,7 @@ export default class GameBackground extends Phaser.Scene
     }
 
     check_Add_textToQueue(text){        //  VERIFICA se o texto é repetido, caso não seja ADICIONA texto na fila para renderização
-       if(this.auxText != text){
+       if(text && this.auxText != text){
             this.auxText = text
             this.addToQueue(queue, text)
        }
