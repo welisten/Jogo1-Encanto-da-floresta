@@ -17,7 +17,7 @@ import { addToUIQueue, bringMapToScrean, queue } from "../Scenes/UI";
 import GameBackground from "../Scenes/UI";
 
 
-var GameState = {
+let GameState = {
     Running: 'running',
     Finished: 'finished',
     isPaused: false,
@@ -35,7 +35,7 @@ var GameState = {
     counter_1: 0
 }
 
-var text_UI = ''
+let text_UI = ''
 
 export default class MapaMain extends Phaser.Scene
 {
@@ -448,10 +448,10 @@ export default class MapaMain extends Phaser.Scene
     }
     
     getPlayerFloor(){
-        var upEdge      = 321 * Sizes.mapScale 
-        var downEdge    = 559 * Sizes.mapScale
-        var leftEdge    = 770 * Sizes.mapScale
-        var rightEdge   = 1248 * Sizes.mapScale
+        const upEdge      = 321 * Sizes.mapScale 
+        const downEdge    = 559 * Sizes.mapScale
+        const leftEdge    = 770 * Sizes.mapScale
+        const rightEdge   = 1248 * Sizes.mapScale
 
         if(this.player.x > leftEdge && this.player.x < rightEdge && this.player.y > upEdge && this.player.y < downEdge)
         {
@@ -528,49 +528,44 @@ export default class MapaMain extends Phaser.Scene
                 this.player.y = Math.floor(this.player.y)
                 
 //              Identificar o ponto relativo a direção
-                var current_Point =  this.getObjectById(this.playerState.point_id)
-                var up_propertie = current_Point.properties.find(obj => obj.name === 'up')
+                const current_Point =  this.getObjectById(this.playerState.point_id)
+                const up_propertie = current_Point.properties.find(obj => obj.name === 'up')
 
 //              Assegurar que existe caminho pela referida direção                
                 if(!up_propertie.value){
-                    // console.log("caminho inexistente ! você está se equivocando")
+                    console.error("caminho inexistente ! você está se equivocando")
                     return
                 }
 
-                if(up_propertie.value != 'guapimirim_sign'){
-//                  Resgata o ponto alvo e atualiza as coordenadas do alvo no obj de controle do jogador               
-                    var next_Point = this.getObjectById(up_propertie.value)
-    
-                    this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
-                    this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
-                    this.playerState.targetID = up_propertie.value
+//              Resgata o ponto alvo e atualiza as coordenadas do alvo no obj de controle do jogador               
+                const next_Point = this.getObjectById(up_propertie.value)
 
-//                  Dispara o personagem na direção desejada usando a respectiva animação
-                    this.player.key = CharactersKey.ManUpKey
-                    this.player.play({key: Animation.ManWalkUpKey, repeat: -1}, true)
-                    this.player.setVelocity(0, -Difficulty.Char_velocity)
-                    
-//                  Atualiza o estado do personagem em: "movimentando" e "direção"
-                    this.playerState.isMoving = true 
-                    this.playerState.direction = 'up'
+                this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
+                this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
+                this.playerState.targetID = up_propertie.value
+//              Dispara o personagem na direção desejada usando a respectiva animação
+                this.player.key = CharactersKey.ManUpKey
+                this.player.play({key: Animation.ManWalkUpKey, repeat: -1}, true)
+                this.player.setVelocity(0, -Difficulty.Char_velocity)
+                
+//              Atualiza o estado do personagem em: "movimentando" e "direção"
+                this.playerState.isMoving = true 
+                this.playerState.direction = 'up'
 
-                } else {
-                }
-                // console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)                     
             }
             else if(this.cursor.down.isDown & !this.playerState.isMoving)       // DOWN
             {
                 this.player.y = Math.floor(this.player.y)
 
-                var current_point =  this.getObjectById(this.playerState.point_id)
-                var down_propertie = current_point.properties.find(obj => obj.name === 'down')
+                const current_point =  this.getObjectById(this.playerState.point_id)
+                const down_propertie = current_point.properties.find(obj => obj.name === 'down')
                 
                 if(!down_propertie.value){
                     // console.log("caminho inexistente ! você está se equivocando")
                     return
                 }
 
-                var next_Point = this.getObjectById(down_propertie.value)
+                const next_Point = this.getObjectById(down_propertie.value)
 
                 this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
                 this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
@@ -590,15 +585,15 @@ export default class MapaMain extends Phaser.Scene
             {
                 this.player.x = Math.floor(this.player.x)
 
-                var current_Point =  this.getObjectById(this.playerState.point_id)
-                var left_propertie = current_Point.properties.find(obj => obj.name === 'left')
+                const current_Point =  this.getObjectById(this.playerState.point_id)
+                const left_propertie = current_Point.properties.find(obj => obj.name === 'left')
                 
                 if(!left_propertie.value){
                     // console.log("caminho inexistente ! você está se equivocando")
                     return
                 }
                 
-                var next_Point = this.getObjectById(left_propertie.value)
+                const next_Point = this.getObjectById(left_propertie.value)
                 
                 this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
                 this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
@@ -617,9 +612,9 @@ export default class MapaMain extends Phaser.Scene
             {
                 this.player.x = Math.floor(this.player.x)
                 
-                var current_Point =  this.getObjectById(this.playerState.point_id)
+                const current_Point =  this.getObjectById(this.playerState.point_id)
                 console.log(current_Point)
-                var right_propertie = current_Point.properties.find(obj => obj.name === 'right')
+                const right_propertie = current_Point.properties.find(obj => obj.name === 'right')
                 console.log(right_propertie)
                 
                 if(!right_propertie.value){
@@ -627,7 +622,7 @@ export default class MapaMain extends Phaser.Scene
                     return
                 }
 
-                var next_Point = this.getObjectById(right_propertie.value)
+                const next_Point = this.getObjectById(right_propertie.value)
 
                 this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
                 this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)

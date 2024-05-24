@@ -4,6 +4,7 @@
 -----------------------------------------------     (ANDAMENTO)     ------------------------------------------------------
 
       1 - Limpeza de codigo
+            - eliminar var usar apenas let e const
             - deixar os nomes dos dados e funções todas em ingles
             - verificar a conformidade entre a ATIVIDADE e o NOME DAS FUNÇÕES que as executas
             - verificar a conformidade entre O DADO e o NOME DAS VARIAVEIS que os carregam

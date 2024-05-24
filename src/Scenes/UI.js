@@ -9,7 +9,7 @@ import { DialogBox_Key, TimerKey, directionsImagesObj, CityMap_Key, GuapiMapObj 
 import { level_data } from "../Scenes/Level1"
 import { text_UI, GameState } from "../Scenes/MapaMain"
 
-var time_UI = level_data.timer
+let time_UI = level_data.timer
 let queue = []
 
 
