@@ -57,6 +57,7 @@ export default class MapaMain extends Phaser.Scene
         this.timerUi = 0
         this.playerState = {
             isMoving: false,
+            floor: 'floor_2',
             point_id: 2,
             point_x: undefined,
             point_y: undefined,
@@ -72,26 +73,25 @@ export default class MapaMain extends Phaser.Scene
     create()
     { 
         const initStrLength = 204
-        const timeline_1 = this.add.timeline([      // Compartimentalizar
-                                                {
-                                                    at:0,
-                                                    run: () => this.cameras.main.fadeIn(1500, 0, 0, 0)
-                                                },
-                                                {
-                                                    at: 1500,
-                                                    run: () =>{
-                                                        //203
-                                                        let text_1 ='...Ola, seja Bemvindo ao Encantos da Floresta ! Essa é a cidade de Guapimirim, e será nela que nós teremos nossas aventuras\n'
-                                                        addToUIQueue(text_1, 'justify')
-
-                                                    } 
-                                                },
-                                                {
-                                                    from: initStrLength * 50 + 500, // cada letra tem 50 milisegundos + 500 de gap
-                                                    run: () =>{ GameState.isPlayerAbleToMove = true } 
-                                                
-                                                }
-                                            ])
+        const timeline_1 = this.add.timeline(
+        [      // Compartimentalizar
+            {
+                at:0,
+                run: () => this.cameras.main.fadeIn(1500, 0, 0, 0)
+            },
+            {
+                at: 1500,
+                run: () =>{
+                    //203
+                    let text_1 ='...Ola, seja Bemvindo ao Encantos da Floresta ! Essa é a cidade de Guapimirim, e será nela que nós teremos nossas aventuras\n'
+                    addToUIQueue(text_1, 'justify')
+                } 
+            },
+            {
+                from: initStrLength * 50 + 500, // cada letra tem 50 milisegundos + 500 de gap
+                run: () =>{ GameState.isPlayerAbleToMove = true } 
+            }
+        ])
         const map = this.make.tilemap({key: MapKeys.MapKey})
         
         const tile_1 = map.addTilesetImage(MapKeys.objConfigTilesetMap[0].name, MapKeys.objConfigTilesetMap[0].key, 16, 16)
@@ -125,12 +125,11 @@ export default class MapaMain extends Phaser.Scene
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
         
-        //---------------------------    TIMELINE      -------------------------------
-        timeline_1.play()
-        // GameState.isPlayerAbleToMove = true  //retirar
-        GameState.defaultMotionControls = false
-        GameState.accessibleMotionControls = true
-        //----------------------------------------------------------------------------
+        
+    //  timeline_1.play()
+        GameState.isPlayerAbleToMove        = true                                      //retirar
+        GameState.defaultMotionControls     = false
+        GameState.accessibleMotionControls  = true
         
         this.createNeededAnimation()
         
@@ -143,192 +142,207 @@ export default class MapaMain extends Phaser.Scene
         this.playerState.point_x = this.player.x
         this.playerState.point_y = this.player.y
 
-        const mapObjects = map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1)['objects']
-        // console.log(mapObjects)
-
-        //----------------------       FENCE       -----------------------
-        //----------------------       USUAL OBJECTS       -----------------------
-        mapObjects.forEach(object => {
-            // switch / case
-            if (object.name != 'info' & object.name != 'level' & object.name != 'fence' & object.name != 'cityMap' ){// PROCESSAMENTO
-                if(object.rectangle){
-                    this.objRec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0).setDepth(10)
-                    this.physics.add.existing(this.objRec, true)
-                    this.physics.add.collider(this.player, this.objRec)
-                    
-                 }else if(object.ellipse){
-                     this.objEllips = this.add.circle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.height * Sizes.L1MapScale / 2)).setOrigin(0)
-                     this.physics.add.existing(this.objEllips, true)
-                     this.physics.add.collider(this.player, this.objEllips)
-                }
-            }
-            
-        })
-        this.sound.play(SongsKey.MMMusicKey, {volume: GameState.General_songs_volume})
-        this.physics.world.on('worldbounds', () => console.log('colidiu'), this);        // Atenção
-        
-        //-----------------       DECISIONS BREAKS        -----------------------
-        this.decision_breaks =  mapObjects.filter(obj => obj.name == 'decision_break' && obj.id != 2) 
-        this.decision_breaks.forEach(point => {
-            const circle = this.add.circle(Math.round(point.x * Sizes.L1MapScale), Math.round(point.y * Sizes.L1MapScale), .5).setOrigin(0)
-            this.physics.add.existing(circle, true)
-            this.physics.add.overlap(this.player, circle, () => {
-                
-                if(this.playerState.point_id == point.id){
-                    return    
-                }
-                // console.log('OVERLAP')
-
-                if(this.isCompletelyInside(circle, this.player)){
-                    // console.log('Completamente dentro')
-                    this.playerState.point_id = point.id
-                    switch(this.playerState.direction){
-                        case('up'):
-                            this.player.y += 1
-
-                        break
-                        case('down'):
-                            this.player.y += 4
-
-                        break
-                        case('left'):
-                            this.player.x += 1
-
-                        break
-                        case('right'):
-                            this.player.x += 4
-                        break
-                        // configurar defaut
-                    }
-
-                    if (point.id == this.playerState.targetID){
-                        this.player.setVelocity(0, 0);
-                        this.playerState.isMoving = false;
-                        this.playerState.direction = undefined
-                        // console.log(`Player alcançou o alvo\nPonto atual: ${this.playerState.point_id}   alvo:${this.playerState.targetID}`)
-                        
-                        this.player.anims.stop()
-                        // if(this.playerState.point_id == 334){ // PASSO 1
-                        //     console.log('Id 34 - p1')
-
-                        //     GameState.isTopInformationAble = true
-                        //     GameState.topInformationType = 'CityMap'
-                        // }
-                        return
-                    }
-                    else
-                        // console.log(`Ainda nao !!!    REDEFININDO ROTA\nPonto atual: ${this.playerState.point_id}   alvo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
-                        this.player.setVelocity(0, 0);
-                        this.defineRoute()
-
-                }
-            })
-        })
-           
-        //----------------------       CityMap        -----------------------
-        const CityMap_point = mapObjects.filter( obj => obj.id == 335)[0]
-        console.log(CityMap_point)
-        let recX = CityMap_point.x * Sizes.mapScale
-        let recY = CityMap_point.y * Sizes.mapScale
-        let recW = CityMap_point.width * Sizes.mapScale
-        let recH = CityMap_point.height * Sizes.mapScale 
-        let rec = this.add.rectangle(recX, recY, recW, recH).setOrigin(0)
-        
-        this.physics.add.existing(rec, true)
-        this.physics.add.overlap(this.player, rec, () => {
-            if(!GameState.isTopInformationAble && GameState.counter_1 == 0){
-                GameState.isTopInformationAble = true
-                GameState.topInformationType = 'CityMap'
-                GameState.counter_1++
-            }
-        })
-        //----------------------       LEVELS        -----------------------
-        this.objs_levels =  mapObjects.filter(obj => obj.name == 'level')
-        
-        var hasOverlapOccurred = false
-        
-        this.objs_levels.forEach(level => {
-            const rec = this.add.rectangle((level.x * Sizes.L1MapScale), (level.y * Sizes.L1MapScale), (level.width * Sizes.L1MapScale), (level.height * Sizes.L1MapScale)).setDisplayOrigin(0)
-            this.physics.add.existing(rec, true)
-            this.physics.add.overlap(rec, this.player, () => {
-                if(!hasOverlapOccurred){
-                    if(this.player.x - this.player.width / 2 > rec.x && this.player.x + this.player.width / 2  < rec.x + rec.width){// melhorar legibilidade
-                        hasOverlapOccurred = true
-                        GameState.isPlayerAbleToMove = false
-                        this.sendTextToInterface('')
-                        // queue = []
-                        
-                        this.time.addEvent({
-                            delay: 500,
-                            callback: () => {
-                                this.song
-                                this.transitionToNewScene(Level1)
-                                this.time.delayedCall(1000, () => GameState.isPlayerAbleToMove = true)
-                            },
-                            loop: false
-                        })
-                    }
-                }
-            })
-        })
-        //----------------------       SIGNS        -----------------------
-        this.infoObjects = mapObjects.filter(obj => obj.name == 'info')
-        this.infoObjects.forEach(obj => {
-            const rec = this.add.rectangle((obj.x * Sizes.L1MapScale), (obj.y * Sizes.L1MapScale), (obj.width * Sizes.L1MapScale), (obj.height * Sizes.L1MapScale)).setDisplayOrigin(0)
-            this.physics.add.existing(rec, true)
-            this.physics.add.overlap(rec, this.player, () => this.on_Info_Overlap(obj))
-        })
-
-        //------------------------------------------------------------------
-        
         this.cameras.main.startFollow(this.player) // configurando posicionamento da camera
         this.cursor = this.input.keyboard.createCursorKeys() 
+        
+        //----------------------       MAP OBJECTS       -----------------------
+        const mapObjects = map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1)['objects']
 
+        mapObjects.forEach(object => {
+            switch(object.name){
+                case 'decision_break':
+                    if(object.id != 2)
+                    {
+                        const circle = this.add.circle(Math.round(object.x * Sizes.L1MapScale), Math.round(object.y * Sizes.L1MapScale), .5).setOrigin(0)
+
+                        this.physics.add.existing(circle, true)
+                        this.physics.add.overlap(this.player, circle, () => {
+
+                            if(this.playerState.point_id == object.id)
+                            {
+                                return    
+                            }
+                        
+                            if(this.isCompletelyInside(circle, this.player))
+                            {
+                                this.playerState.point_id = object.id
+                                switch(this.playerState.direction)
+                                {
+                                    case('up'):
+                                        this.player.y += 1
+                                        break
+
+                                    case('down'):
+                                        this.player.y += 4
+                                        break
+
+                                    case('left'):
+                                        this.player.x += 1
+                                        break
+
+                                    case('right'):
+                                        this.player.x += 4
+                                        break
+                                    
+                                    default:
+                                        break
+                                }
+                            
+                                if (object.id == this.playerState.targetID)
+                                {
+                                    this.player.setVelocity(0, 0);
+                                    this.playerState.isMoving = false;
+                                    this.playerState.direction = undefined
+
+                                    this.player.anims.stop()
+                                    return
+                                }
+                                else
+                                {
+                                    this.player.setVelocity(0, 0);
+                                    this.defineRoute()
+                                }
+                            }
+                        })   
+                    } 
+                    break
+                
+                case 'level':
+                    let hasOverlapOccurred = false
+                    
+                    const rec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0)
+                    
+                    this.physics.add.existing(rec, true)
+                    this.physics.add.overlap(rec, this.player, () => {
+                        if(!hasOverlapOccurred)
+                        {
+                            let player_half         = this.player.x - this.player.width / 2
+                            let player_other_half   = this.player.x + this.player.width / 2
+                            let isPlayerCompletelyInside  = player_half > rec.x && player_other_half  < rec.x + rec.width
+                            
+                            if(isPlayerCompletelyInside)
+                            {
+                                hasOverlapOccurred = true
+                                GameState.isPlayerAbleToMove = false
+                                this.sendTextToInterface('')
+                                
+                                this.time.addEvent({
+                                    delay: 500,
+                                    callback: () => {
+                                        this.song
+                                        this.transitionToNewScene(Level1)
+                                        this.time.delayedCall(1000, () => GameState.isPlayerAbleToMove = true)
+                                    },
+                                    loop: false
+                                })
+                            }
+                        }
+                    })
+                    break
+                    
+                case 'info':
+                    const recInfo = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0)
+                    this.physics.add.existing(recInfo, true)
+                    this.physics.add.overlap(recInfo, this.player, () => this.on_Info_Overlap(object))
+                    break
+                
+                case 'fence':
+                    const recFence = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0).setDepth(10)
+                    this.physics.add.existing(recFence, true)
+                    this.physics.add.collider(this.player, recFence)
+                    break
+
+                case 'cityMap':
+                    const CityMap_point =  object
+
+                    const recX = CityMap_point.x * Sizes.mapScale
+                    const recY = CityMap_point.y * Sizes.mapScale
+                    const recW = CityMap_point.width * Sizes.mapScale
+                    const recH = CityMap_point.height * Sizes.mapScale 
+                    
+                    const recCityMap = this.add.rectangle(recX, recY, recW, recH).setOrigin(0)
+                            
+                    this.physics.add.existing(recCityMap, true)
+                    this.physics.add.overlap(this.player, recCityMap, () => {
+                        if(!GameState.isTopInformationAble && GameState.counter_1 == 0){
+                            GameState.isTopInformationAble = true
+                            GameState.topInformationType = 'CityMap'
+                            GameState.counter_1++
+                        }
+        })
+                    break
+
+                default:
+                    if(object.rectangle){
+                        const objRec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0).setDepth(10)
+                        this.physics.add.existing(objRec, true)
+                        this.physics.add.collider(this.player, objRec)
+                        
+                     }else if(object.ellipse){
+                         const objEllips = this.add.circle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.height * Sizes.L1MapScale / 2)).setOrigin(0)
+                         this.physics.add.existing(objEllips, true)
+                         this.physics.add.collider(this.player, objEllips)
+                    }
+                    break
+            }
+        })
+
+        this.sound.play(SongsKey.MMMusicKey, {volume: GameState.General_songs_volume})
+        
+        //----------------------       DOM        -----------------------
         const accessible_btn = document.getElementById('alternativeMovements')
+        const mute_btn = document.getElementById('mute')
+        
         accessible_btn.onclick = () => {
             accessible_btn.classList.toggle('active')
 
             GameState.accessibleMotionControls = !GameState.accessibleMotionControls
             GameState.defaultMotionControls = !GameState.defaultMotionControls
         }
-        const mute_btn = document.getElementById('mute')
+
         mute_btn.onclick = () => {
             mute_btn.classList.toggle('active')
+
             const icone = document.querySelector("#mute_icon")
+
             icone.classList.toggle('fa-volume-high')
             icone.classList.toggle('fa-volume-xmark')
             
-            if(this.sound.volume == 1){
+            if(this.sound.volume == 1)
+            {
                 this.sound.volume = 0
-            } else {
+            } 
+            else
+            {
                 this.sound.volume = 1
             }
         }
-
-        // console.log(`atual: ${this.playerState.point_id}   proximo:${this.playerState.targetID}\nplayer.x: ${this.player.x} alvo: ${this.playerState.targetX}\nplayer.y: ${this.player.y} alvo: ${this.playerState.targetY}`)
-
     }
 
     update() {
 
-        if(GameState.accessibleMotionControls) {
+        if(GameState.accessibleMotionControls) 
+        {
             this.alternativeCharacterMoveControl()   
         }
-        if(GameState.defaultMotionControls){
+
+        if(GameState.defaultMotionControls)
+        {
             this.handleMainCharacterMovements()
         }
 
-        if(GameState.isTopInformationVisible&& !GameState.isGuapimirimSignAble){
-           if(this.cursor.space.isDown){
-            console.log('O usuario quer o mapa')
-            GameState.isGuapimirimSignAble = true
-            GameState.isTopInformationVisible = false
-           }
+        if(GameState.isTopInformationVisible && !GameState.isGuapimirimSignAble){ // caso space -> mostrar mapa
+            if(this.cursor.space.isDown)
+            {
+                GameState.isGuapimirimSignAble = true
+                GameState.isTopInformationVisible = false
+            }
         }
-
-        this.setLayersDepth(this.getPlayerFloor()) // Processamento
-        // this.physics.world.collide(this.player, mapObjects)
-
+         
+        if(this.playerState.floor != this.getPlayerFloor())
+        {
+            this.setLayersDepth(this.getPlayerFloor())    
+        }
     }
 
     sendTextToInterface(string){
@@ -455,8 +469,7 @@ export default class MapaMain extends Phaser.Scene
     }
 
     setLayersDepth(data){
-        // console.log(`data === floor_1 -> ${data === 'floor_1'}`)
-        // console.log(`data === floor_2 -> ${data === 'floor_2'}`)
+
         if(data == 'floor_1')
         {
             this.layer_ground.setDepth(0)
@@ -473,6 +486,7 @@ export default class MapaMain extends Phaser.Scene
             this.layer_buildingsf2.setDepth(3)
 
             this.player.setDepth(2)
+            this.playerState.floor = 'floor_1'
         }
         else if(data == 'floor_2'){
             this.layer_ground.setDepth(0)
@@ -489,7 +503,7 @@ export default class MapaMain extends Phaser.Scene
             this.layer_buildingsf2.setDepth(3)
 
             this.player.setDepth(2)
-
+            this.playerState.floor = 'floor_2'
         }
     }
 
@@ -608,7 +622,9 @@ export default class MapaMain extends Phaser.Scene
                 this.player.x = Math.floor(this.player.x)
                 
                 var current_Point =  this.getObjectById(this.playerState.point_id)
+                console.log(current_Point)
                 var right_propertie = current_Point.properties.find(obj => obj.name === 'right')
+                console.log(right_propertie)
                 
                 if(!right_propertie.value){
                     // console.log("caminho inexistente ! você está se equivocando")

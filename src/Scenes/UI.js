@@ -149,18 +149,22 @@ export default class GameBackground extends Phaser.Scene
         this.handel_timerEl(time_UI, level_data)
         this.check_Add_textToQueue(text_UI)
         this.handel_Queue(queue, this.controlTextObj.interfaceText_stt)
-        if(GameState.isTopInformationAble) { // PASSO 2
+        if(GameState.isTopInformationAble) 
+        { // PASSO 2
             console.log('Top information is visible - p2')
 
             this.showTopInformation(GameState.topInformationType)
             GameState.isTopInformationAble = false
         }
-        if(GameState.isGuapimirimSignAble){
+        if(GameState.isGuapimirimSignAble)
+        {
             this.CM_tween_out.play()
             this.bringMapToScrean()
             GameState.isGuapimirimSignAble = false // está aqui para garantir que essa função seja chamada somente uma vez
         }
-        if(GameState.isGuapimirimSignVisible){
+        
+        if(GameState.isGuapimirimSignVisible)
+        {
             if(this.cursor.space.isDown){
                 console.log('dentro')
 
@@ -184,7 +188,7 @@ export default class GameBackground extends Phaser.Scene
 
     showTopInformation(type){ // PASSO 3
         if(type == 'CityMap'){
-            // console.log('Show top informations - p3')
+            console.log('Show top informations - p3')
             
             GameState.isPlayerAbleToMove = false
             this.CityMap_Information.setAlpha(1)
