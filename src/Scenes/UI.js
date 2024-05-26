@@ -131,7 +131,7 @@ export default class GameBackground extends Phaser.Scene
         this.GuapiMap_out = this.tweens.add({
             targets: this.GuapiMap,
             alpha: 0,
-            duration: 225,
+            duration: 250,
             ease: 'Linear',
             repeat: 0,
             paused: true,
@@ -216,7 +216,7 @@ export default class GameBackground extends Phaser.Scene
 
         this.GuapiMap_in.play()
         this.time.addEvent({
-            delay: 225,
+            delay: 250,
             callback: () => GameState.isGuapimirimSignVisible = true,
             loop: false
         })          
@@ -231,15 +231,15 @@ export default class GameBackground extends Phaser.Scene
        return
     }
 
-    handel_Queue(queue, state){         //  Faz a fila andar se houver elemento na 1° posição da fila E SE a maquina de escrever estiver pausada
-        let isPaused = state == 'paused'
+    handel_Queue(queue, writeMachineState){         //  Faz a fila andar se houver elemento na 1° posição da fila E SE a maquina de escrever estiver pausada
+        let isWriteMacinePaused = writeMachineState == 'paused'
 
-        if(queue[0] && isPaused){ // se houver elemento na 1° posição E a maquina de escrever estiver pausada
+        if(queue[0] && isWriteMacinePaused){ // se houver elemento na 1° posição E a maquina de escrever estiver pausada
             this.currentIndex = 0                                   // seta o index atual para o correto rastreamento da exibição do texto (maquina de escrever)
 
-            this.displayElement(elemet.dialogBox)
+            this.displayElement(this.dialogBox)
             this.writeText(queue[queue.length - 1][0])                  // -> [TextEncoder, align]
-            this.textOfDialogBox.setAlign(queue[queue.length - 1][1])   // -> [TextEncoder, align]
+            this.textOfDialogBox.setAlign(queue[queue.length - 1][1]) // -> [TextEncoder, align]
         }
         else
         {
@@ -248,25 +248,25 @@ export default class GameBackground extends Phaser.Scene
     }
  
     writeText(string){                  //  Recebe uma string e ADICIONA letra por letra ao texto da caixa de diálogo(textOfDialogBox)
-        let obj = this.separeteString_direction(string)
+        let obj = this.separeteStringFromdirection(string)
         
         let indexsArr = []
         if(obj.indexsArr.length > 0){
             indexsArr = obj.indexsArr  
         } 
 
-        let signDirections = []
-        for(let index_bracket_start of indexsArr){
-            let index_bracket_end = string.indexOf(']', index_bracket_start)
-            signDirections.push(string.slice(index_bracket_start, index_bracket_end + 1))
+        let directionsSign = []
+        for(let index_bracketStart of indexsArr){
+            let index_bracketEnd = string.indexOf(']', index_bracketStart)
+            directionsSign.push(string.slice(index_bracketStart, index_bracketEnd + 1))
         }
 
-        string        = obj.string               
-        let srtLength = string.length
+        string = obj.string               
+        let length = string.length
         
         this.controlTextObj.interfaceText_stt = 'writing'
-        this.displayElement(elemet.dialogBox)
-        this.displayElement(elemet.textOfDialogBox)
+        this.displayElement(this.dialogBox)
+        this.displayElement(this.textOfDialogBox)
         
         let aux         = 0
         let aux_balance = 0
@@ -277,16 +277,14 @@ export default class GameBackground extends Phaser.Scene
             delay: 50, 
             callback: () => {
                 this.controlTextVelocity(string)
-                this.handle_endOfString(this.currentIndex, srtLength)
+                this.handle_endOfString(this.currentIndex, length)
                 
-                if(indexsArr.length > 0 && aux < indexsArr.length)
-                {
+                if(indexsArr.length > 0 && aux < indexsArr.length){
                     let tracked_index = indexsArr[aux] == 0 ? indexsArr[aux] : indexsArr[aux] - aux_balance
                     let line_hight = 27 * mapScale
 
-                    
                     if(this.currentIndex == tracked_index){
-                        switch(signDirections[aux]){
+                        switch(directionsSign[aux]){
                             case "[up]":
                                 this.arrows.push(this.add.sprite(x, y, directionsImagesObj.up_key).setScale(.25).setOrigin(0))
                                 this.tweens.add({
@@ -296,18 +294,15 @@ export default class GameBackground extends Phaser.Scene
                                     scaleX: .28,
                                     scaleY: .28,
                                     alpha: 1,
-                                    duration: 225,
+                                    duration: 250,
                                     ease: 'Linear',
                                     repeat: -1,
                                     yoyo: true
                                 }).play()
-                                
-                                y           += line_hight
-                                aux_balance +=  signDirections[aux].length
+                                y           +=  line_hight
+                                aux_balance +=  directionsSign[aux].length
                                 aux++
-
                                 break
-
                             case "[down]":
                                 this.arrows.push(this.add.sprite(x, y, directionsImagesObj.down_key).setScale(.25).setOrigin(0))
                                 this.tweens.add({
@@ -317,15 +312,14 @@ export default class GameBackground extends Phaser.Scene
                                     scaleX: .28,
                                     scaleY: .28,
                                     alpha: 1,
-                                    duration: 225,
+                                    duration: 250,
                                     ease: 'Linear',
                                     repeat: -1,
                                     yoyo: true
                                 }).play()
-                                y           += line_hight
-                                aux_balance +=  signDirections[aux].length
-                                aux++ 
-
+                                y           +=  line_hight
+                                aux_balance +=  directionsSign[aux].length
+                                aux++
                                 break
                             case "[left]":
                                 this.arrows.push(this.add.sprite(x, y, directionsImagesObj.left_key).setScale(.25).setOrigin(0))
@@ -336,15 +330,14 @@ export default class GameBackground extends Phaser.Scene
                                     scaleX: .28,
                                     scaleY: .28,
                                     alpha: 1,
-                                    duration: 225,
+                                    duration: 250,
                                     ease: 'Linear',
                                     repeat: -1,
                                     yoyo: true
                                 }).play()
-                                y           += line_hight
-                                aux_balance +=  signDirections[aux].length
+                                y           +=  line_hight
+                                aux_balance +=  directionsSign[aux].length
                                 aux++
-
                                 break
                             case "[right]":
                                 this.arrows.push(this.add.sprite(x, y, directionsImagesObj.right_key).setScale(.25).setOrigin(0))
@@ -355,13 +348,13 @@ export default class GameBackground extends Phaser.Scene
                                     scaleX: .28,
                                     scaleY: .28,
                                     alpha: 1,
-                                    duration: 225,
+                                    duration: 250,
                                     ease: 'Linear',
                                     repeat: -1,
                                     yoyo: true
                                 }).play()
-                                y += line_hight
-                                aux_balance +=  signDirections[aux].length
+                                y           +=  line_hight
+                                aux_balance +=  directionsSign[aux].length
                                 aux++
                                 break
                         }
@@ -375,13 +368,13 @@ export default class GameBackground extends Phaser.Scene
         })
     }
 
-    separeteString_direction(string){
+    separeteStringFromdirection(string){
         let indexsArr = []
         let index = string.indexOf('[')
 
         if(index !== -1){
             let index       = -1
-            let occurrence = this.countDirectionsOccurrences(string, '[')
+            let occurrence = this.countAmountOfOccurrences('[', string)
             const regex = /\[(up|down|left|right)\]/
 
             for(let i = 0; i < occurrence; i++){
@@ -392,18 +385,19 @@ export default class GameBackground extends Phaser.Scene
                 string = string.replace(regex, '')
             }
         }
-        return {string, indexsArr} // o index indica ainde será a quebra de linha
+        return {string, indexsArr}
     }
 
-    countDirectionsOccurrences(mainString, separator) {
-        // Divida a string principal com base no separador gerando um array de substrings e retorna o comprimento do array resultante
-        let phrasesArr      = mainString.split(separator)
-        let phrasesAmount   = phrasesArr.lenght - 1
-        return phrasesAmount
+    countAmountOfOccurrences(separator, mainString) {
+        // Divida a string principal em um array de strings com base na separator o comprimento do array de strings resultante
+        const arrayOccurrences  =  mainString.split(separator)
+        const amountOccurrences =   arrayOccurrences.length - 1 
+        return amountOccurrences
     }
     
-    handle_endOfString(currentIndex, lenght){       //  VERIFICA se é a ultima letra do texto e dispara a função de configuração de controles após 1 seg
-        if ( currentIndex >= lenght - 1 ) 
+
+    handle_endOfString(currentIndex, stringLength){       //  VERIFICA se é a ultima letra do texto e dispara a função de configuração de controles após 1 seg
+        if( currentIndex >= stringLength - 1 ) 
         {
             this.typewriter.delay = 1000
             this.removeFromQueue(queue)
@@ -444,34 +438,39 @@ export default class GameBackground extends Phaser.Scene
         return
     }
 
-    controlTextVelocity(text){          //  Controla a velocidade de escrita do texto da Caixa de dialogo
-        if (text[this.currentIndex] == '.' || text[this.currentIndex] == '!')
-        {
-            this.typewriter.delay = 1000        
-        }
-        else
-        {
-            this.typewriter.delay = 50           
+    controlTextVelocity(text){          //  Controla a velocidade de escrita do texto da Caixa de dialogop
+        switch(text[this.currentIndex]){
+            case ".":
+                this.typewriter.delay = 1000        
+                break
+            
+            case  "!":
+                this.typewriter.delay = 1000        
+                break
+            
+            default:
+                this.typewriter.delay = 50           
+                break
         }
     }
 
-    addToQueue(queue, text, align = 'center' ) {        //  Adiciona o elemento ao final da fila
+    addToQueue(queue, text, align = 'center' ) {        //  Adiciona o elemento ao final da fila junto com seu estilo de alinhamento
         queue.push([text, align]);
     }
 
     removeFromQueue(queue) {            //  Remove e retorna o primeiro elemento da fila
-        if(queue[0])
-        {
-            let removedElement = queue.shift();
+        if(queue[0]){
+            const removedElement = queue.shift();
             return removedElement; // Retorna o elemento removido
         }  
         return
     }
 
-    handel_timerEl(time_str, level_data){ // Configura o timer diacordo com dados passados do modulo dos Level, e lida com renderização da str do timer
-        if(time_str != level_data.timer && level_data.running){ // faz o relogio andar
-            time_str = level_data.timer   
-            this.timer.setText( time_str < 10 ? `0${time_str}`: `${time_str}`)
+    handel_timerEl(UI_timerNum, level_data){ // Configura o timer diacordo com dados passados do modulo dos Level, e lida com renderização da str do timer
+        if(UI_timerNum != level_data.timer && level_data.running){
+            
+            UI_timerNum = level_data.timer   
+            this.timer.setText( UI_timerNum < 10 ? `0${UI_timerNum}` : `${UI_timerNum}`)
         }
     }
 
@@ -484,6 +483,7 @@ export default class GameBackground extends Phaser.Scene
                 delay: 50,
                 callback: () => {
                     if(alpha >= 1){
+                        element.setAlpha(1)
                         this.time.removeEvent(fadeIn)
                         return
                     }
@@ -505,6 +505,7 @@ export default class GameBackground extends Phaser.Scene
                 delay: 50,
                 callback: () => {
                     if(alpha <= 0){
+                        element.setAlpha(0)
                         this.time.removeEvent(fadeOut)
                         return
                     }
@@ -522,5 +523,6 @@ export default class GameBackground extends Phaser.Scene
 const addToUIQueue = (text, align) => GameBackground.prototype.addToQueue(queue, text, align)
 export{
     queue,
+    // this.,
     addToUIQueue
 }

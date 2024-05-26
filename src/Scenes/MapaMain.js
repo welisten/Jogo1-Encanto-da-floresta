@@ -613,9 +613,7 @@ export default class MapaMain extends Phaser.Scene
                 this.player.x = Math.floor(this.player.x)
                 
                 const current_Point =  this.getObjectById(this.playerState.point_id)
-                console.log(current_Point)
                 const right_propertie = current_Point.properties.find(obj => obj.name === 'right')
-                console.log(right_propertie)
                 
                 if(!right_propertie.value){
                     // console.log("caminho inexistente ! você está se equivocando")

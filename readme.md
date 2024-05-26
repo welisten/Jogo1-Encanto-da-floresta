@@ -7,8 +7,8 @@
             - eliminar var usar apenas let e const
             - deixar os nomes dos dados e funções todas em ingles
             - verificar a conformidade entre a ATIVIDADE e o NOME DAS FUNÇÕES que as executas
-            - verificar a conformidade entre O DADO e o NOME DAS VARIAVEIS que os carregam
-            - excluir dados e logicas irrelevantes
+            - verificar a conformidade entre Os DADO e os NOME DAS VARIAVEIS que os carregam
+            - excluir dados e lógicas irrelevantes
             - verificar formatação do código
             - eliminar console.logs
             - elencar casos de testes para as funções verificadas
@@ -59,4 +59,7 @@
 
       5 -          Movimentação acesível para fases -> à definir
 
----------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------
+
+PROXIMAS ATIVIDADES
+      - IMPLEMENTAR TIMELINE DO LEVEL 1

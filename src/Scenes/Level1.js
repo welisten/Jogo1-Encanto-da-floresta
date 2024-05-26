@@ -51,29 +51,30 @@ export default class Game extends Phaser.Scene
             // implementar timeline de instruçoes para level 1
 
         })
-        this.map = this.make.tilemap({key: MapKeys.MapL1Key})
+
+        const map = this.make.tilemap({key: MapKeys.MapL1Key})
         
-        this.tile_1 = this.map.addTilesetImage(MapKeys.L1_ObjConfigTileset[0].name, MapKeys.L1_ObjConfigTileset[0].key, 16, 16)
-        this.tile_2 = this.map.addTilesetImage(MapKeys.L1_ObjConfigTileset[1].name, MapKeys.L1_ObjConfigTileset[1].key, 16, 16)
-        this.tile_3 = this.map.addTilesetImage(MapKeys.L1_ObjConfigTileset[2].name, MapKeys.L1_ObjConfigTileset[2].key, 16, 16)
-        this.tile_4 = this.map.addTilesetImage(MapKeys.L1_ObjConfigTileset[3].name, MapKeys.L1_ObjConfigTileset[3].key, 16, 16)
-        this.tile_5 = this.map.addTilesetImage(MapKeys.L1_ObjConfigTileset[4].name, MapKeys.L1_ObjConfigTileset[4].key, 16, 16)
-        this.tile_6 = this.map.addTilesetImage(MapKeys.L1_ObjConfigTileset[5].name, MapKeys.L1_ObjConfigTileset[5].key, 16, 16)
-        this.tile_7 = this.map.addTilesetImage(MapKeys.L1_ObjConfigTileset[6].name, MapKeys.L1_ObjConfigTileset[6].key, 16, 16)
+        const tile_1 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[0].name, MapKeys.L1_ObjConfigTileset[0].key, 16, 16)
+        const tile_2 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[1].name, MapKeys.L1_ObjConfigTileset[1].key, 16, 16)
+        const tile_3 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[2].name, MapKeys.L1_ObjConfigTileset[2].key, 16, 16)
+        const tile_4 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[3].name, MapKeys.L1_ObjConfigTileset[3].key, 16, 16)
+        const tile_5 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[4].name, MapKeys.L1_ObjConfigTileset[4].key, 16, 16)
+        const tile_6 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[5].name, MapKeys.L1_ObjConfigTileset[5].key, 16, 16)
+        const tile_7 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[6].name, MapKeys.L1_ObjConfigTileset[6].key, 16, 16)
         
-        const tilesArray = [this.tile_1, this.tile_2, this.tile_3, this.tile_4, this.tile_5, this.tile_6, this.tile_7]
+        const tilesArray = [tile_1, tile_2, tile_3, tile_4, tile_5, tile_6, tile_7]
         
         
-        this.layer_ground = this.map.createLayer(MapKeys.L1_LayerID.layer1, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
-        this.layer_terrain =  this.map.createLayer(MapKeys.L1_LayerID.layer2, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
-        this.layer_train =  this.map.createLayer(MapKeys.L1_LayerID.layer3, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
-        this.layer_veg =  this.map.createLayer(MapKeys.L1_LayerID.layer4, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
-        this.layer_greatTrees1 =  this.map.createLayer(MapKeys.L1_LayerID.layer5, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
-        this.layer_greatTrees2 =  this.map.createLayer(MapKeys.L1_LayerID.layer6, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
+        map.createLayer(MapKeys.L1_LayerID.layer1, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
+        map.createLayer(MapKeys.L1_LayerID.layer2, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
+        map.createLayer(MapKeys.L1_LayerID.layer3, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
+        map.createLayer(MapKeys.L1_LayerID.layer4, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
+        map.createLayer(MapKeys.L1_LayerID.layer5, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
+        map.createLayer(MapKeys.L1_LayerID.layer6, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
         
-        this.cameras.main.setBounds(0, 0, this.map.widthInPixels * Sizes.L1MapScale, this.map.heightInPixels * Sizes.L1MapScale) // limites da camera
+        this.cameras.main.setBounds(0, 0, map.widthInPixels * Sizes.L1MapScale, map.heightInPixels * Sizes.L1MapScale) // limites da camera
         this.cameras.main.setScroll( 0, (Sizes.L1MapHeight * Sizes.L1MapScale)) // configurando posicionamento da camera
-        this.physics.world.setBounds(0, 0, (this.map.widthInPixels * Sizes.L1MapScale), (this.map.heightInPixels * Sizes.L1MapScale))
+        this.physics.world.setBounds(0, 0, (map.widthInPixels * Sizes.L1MapScale), (map.heightInPixels * Sizes.L1MapScale))
         
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
@@ -83,23 +84,27 @@ export default class Game extends Phaser.Scene
         this.player = this.physics.add.sprite( ((Sizes.L1MapWidth - 128) * Sizes.L1MapScale) / 2, (Sizes.L1MapHeight - 30) * Sizes.L1MapScale, CharactersKey.ManUpKey).setScale(Sizes.characterScale)
         this.player.setCollideWorldBounds(true);
 
-        this.collisionObjects = this.map.getObjectLayer(MapKeys.ObjectLayerKeys.WallLayerKey)["objects"] 
-        this.collisionObjects.forEach(object => {
-            if(object.rectangle){
-                this.objRec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0)
-                this.physics.add.existing(this.objRec, true)
-                this.physics.add.collider(this.player, this.objRec)
-            
-            }else if(object.ellipse){
-                this.objEllips = this.add.circle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.height * Sizes.L1MapScale / 2), 0xff0000).setOrigin(0)
-                this.physics.add.existing(this.objEllips, true)
-                this.physics.add.collider(this.player, this.objEllips)
-
+        const mapObjects = map.getObjectLayer(MapKeys.ObjectLayerKeys.WallLayerKey)["objects"] 
+        mapObjects.forEach(object => {
+            switch(object.name){
+                default:
+                    if(object.rectangle)
+                    {
+                        this.objRec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0)
+                        this.physics.add.existing(this.objRec, true)
+                        this.physics.add.collider(this.player, this.objRec)
+                    }
+                    else if(object.ellipse)
+                    {
+                        this.objEllips = this.add.circle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.height * Sizes.L1MapScale / 2), 0xff0000).setOrigin(0)
+                        this.physics.add.existing(this.objEllips, true)
+                        this.physics.add.collider(this.player, this.objEllips)
+                    }
             }
         })
 
         this.cursor = this.input.keyboard.createCursorKeys()
-        this.cronometro = this.time.addEvent({
+        this.cronometro = this.time.addEvent({                              // QUANDO O JOGO REALMENTE COMOÇAR APENAS 
             delay: 1000,
             callback: () => {
                 level_data.timer += 1
@@ -110,6 +115,7 @@ export default class Game extends Phaser.Scene
 
 
     update() {
+        // SE O FOGO ESTIVER PAUSADO OU SE ELE NÃO ESTIVER RODADNDO AS FUNÇOES DO UPDATE NÃO IRÃO SER LIDAS
          if(this.currentGameState != this.GameStatesObj.Running && !this.GameStatesObj.isPaused)
         {
             return
@@ -117,7 +123,7 @@ export default class Game extends Phaser.Scene
         
         this.handleLMainCharacterMovements()
         this.keepCharacterInCameraBounds()
-        this.physics.world.collide(this.player, this.collisionObjects);
+        // this.physics.world.collide(this.player, mapObjects);
         
         this.time.delayedCall(Difficulty.DelayMapScrooling, () => {
             this.toggleKeyboardControl()
