@@ -11,29 +11,29 @@ import * as Animation from '../Consts/Animations'
 import * as CharactersKey from '../Consts/CharacterKeys'
 import * as SongsKey from '../Consts/SongsKey'
 
-var level_data = {
+let level_data = {
     timer: 0,
-    running: false
+    running: false,
+    aux_controlDelay: 0
 }
 
 export default class Game extends Phaser.Scene
 {
-    preload(){
-        
-    }
-   
+    /** Lembre-se que quando implementados o fim da fase e o botão de pausar 
+     * devemos atualizar tanto GameStatesObj quanto currentGameState */
     init(){
         this.enableKeyboard = false
         this.GameStatesObj = {
             Running: 'running',
             Finished: 'finished',
             Paused: 'paused',
-            isPaused: true,
+            hasBegun: false,
+            isPaused: false,
+            isFinished: false,
             isMapScrolling: false,
             hasMapScrolled: false
-            
-            //criar metodos SET()
         }
+        
         this.currentGameState = this.GameStatesObj.Running
         
         // styles
@@ -79,12 +79,13 @@ export default class Game extends Phaser.Scene
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
         
-        this.createNeededAnimation()
+        this.createNeededAnimation() // criar apenas uma vez (preload)
         
         this.player = this.physics.add.sprite( ((Sizes.L1MapWidth - 128) * Sizes.L1MapScale) / 2, (Sizes.L1MapHeight - 30) * Sizes.L1MapScale, CharactersKey.ManUpKey).setScale(Sizes.characterScale)
         this.player.setCollideWorldBounds(true);
 
         const mapObjects = map.getObjectLayer(MapKeys.ObjectLayerKeys.WallLayerKey)["objects"] 
+        
         mapObjects.forEach(object => {
             switch(object.name){
                 default:
@@ -111,55 +112,56 @@ export default class Game extends Phaser.Scene
             },
             loop: true
         })
+        this.GameStatesObj.hasBegun = true
     }
 
 
-    update() {
-        // SE O FOGO ESTIVER PAUSADO OU SE ELE NÃO ESTIVER RODADNDO AS FUNÇOES DO UPDATE NÃO IRÃO SER LIDAS
-         if(this.currentGameState != this.GameStatesObj.Running && !this.GameStatesObj.isPaused)
-        {
-            return
-        }
+    update() {  // SE O FOGO ESTIVER PAUSADO OU SE ELE NÃO ESTIVER RODADNDO AS FUNÇOES DO UPDATE NÃO IRÃO SER LIDAS
+        console.log(`    ESTADO DA FASE:
+        O Jogo começou = ${this.GameStatesObj.hasBegun}
+        O mapa ta rodando = ${this.GameStatesObj.isMapScrolling}
+        O Jogo está pausado = ${this.GameStatesObj.isPaused}
+        O Jogo termino = ${this.GameStatesObj.isFinished}
+        O Mapa terminou = ${this.GameStatesObj.hasMapScrolled}
+        `)
         
+        if(this.currentGameState != this.GameStatesObj.Running && !this.GameStatesObj.hasBegun) return
         this.handleLMainCharacterMovements()
-        this.keepCharacterInCameraBounds()
-        // this.physics.world.collide(this.player, mapObjects);
-        
+        if (this.GameStatesObj.hasMapScrolled) this.keepCharacterInCameraBounds()  
         this.time.delayedCall(Difficulty.DelayMapScrooling, () => {
-            this.toggleKeyboardControl()
+            if(level_data.aux_controlDelay == 0)
+            {
+                level_data.aux_controlDelay ++
+                this.toggleKeyboardControl()
+            }
             this.handleMapScrolling()
         })
     }
 
     handleLMainCharacterMovements(){
         if(this.enableKeyboard){  
-            var sentence1 = (this.GameStatesObj.isMapScrolling && !this.cursor.left.isDown && !this.cursor.right.isDown)
-            var sentence2 = (this.GameStatesObj.isMapScrolling && this.cursor.up.isDown)
-            var sentence3 = (this.GameStatesObj.isMapScrolling && this.cursor.down.isDown)
-            var y = -100
+            const noLeftRightKey = (this.GameStatesObj.isMapScrolling && !this.cursor.left.isDown && !this.cursor.right.isDown)
+            const noUpKey        = (this.GameStatesObj.isMapScrolling && this.cursor.up.isDown)
+            const noDownKey      = (this.GameStatesObj.isMapScrolling && this.cursor.down.isDown)
+            
+            const y = !this.GameStatesObj.isMapScrolling ? 0 : -100
 
-            if( sentence1 || sentence2 || sentence3 )
+            if( noLeftRightKey || noUpKey || noDownKey )
             {
                     this.player.key = CharactersKey.ManUpKey
                     this.player.play({key: Animation.ManWalkUpKey, repeat: 0}, true)
                     this.player.setVelocity(0, y)
             }
             else
-            {
+            {   
                 if( this.cursor.left.isDown )
                 {   
-                    if(!this.GameStatesObj.isMapScrolling){
-                        y = 0
-                    }
                     this.player.key =  CharactersKey.ManLeftKey
                     this.player.play(Animation.ManWalkLeftKey, true)
                     this.player.setVelocity(-100, y)        
                 }
                 else if (this.cursor.right.isDown)
                 {
-                    if(!this.GameStatesObj.isMapScrolling){
-                        y = 0
-                    }
                     this.player.key = CharactersKey.ManRightKey
                     this.player.play(Animation.ManWalkRightKey, true)
                     this.player.setVelocity(100, y)        
@@ -176,19 +178,19 @@ export default class Game extends Phaser.Scene
                     this.player.play(Animation.ManWalkDownKey, true)
                     this.player.setVelocity(0, 100)        
                 }
-                else{
+                else{                                   // isMapScrolling = false
                     this.player.setVelocity(0, 0)        
                 }
             }
         }
     }  
     
-    keepCharacterInCameraBounds(){
-        // console.log(`O Mapa terminou de descer? -> ${this.GameStatesObj.hasMapScrolled} \nO estado atual do JOGO é rodando ? -> ${this.currentGameState == 'running'}`)
-        if(this.GameStatesObj.hasMapScrolled && this.currentGameState == 'running')
-        {
-            // console.log(`O personagem está acima do limite? -> ${this.player.y < this.cameras.main.height}`)
-            if(this.player.y > this.cameras.main.height - this.player.height){
+    keepCharacterInCameraBounds(){ // se os calculos de velocidade do boneco e velocidade de scrool do mapa estiverem ajustados corretamente essa função não será necessária
+        if(this.currentGameState == 'running')
+        {   
+            const screenHeight = this.cameras.main.height
+            if(this.player.y > screenHeight - this.player.height)
+            {
                 this.player.setVelocityY(-5)
             }
         }
@@ -198,25 +200,26 @@ export default class Game extends Phaser.Scene
         if(this.cameras.main.scrollY > 0)
         {   
             this.cameras.main.scrollY -= Difficulty.SpeedMapScrolling
-            this.GameStatesObj.isMapScrolling = true
-            this.GameStatesObj.isPaused = false
-            level_data.running = true
+            if(!this.GameStatesObj.isMapScrolling)
+            {
+                this.GameStatesObj.isMapScrolling = true
+                level_data.running = true
+            }
         } 
         else
         {
-            this.GameStatesObj.isPaused = true // Retirar paused e add fineshed
-            this.GameStatesObj.isMapScrolling = false
-            this.GameStatesObj.hasMapScrolled =  true
-            this.time.removeEvent(this.cronometro)
-            level_data.running = false
-            
-
-            // this.currentGameState = this.GameStatesObj.Running
+            if(this.GameStatesObj.isMapScrolling)
+            {
+                this.GameStatesObj.isMapScrolling = false
+                this.GameStatesObj.hasMapScrolled =  true
+                this.time.removeEvent(this.cronometro)
+                level_data.running = false
+            }
         }
 
     }
 
-    createNeededAnimation() {
+    createNeededAnimation() { // criar apenas uma vez (preload)
         const ManWalkUpConfig = {
             key: Animation.ManWalkUpKey,
             frames: this.anims.generateFrameNumbers(CharactersKey.ManUpKey, {frame: [0, 1, 2, 3]}),
