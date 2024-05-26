@@ -6,7 +6,7 @@
 import Phaser from "phaser";
 
 // consts
-import { Game, Level1 } from "../Consts/SceneKeys";
+import { Level1 } from "../Consts/SceneKeys";
 import { Title } from "../Consts/SceneKeys";
 import { MapaMain } from "../Consts/SceneKeys";
 

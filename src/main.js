@@ -3,7 +3,6 @@
 import Phaser from 'phaser'
 
 //  Scenes
-import Game from './Scenes/Game.js'
 import Preload from './Scenes/Preload'
 import Title from './Scenes/Title.js'
 import MapaMain from './Scenes/MapaMain.js'
