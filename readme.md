@@ -22,8 +22,12 @@ OK   2 - Implementar uma logica para a definição da escala do mapa Level1
 OK    1 - Tentar substitur as varias interaçoes sobre o array de objetos por apenas uma interação onde todos os outros array
              já são definidos
 ->    2 - Fazer os imports apenas das contantes necessárias
-      3 - Estudar as circunstâncias e possibilidades de substituir as variaveis das classe das Cenas do jogo por variaveis 
-             de escopo mais  abstratos
+            - PRELOAD
+            - TITLE
+            - MAPA MAIN
+            - lEVEL 1 
+            - MAIN
+      3 - Estudar as circunstâncias e possibilidades de substituir as variaveis das classe das Cenas do jogo por        variaveis de escopo mais  abstratos
 
 ( 3 )------------------------------------(      ATIVIDADES DA SPRIT      )------------------------------------------------
 -----------------------------------------------     (ANDAMENTO)     ------------------------------------------------------

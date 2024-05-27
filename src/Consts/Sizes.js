@@ -5,32 +5,32 @@
 const mapMain_Width = 1760
 const mapMain_Height = 800
 
-const L1Map_Width = 688
-const L1Map_Height = 2016
+const l1Map_width = 688
+const l1Map_height = 2016
 
-const containerGame_Width = window.innerWidth * .6 > 1000 ? 1000 : window.innerWidth * .6
-const containerGame_Height = window.innerHeight * .6 
+const containerGame_width = window.innerWidth * .6 > 1300 ? 1300 : window.innerWidth * .6
+const containerGame_height = window.innerHeight * .6 > 1100 ? 1400  : window.innerHeight * .6
 
-const Screen_Width = window.innerWidth - 20
-const ScreenHeight =  window.innerHeight - 20
+const screen_width = window.innerWidth - 20
+const screen_height =  window.innerHeight - 20
 
-const mapScale = 1.2
-const L1Map_Scale = containerGame_Width / L1Map_Width
-const characterScale = 2.3
+const mapMain_scale = 1.3
+const l1Map_scale = containerGame_width / l1Map_width
+const character_scale = 2.3
 
 
 export {
-    Screen_Width,
-    ScreenHeight,
+    screen_width,
+    screen_height,
     mapMain_Width,  
     mapMain_Height,  
-    containerGame_Width, 
-    containerGame_Height,
-    mapScale,
-    characterScale,
-    L1Map_Width,
-    L1Map_Height,
-    L1Map_Scale,
+    containerGame_width, 
+    containerGame_height,
+    mapMain_scale,
+    character_scale,
+    l1Map_width,
+    l1Map_height,
+    l1Map_scale,
 
     // mapF1Width  
     // mapF1height  

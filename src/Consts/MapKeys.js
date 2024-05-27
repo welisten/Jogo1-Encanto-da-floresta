@@ -2,18 +2,18 @@
 //  necessárias à Classe Phaser.Tileset usadas no Jogo
 
 
-const MapKey = "mapMain_key"
-const MapURL = "public/assets/map/mapaMain.json"
+const mapMain_key = "mapMain_key"
+const mapMain_URL = "public/assets/map/mapaMain.json"
 
-const MapL1Key = 'mapFs1_key'
-const MapL1URL = "public/assets/map/fase_1_map.json"
+const mapL1_key = 'mapLv1_key'
+const mapL1_URL = "public/assets/map/fase_1_map.json"
 
-const ObjectLayerKeys = {
+const objectsLayers_keys = { // GENERAL
     WallLayerKey: "walls", //Levels
     MapaMainLayer_obj1: "obj1", // MapaMain
 }
 
-const objConfigTilesetMap = [ // MapaMain
+const mapMain_tilesetObjConfig = [ // MapaMain
 
     {
         key: 'comple1',
@@ -62,7 +62,7 @@ const objConfigTilesetMap = [ // MapaMain
     },
 ]
 
- const L1_ObjConfigTileset = [ //Level 1
+ const l1_tilesetObjConfig = [
     {
         key: 'comple1',
         url: 'public/assets/tilesets/comple1.png',
@@ -100,7 +100,7 @@ const objConfigTilesetMap = [ // MapaMain
     }
 ]
 
-const mapaMainLayerID = {
+const mapMainLayers_ID = {
     layer1: 'ground',
     layer2: 'levels',
     layer3: 'trunks_roots',
@@ -115,7 +115,7 @@ const mapaMainLayerID = {
     layer12: 'building_f2'
 }
 
-const L1_LayerID = {
+const l1_layers_ID = {
     layer1: 'ground',
     layer2: 'terrain',
     layer3: 'train',
@@ -126,14 +126,14 @@ const L1_LayerID = {
 
 
 export {
-    MapL1Key,
-    MapL1URL,
-    MapKey,
-    MapURL,
+    mapL1_key, //OK
+    mapL1_URL, // ok
+    mapMain_key,
+    mapMain_URL,
 
-    mapaMainLayerID,
-    L1_LayerID,
-    objConfigTilesetMap,
-    L1_ObjConfigTileset,
-    ObjectLayerKeys,
+    mapMainLayers_ID,
+    objectsLayers_keys,
+    l1_layers_ID,
+    mapMain_tilesetObjConfig,
+    l1_tilesetObjConfig, // OK
 }

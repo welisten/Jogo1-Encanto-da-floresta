@@ -6,15 +6,14 @@
 import Phaser from "phaser";
 
 // consts
-import { Level1 } from "../Consts/SceneKeys";
-import { Title } from "../Consts/SceneKeys";
-import { MapaMain } from "../Consts/SceneKeys";
+import { level1, title, mapaMain } from "../Consts/SceneKeys";//                             O-O *
 
-import * as MapKeys from '../Consts/MapKeys'
-import * as CharactersKey from '../Consts/CharacterKeys'
-import * as SpriteSheets from '../Consts/SpriteSheets'
-import * as ImageKey from '../Consts/ImagesKeys'
-import * as SongsKey from '../Consts/SongsKey'
+import { mapL1_key, mapL1_URL, l1_tilesetObjConfig } from '../Consts/MapKeys'
+import { userCharacter_objConfig } from '../Consts/CharacterKeys'
+import { lifeBar } from '../Consts/SpriteSheets'
+import { titleImages, uiImages } from '../Consts/ImagesKeys'
+import { titleSongs, mapMainSongs, level1Songs } from '../Consts/SongsKey'
+
 export default class Preload extends Phaser.Scene{
     
     preload(){
@@ -22,87 +21,89 @@ export default class Preload extends Phaser.Scene{
 
         // TITLE
         //      Songs
-        load.audio(SongsKey.MusicG1Key, SongsKey.MusicG1URL, SongsKey.MusicG1Config)
+        load.audio(titleSongs.titleTheme.key, titleSongs.titleTheme.url, titleSongs.titleTheme.config)
         //      Parallax Images
-        load.image(ImageKey.Background, ImageKey.Background_URL)
-        load.image(ImageKey.Rocks_2, ImageKey.Rocks2_URL)
-        load.image(ImageKey.Rocks_1, ImageKey.Rocks1_URL) 
-        load.image(ImageKey.Clouds_1, ImageKey.Clouds1_URL)
-        load.image(ImageKey.Clouds_2, ImageKey.Clouds2_URL)
-        load.image(ImageKey.Clouds_3, ImageKey.Clouds3_URL)
-        load.image(ImageKey.Clouds_4, ImageKey.Clouds4_URL)
-        load.image(ImageKey.Logo2, ImageKey.Logo2_URL)
-        load.image(ImageKey.RecStart, ImageKey.RecStart_URL)
+        load.image(titleImages.background.key, titleImages.background.url)
+        load.image(titleImages.rocks_2.key, titleImages.rocks_2.url)
+        load.image(titleImages.rocks_1.key, titleImages.rocks_1.url)
+        load.image(titleImages.clouds_1.key, titleImages.clouds_1.url)
+        load.image(titleImages.clouds_2.key, titleImages.clouds_2.url)
+        load.image(titleImages.clouds_3.key, titleImages.clouds_3.url)
+        load.image(titleImages.clouds_4.key, titleImages.clouds_4.url)
+        load.image(titleImages.logo.key, titleImages.logo.url)
+        load.image(titleImages.recTitle.key, titleImages.recTitle.url)
         
         // MAIN
         //     Songs
-        load.audio(SongsKey.MMMusicKey, SongsKey.MMMusicURL, SongsKey.MMMusicConfig)     
+        load.audio(mapMainSongs.mapaMain_theme.key, mapMainSongs.mapaMain_theme.url, mapMainSongs.mapaMain_theme.config)     
         
         // CHARACTERS
         load.spritesheet(
-            CharactersKey.ManUpKey, 
-            CharactersKey.ManUpURL, 
-            CharactersKey.ManUp_FrameSettings,
-            CharactersKey.ManUp_FrameAmount
+            userCharacter_objConfig.up.manUp_key, 
+            userCharacter_objConfig.up.manUp_URL, 
+            userCharacter_objConfig.up.manUp_FrameSettings,
+            userCharacter_objConfig.up.manUp_FrameAmount
         )
 
         load.spritesheet(
-            CharactersKey.ManDownKey, 
-            CharactersKey.ManDownURL, 
-            CharactersKey.ManDown_FrameSettings,
-            CharactersKey.ManDown_FrameAmount
+            userCharacter_objConfig.down.manDown_key, 
+            userCharacter_objConfig.down.manDown_URL, 
+            userCharacter_objConfig.down.manDown_FrameSettings,
+            userCharacter_objConfig.down.manDown_FrameAmount
         )
 
         load.spritesheet(
-            CharactersKey.ManRightKey,
-            CharactersKey.ManRightURL,
-            CharactersKey.ManRight_FrameSettings,
-            CharactersKey.ManRight_FrameAmount
+            userCharacter_objConfig.right.manRight_key,
+            userCharacter_objConfig.right.manRight_URL,
+            userCharacter_objConfig.right.manRight_FrameSettings,
+            userCharacter_objConfig.right.manRight_FrameAmount
         )
 
         load.spritesheet(
-            CharactersKey.ManLeftKey,
-            CharactersKey.ManLeftURL,
-            CharactersKey.ManLeft_FrameSettings,
-            CharactersKey.ManLeft_FrameAmount
+            userCharacter_objConfig.left.manLeft_key,
+            userCharacter_objConfig.left.manLeft_URL,
+            userCharacter_objConfig.left.manLeft_FrameSettings,
+            userCharacter_objConfig.left.manLeft_FrameAmount
         )
 
         // USER INTERFACE
         //       Heart Bar
         load.spritesheet(
-            SpriteSheets.HeartBarKey,
-            SpriteSheets.HeartBarURL,
-            SpriteSheets.Heart_FrameSettings,
-            SpriteSheets.HeartBar_FrameAmount
+            lifeBar.lifeBar_key,
+            lifeBar.lifeBar_URL,
+            lifeBar.lifeBar_FrameSettings,
+            lifeBar.lifeBar_FrameAmount
         )
         //      Dialog Box
-        load.image(ImageKey.DialogBox_Key, ImageKey.DialogBox_URL)
-            
-        //      CityMap_information
-        load.image(ImageKey.CityMap_Key, ImageKey.CityMap_URL)
-        //      GuapiMap
-        load.image(ImageKey.GuapiMapObj.key, ImageKey.GuapiMapObj.url)
-
+        load.image(uiImages.dialogBox.key, uiImages.dialogBox.url)
         //      Timer
-        load.image(ImageKey.TimerKey, ImageKey.Timer_URL)
-
-        //      Images
-        load.image(ImageKey.directionsImagesObj.up_key , ImageKey.directionsImagesObj.up_URL)
-        load.image(ImageKey.directionsImagesObj.down_key , ImageKey.directionsImagesObj.down_URL)
-        load.image(ImageKey.directionsImagesObj.left_key , ImageKey.directionsImagesObj.left_URL)
-        load.image(ImageKey.directionsImagesObj.right_key , ImageKey.directionsImagesObj.right_URL)
+        load.image(uiImages.timer.key, uiImages.timer.url)
+        
+        //      CityMap_Sign
+        load.image(uiImages.cityMap_Sign.key, uiImages.cityMap_Sign.url)
+        //      CityMap_Map
+        load.image(uiImages.cityMap_Map.key, uiImages.cityMap_Map.url)
+        //      Arrows
+        load.image(uiImages.arrows.up.key , uiImages.arrows.up.url)
+        load.image(uiImages.arrows.down.key , uiImages.arrows.down.url)
+        load.image(uiImages.arrows.left.key , uiImages.arrows.left.url)
+        load.image(uiImages.arrows.right.key , uiImages.arrows.right.url)
 
 
         // Level_1
-        load.tilemapTiledJSON(MapKeys.MapL1Key, MapKeys.MapL1URL, null, Phaser.Tilemaps.TILLED_JSON)
+        load.audio(level1Songs.footstepsOnWater.key, level1Songs.footstepsOnWater.url, level1Songs.footstepsOnWater.config)     
+        load.audio(level1Songs.waterfallSong.key, level1Songs.waterfallSong.url, level1Songs.waterfallSong.config)     
+
+
+        load.tilemapTiledJSON(mapL1_key, mapL1_URL, null, Phaser.Tilemaps.TILLED_JSON)
         
-        load.image(MapKeys.L1_ObjConfigTileset[0].key, MapKeys.L1_ObjConfigTileset[0].url, { frameWidth: 16 })
-        load.image(MapKeys.L1_ObjConfigTileset[1].key, MapKeys.L1_ObjConfigTileset[1].url, { frameWidth: 16 })
-        load.image(MapKeys.L1_ObjConfigTileset[2].key, MapKeys.L1_ObjConfigTileset[2].url, { frameWidth: 16 })
-        load.image(MapKeys.L1_ObjConfigTileset[3].key, MapKeys.L1_ObjConfigTileset[3].url, { frameWidth: 16 })
-        load.image(MapKeys.L1_ObjConfigTileset[4].key, MapKeys.L1_ObjConfigTileset[4].url, { frameWidth: 16 })
-        load.image(MapKeys.L1_ObjConfigTileset[5].key, MapKeys.L1_ObjConfigTileset[5].url, { frameWidth: 16 })
-        load.image(MapKeys.L1_ObjConfigTileset[6].key, MapKeys.L1_ObjConfigTileset[6].url, { frameWidth: 16 })
+        load.image(l1_tilesetObjConfig[0].key, l1_tilesetObjConfig[0].url, { frameWidth: 16 })
+        load.image(l1_tilesetObjConfig[1].key, l1_tilesetObjConfig[1].url, { frameWidth: 16 })
+        load.image(l1_tilesetObjConfig[2].key, l1_tilesetObjConfig[2].url, { frameWidth: 16 })
+        load.image(l1_tilesetObjConfig[3].key, l1_tilesetObjConfig[3].url, { frameWidth: 16 })
+        load.image(l1_tilesetObjConfig[4].key, l1_tilesetObjConfig[4].url, { frameWidth: 16 })
+        load.image(l1_tilesetObjConfig[5].key, l1_tilesetObjConfig[5].url, { frameWidth: 16 })
+        load.image(l1_tilesetObjConfig[6].key, l1_tilesetObjConfig[6].url, { frameWidth: 16 })
 
         // this.load.spritesheet(
         //     CharactersKey.DeerStagNeKey,
@@ -114,6 +115,6 @@ export default class Preload extends Phaser.Scene{
     
 
     create(){
-        this.scene.start(MapaMain)
+        this.scene.start(title)
     }
 }

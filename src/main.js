@@ -10,14 +10,15 @@ import Level1 from './Scenes/Level1.js'
 import UI from './Scenes/UI.js'
 
 //  Consts
-import { containerGame_Width, containerGame_Height } from './Consts/Sizes.js'
+import { containerGame_width, containerGame_height } from './Consts/Sizes.js'
+import { preload, title, mapaMain, mainUserInterface, level1 } from './Consts/SceneKeys'
 import * as SceneKeys from './Consts/SceneKeys'
 
 const config = {
     //  width: window.innerWidth,
     //  height: window.innerHeight,
-    width: containerGame_Width ,
-    height: containerGame_Height,
+    width: containerGame_width ,
+    height: containerGame_height,
      type: Phaser.AUTO,
      backgroundColor: 0x000000,
      parent: 'gameContainer',
@@ -34,12 +35,12 @@ const config = {
 const game =  new Phaser.Game(config)
 
 // Todas a cenas devem ser adicionadas ao jogo aqui
-game.scene.add(SceneKeys.Preload, Preload)
-game.scene.add(SceneKeys.Title, Title)
-game.scene.add(SceneKeys.MapaMain, MapaMain)
-game.scene.add(SceneKeys.MainUserInterface, UI)
-game.scene.add(SceneKeys.Level1, Level1)
+game.scene.add(preload, Preload)
+game.scene.add(title, Title)
+game.scene.add(mapaMain, MapaMain)
+game.scene.add(mainUserInterface, UI)
+game.scene.add(level1, Level1)
 
 
 // Iniciar a primeira cena(Spondo qe todas elas estão encadeadas)
-game.scene.start(SceneKeys.Preload)
+game.scene.start(preload)

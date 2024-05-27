@@ -3,19 +3,17 @@
 import Phaser from "phaser";
 
 // Scenes
-import {MainUserInterface, Level1} from '../Consts/SceneKeys'                                                // ATENCION
+import {mainUserInterface, level1} from '../Consts/SceneKeys'                                                // ATENCION
 
 // Constants
-import * as MapKeys from '../Consts/MapKeys'
-import * as Sizes from '../Consts/Sizes'
-import * as Difficulty from '../Consts/Difficulty'
-import * as Animation from '../Consts/Animations'
-import * as CharactersKey from '../Consts/CharacterKeys'
-import * as SongsKey from '../Consts/SongsKey'
+import { mapMain_key, mapMain_URL, mapMain_tilesetObjConfig, mapMainLayers_ID, objectsLayers_keys}from '../Consts/MapKeys'
+import { userCharacter_objConfig } from '../Consts/CharacterKeys'
+import { mapMainSongs } from '../Consts/SongsKey'
+import { mapMain_scale, character_scale } from '../Consts/Sizes'
+import { character_velocity, character_AnimationFrameRate } from '../Consts/Difficulty'
+import { userCharacter_animationsKey } from '../Consts/Animations'
 
-import { addToUIQueue, bringMapToScrean, queue } from "../Scenes/UI";
-import GameBackground from "../Scenes/UI";
-
+import { addToUIQueue } from "../Scenes/UI";
 
 let GameState = {
     Running: 'running',
@@ -46,17 +44,17 @@ export default class MapaMain extends Phaser.Scene
 
     preload(){
     //  Map
-        this.load.tilemapTiledJSON(MapKeys.MapKey, MapKeys.MapURL, null, Phaser.Tilemaps.TILLED_JSON)
+        this.load.tilemapTiledJSON(mapMain_key, mapMain_URL, null, Phaser.Tilemaps.TILLED_JSON)
         
-        this.load.image(MapKeys.objConfigTilesetMap[0].key, MapKeys.objConfigTilesetMap[0].url, { frameWidth: 16 })
-        this.load.image(MapKeys.objConfigTilesetMap[1].key, MapKeys.objConfigTilesetMap[1].url, { frameWidth: 16 })
-        this.load.image(MapKeys.objConfigTilesetMap[2].key, MapKeys.objConfigTilesetMap[2].url, { frameWidth: 16 })
-        this.load.image(MapKeys.objConfigTilesetMap[3].key, MapKeys.objConfigTilesetMap[3].url, { frameWidth: 16 })
-        this.load.image(MapKeys.objConfigTilesetMap[4].key, MapKeys.objConfigTilesetMap[4].url, { frameWidth: 16 })
-        this.load.image(MapKeys.objConfigTilesetMap[5].key, MapKeys.objConfigTilesetMap[5].url, { frameWidth: 16 })
-        this.load.image(MapKeys.objConfigTilesetMap[6].key, MapKeys.objConfigTilesetMap[6].url, { frameWidth: 16 })
-        this.load.image(MapKeys.objConfigTilesetMap[7].key, MapKeys.objConfigTilesetMap[7].url, { frameWidth: 16 })        
-        this.load.image(MapKeys.objConfigTilesetMap[8].key, MapKeys.objConfigTilesetMap[8].url, { frameWidth: 16 })
+        this.load.image(mapMain_tilesetObjConfig[0].key, mapMain_tilesetObjConfig[0].url, { frameWidth: 16 })
+        this.load.image(mapMain_tilesetObjConfig[1].key, mapMain_tilesetObjConfig[1].url, { frameWidth: 16 })
+        this.load.image(mapMain_tilesetObjConfig[2].key, mapMain_tilesetObjConfig[2].url, { frameWidth: 16 })
+        this.load.image(mapMain_tilesetObjConfig[3].key, mapMain_tilesetObjConfig[3].url, { frameWidth: 16 })
+        this.load.image(mapMain_tilesetObjConfig[4].key, mapMain_tilesetObjConfig[4].url, { frameWidth: 16 })
+        this.load.image(mapMain_tilesetObjConfig[5].key, mapMain_tilesetObjConfig[5].url, { frameWidth: 16 })
+        this.load.image(mapMain_tilesetObjConfig[6].key, mapMain_tilesetObjConfig[6].url, { frameWidth: 16 })
+        this.load.image(mapMain_tilesetObjConfig[7].key, mapMain_tilesetObjConfig[7].url, { frameWidth: 16 })        
+        this.load.image(mapMain_tilesetObjConfig[8].key, mapMain_tilesetObjConfig[8].url, { frameWidth: 16 })
     }
    
     init(){
@@ -82,7 +80,11 @@ export default class MapaMain extends Phaser.Scene
 
     create()
     { 
+
         const initStrLength = 204
+
+        this.sound.play(mapMainSongs.mapaMain_theme.key, {volume: GameState.General_songs_volume})
+
         const timeline_1 = this.add.timeline(
         [      // Compartimentalizar
             {
@@ -102,38 +104,38 @@ export default class MapaMain extends Phaser.Scene
                 run: () =>{ GameState.isPlayerAbleToMove = true } 
             }
         ])
-        const map = this.make.tilemap({key: MapKeys.MapKey})
+        const map = this.make.tilemap({key: mapMain_key})
         
-        const tile_1 = map.addTilesetImage(MapKeys.objConfigTilesetMap[0].name, MapKeys.objConfigTilesetMap[0].key, 16, 16)
-        const tile_2 = map.addTilesetImage(MapKeys.objConfigTilesetMap[1].name, MapKeys.objConfigTilesetMap[1].key, 16, 16)
-        const tile_3 = map.addTilesetImage(MapKeys.objConfigTilesetMap[2].name, MapKeys.objConfigTilesetMap[2].key, 16, 16)
-        const tile_4 = map.addTilesetImage(MapKeys.objConfigTilesetMap[3].name, MapKeys.objConfigTilesetMap[3].key, 16, 16)
-        const tile_5 = map.addTilesetImage(MapKeys.objConfigTilesetMap[4].name, MapKeys.objConfigTilesetMap[4].key, 16, 16)
-        const tile_6 = map.addTilesetImage(MapKeys.objConfigTilesetMap[5].name, MapKeys.objConfigTilesetMap[5].key, 16, 16)
-        const tile_7 = map.addTilesetImage(MapKeys.objConfigTilesetMap[6].name, MapKeys.objConfigTilesetMap[6].key, 16, 16)
-        const tile_8 = map.addTilesetImage(MapKeys.objConfigTilesetMap[7].name, MapKeys.objConfigTilesetMap[7].key, 16, 16)
-        const tile_9 = map.addTilesetImage(MapKeys.objConfigTilesetMap[8].name, MapKeys.objConfigTilesetMap[8].key, 16, 16)
+        const tile_1 = map.addTilesetImage(mapMain_tilesetObjConfig[0].name, mapMain_tilesetObjConfig[0].key, 16, 16)
+        const tile_2 = map.addTilesetImage(mapMain_tilesetObjConfig[1].name, mapMain_tilesetObjConfig[1].key, 16, 16)
+        const tile_3 = map.addTilesetImage(mapMain_tilesetObjConfig[2].name, mapMain_tilesetObjConfig[2].key, 16, 16)
+        const tile_4 = map.addTilesetImage(mapMain_tilesetObjConfig[3].name, mapMain_tilesetObjConfig[3].key, 16, 16)
+        const tile_5 = map.addTilesetImage(mapMain_tilesetObjConfig[4].name, mapMain_tilesetObjConfig[4].key, 16, 16)
+        const tile_6 = map.addTilesetImage(mapMain_tilesetObjConfig[5].name, mapMain_tilesetObjConfig[5].key, 16, 16)
+        const tile_7 = map.addTilesetImage(mapMain_tilesetObjConfig[6].name, mapMain_tilesetObjConfig[6].key, 16, 16)
+        const tile_8 = map.addTilesetImage(mapMain_tilesetObjConfig[7].name, mapMain_tilesetObjConfig[7].key, 16, 16)
+        const tile_9 = map.addTilesetImage(mapMain_tilesetObjConfig[8].name, mapMain_tilesetObjConfig[8].key, 16, 16)
         
         const tilesArray = [tile_1, tile_2, tile_3, tile_4, tile_5, tile_6, tile_7, tile_8, tile_9]
         
-        this.layer_ground       =  map.createLayer(MapKeys.mapaMainLayerID.layer1, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_levels       =  map.createLayer(MapKeys.mapaMainLayerID.layer2, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_trunksRoots  =  map.createLayer(MapKeys.mapaMainLayerID.layer3, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_train        =  map.createLayer(MapKeys.mapaMainLayerID.layer4, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_floor1       =  map.createLayer(MapKeys.mapaMainLayerID.layer5, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_fence        =  map.createLayer(MapKeys.mapaMainLayerID.layer6, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_vegetationf1 =  map.createLayer(MapKeys.mapaMainLayerID.layer7, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_floor2       =  map.createLayer(MapKeys.mapaMainLayerID.layer8, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_treetops1    =  map.createLayer(MapKeys.mapaMainLayerID.layer9, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_shadowsf2    =  map.createLayer(MapKeys.mapaMainLayerID.layer10, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_vegetationf2 =  map.createLayer(MapKeys.mapaMainLayerID.layer11, tilesArray, 0, 0).setScale(Sizes.mapScale)
-        this.layer_buildingsf2  =  map.createLayer(MapKeys.mapaMainLayerID.layer12, tilesArray, 0, 0).setScale(Sizes.mapScale)
+        this.layer_ground       =  map.createLayer(mapMainLayers_ID.layer1, tilesArray, 0, 0).setScale(mapMain_scale)
+        this.layer_levels       =  map.createLayer(mapMainLayers_ID.layer2, tilesArray, 0, 0).setScale(mapMain_scale)
+        this.layer_trunksRoots  =  map.createLayer(mapMainLayers_ID.layer3, tilesArray, 0, 0).setScale(mapMain_scale)
+        this.layer_train        =  map.createLayer(mapMainLayers_ID.layer4, tilesArray, 0, 0).setScale(mapMain_scale)
+        this.layer_floor1       =  map.createLayer(mapMainLayers_ID.layer5, tilesArray, 0, 0).setScale(mapMain_scale)
+        this.layer_fence        =  map.createLayer(mapMainLayers_ID.layer6, tilesArray, 0, 0).setScale(mapMain_scale)
+        this.layer_vegetationf1 =  map.createLayer(mapMainLayers_ID.layer7, tilesArray, 0, 0).setScale(mapMain_scale)
+        this.layer_floor2       =  map.createLayer(mapMainLayers_ID.layer8, tilesArray, 0, 0).setScale(mapMain_scale)
+        this.layer_treetops1    =  map.createLayer(mapMainLayers_ID.layer9, tilesArray, 0, 0).setScale(mapMain_scale)
+        this.layer_shadowsf2    =  map.createLayer(mapMainLayers_ID.layer10, tilesArray, 0, 0).setScale(mapMain_scale)
+        this.layer_vegetationf2 =  map.createLayer(mapMainLayers_ID.layer11, tilesArray, 0, 0).setScale(mapMain_scale)
+        this.layer_buildingsf2  =  map.createLayer(mapMainLayers_ID.layer12, tilesArray, 0, 0).setScale(mapMain_scale)
         
-        this.cameras.main.setBounds(0, 0, (map.widthInPixels * Sizes.mapScale), (map.heightInPixels * Sizes.mapScale), true) // limites da camera
-        this.physics.world.setBounds(0, 0, (map.widthInPixels * Sizes.mapScale), (map.heightInPixels * Sizes.mapScale))
+        this.cameras.main.setBounds(0, 0, (map.widthInPixels * mapMain_scale), (map.heightInPixels * mapMain_scale), true) // limites da camera
+        this.physics.world.setBounds(0, 0, (map.widthInPixels * mapMain_scale), (map.heightInPixels * mapMain_scale))
 
-        this.scene.run(MainUserInterface)
-        this.scene.bringToTop(MainUserInterface)
+        this.scene.run(mainUserInterface)
+        this.scene.bringToTop(mainUserInterface)
 
         // timeline_1.play()
         GameState.isPlayerAbleToMove        = true                                      //retirar
@@ -144,7 +146,7 @@ export default class MapaMain extends Phaser.Scene
         
         const initPoint = this.getObjectById(2)
 
-        this.player = this.physics.add.sprite( Math.floor(initPoint.x * Sizes.mapScale), Math.floor(initPoint.y * Sizes.mapScale), CharactersKey.ManDownKey).setDepth(2).setScale(Sizes.characterScale)
+        this.player = this.physics.add.sprite( Math.floor(initPoint.x * mapMain_scale), Math.floor(initPoint.y * mapMain_scale), userCharacter_objConfig.down.manDown_key).setDepth(2).setScale(character_scale)
         this.player.setCollideWorldBounds(true);
         this.player.body.setSize(4, 4)
         
@@ -155,14 +157,14 @@ export default class MapaMain extends Phaser.Scene
         this.cursor = this.input.keyboard.createCursorKeys() 
         
         //----------------------       MAP OBJECTS       -----------------------
-        const mapObjects = map.getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1)['objects']
+        const mapObjects = map.getObjectLayer(objectsLayers_keys.MapaMainLayer_obj1)['objects']
 
         mapObjects.forEach(object => {
             switch(object.name){
                 case 'decision_break':
                     if(object.id != 2)
                     {
-                        const circle = this.add.circle(Math.round(object.x * Sizes.mapScale), Math.round(object.y * Sizes.mapScale), .5).setOrigin(0)
+                        const circle = this.add.circle(Math.round(object.x * mapMain_scale), Math.round(object.y * mapMain_scale), .5).setOrigin(0)
 
                         this.physics.add.existing(circle, true)
                         this.physics.add.overlap(this.player, circle, () => {
@@ -219,7 +221,7 @@ export default class MapaMain extends Phaser.Scene
                 case 'level':
                     let hasOverlapOccurred = false
                     
-                    const rec = this.add.rectangle((object.x * Sizes.mapScale), (object.y * Sizes.mapScale), (object.width * Sizes.mapScale), (object.height * Sizes.mapScale)).setDisplayOrigin(0)
+                    const rec = this.add.rectangle((object.x * mapMain_scale), (object.y * mapMain_scale), (object.width * mapMain_scale), (object.height * mapMain_scale)).setDisplayOrigin(0)
                     
                     this.physics.add.existing(rec, true)
                     this.physics.add.overlap(rec, this.player, () => {
@@ -239,7 +241,7 @@ export default class MapaMain extends Phaser.Scene
                                     delay: 500,
                                     callback: () => {
                                         this.song
-                                        this.transitToNewScene(Level1)
+                                        this.transitToNewScene(level1)
                                         this.time.delayedCall(1000, () => GameState.isPlayerAbleToMove = true)
                                     },
                                     loop: false
@@ -250,13 +252,13 @@ export default class MapaMain extends Phaser.Scene
                     break
                     
                 case 'info':
-                    const recInfo = this.add.rectangle((object.x * Sizes.mapScale), (object.y * Sizes.mapScale), (object.width * Sizes.mapScale), (object.height * Sizes.mapScale)).setDisplayOrigin(0)
+                    const recInfo = this.add.rectangle((object.x * mapMain_scale), (object.y * mapMain_scale), (object.width * mapMain_scale), (object.height * mapMain_scale)).setDisplayOrigin(0)
                     this.physics.add.existing(recInfo, true)
                     this.physics.add.overlap(recInfo, this.player, () => this.onInfoElementsOverlap(object))
                     break
                 
                 case 'fence':
-                    const recFence = this.add.rectangle((object.x * Sizes.mapScale), (object.y * Sizes.mapScale), (object.width * Sizes.mapScale), (object.height * Sizes.mapScale)).setDisplayOrigin(0).setDepth(10)
+                    const recFence = this.add.rectangle((object.x * mapMain_scale), (object.y * mapMain_scale), (object.width * mapMain_scale), (object.height * mapMain_scale)).setDisplayOrigin(0).setDepth(10)
                     this.physics.add.existing(recFence, true)
                     this.physics.add.collider(this.player, recFence)
                     break
@@ -264,10 +266,10 @@ export default class MapaMain extends Phaser.Scene
                 case 'cityMap':
                     const CityMap_point =  object
 
-                    const recX = CityMap_point.x * Sizes.mapScale
-                    const recY = CityMap_point.y * Sizes.mapScale
-                    const recW = CityMap_point.width * Sizes.mapScale
-                    const recH = CityMap_point.height * Sizes.mapScale 
+                    const recX = CityMap_point.x * mapMain_scale
+                    const recY = CityMap_point.y * mapMain_scale
+                    const recW = CityMap_point.width * mapMain_scale
+                    const recH = CityMap_point.height * mapMain_scale 
                     
                     const recCityMap = this.add.rectangle(recX, recY, recW, recH).setOrigin(0)
                             
@@ -283,12 +285,12 @@ export default class MapaMain extends Phaser.Scene
 
                 default:
                     if(object.rectangle){
-                        const objRec = this.add.rectangle((object.x * Sizes.mapScale), (object.y * Sizes.mapScale), (object.width * Sizes.mapScale), (object.height * Sizes.mapScale)).setDisplayOrigin(0).setDepth(10)
+                        const objRec = this.add.rectangle((object.x * mapMain_scale), (object.y * mapMain_scale), (object.width * mapMain_scale), (object.height * mapMain_scale)).setDisplayOrigin(0).setDepth(10)
                         this.physics.add.existing(objRec, true)
                         this.physics.add.collider(this.player, objRec)
                         
                      }else if(object.ellipse){
-                         const objEllips = this.add.circle((object.x * Sizes.mapScale), (object.y * Sizes.mapScale), (object.height * Sizes.mapScale / 2)).setOrigin(0)
+                         const objEllips = this.add.circle((object.x * mapMain_scale), (object.y * mapMain_scale), (object.height * mapMain_scale / 2)).setOrigin(0)
                          this.physics.add.existing(objEllips, true)
                          this.physics.add.collider(this.player, objEllips)
                     }
@@ -296,7 +298,6 @@ export default class MapaMain extends Phaser.Scene
             }
         })
 
-        this.sound.play(SongsKey.MMMusicKey, {volume: GameState.General_songs_volume})
         
         //----------------------       DOM        -----------------------
         const accessible_btn = document.getElementById('alternativeMovements')
@@ -359,7 +360,7 @@ export default class MapaMain extends Phaser.Scene
     }
 
     getObjectById(objectId) {
-        const objectLayer = this.make.tilemap({key: MapKeys.MapKey}).getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1);
+        const objectLayer = this.make.tilemap({key: mapMain_key}).getObjectLayer(objectsLayers_keys.MapaMainLayer_obj1);
         
         if (!objectLayer) 
         {
@@ -376,28 +377,28 @@ export default class MapaMain extends Phaser.Scene
         {
             if(this.cursor.up.isDown)
             {
-                this.player.key = CharactersKey.ManUpKey
-                this.player.play({key: Animation.ManWalkUpKey, repeat: 0}, true)
-                this.player.setVelocity(0, -Difficulty.Char_velocity)        
+                this.player.key = userCharacter_objConfig.up.manUp_key
+                this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: 0}, true)
+                this.player.setVelocity(0, -character_velocity)        
 
             }
             else if (this.cursor.down.isDown)
             {
-                this.player.key = CharactersKey.ManDownKey
-                this.player.play(Animation.ManWalkDownKey, true)
-                this.player.setVelocity(0, Difficulty.Char_velocity)        
+                this.player.key = userCharacter_objConfig.down.manDown_key
+                this.player.play(userCharacter_animationsKey.walk_down.key, true)
+                this.player.setVelocity(0, character_velocity)        
             }
             else if( this.cursor.left.isDown )
             {   
-                this.player.key =  CharactersKey.ManLeftKey
-                this.player.play(Animation.ManWalkLeftKey, true)
-                this.player.setVelocity(-Difficulty.Char_velocity, 0)        
+                this.player.key =  userCharacter_objConfig.left.manLeft_key
+                this.player.play(userCharacter_animationsKey.walk_left.key, true)
+                this.player.setVelocity(-character_velocity, 0)        
             }
             else if (this.cursor.right.isDown)
             {
-                this.player.key = CharactersKey.ManRightKey
-                this.player.play(Animation.ManWalkRightKey, true)
-                this.player.setVelocity(Difficulty.Char_velocity, 0)        
+                this.player.key = userCharacter_objConfig.right.manRight_key
+                this.player.play(userCharacter_animationsKey.walk_right.key, true)
+                this.player.setVelocity(character_velocity, 0)        
             }else{
                 this.player.setVelocity(0)
             }
@@ -405,14 +406,14 @@ export default class MapaMain extends Phaser.Scene
 
             if(!this.isScrolling && this.cursor.up.isDown)
             {
-                this.player.key = CharactersKey.ManUpKey
-                this.player.play({key: Animation.ManWalkUpKey, repeat: 0}, true)
+                this.player.key = userCharacter_objConfig.up.manUp_key
+                this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: 0}, true)
                 this.player.setVelocityY(-100)        
             } 
             else if(!this.isScrolling && this.cursor.down.isDown)
             {
-                this.player.key = CharactersKey.ManDownKey
-                this.player.play(Animation.ManWalkDownKey, true)
+                this.player.key = userCharacter_objConfig.down.manDown_key
+                this.player.play(userCharacter_animationsKey.walk_down.key, true)
                 this.player.setVelocityY(100)        
             }
         }
@@ -424,43 +425,43 @@ export default class MapaMain extends Phaser.Scene
      
     createAllNeededAnimation() {
         const ManWalkUpConfig = {
-            key: Animation.ManWalkUpKey,
-            frames: this.anims.generateFrameNumbers(CharactersKey.ManUpKey, {frame: [0, 1, 2, 3]}),
-            frameRate: Difficulty.AnimationFrameRate, 
+            key: userCharacter_animationsKey.walk_up.key,
+            frames: this.anims.generateFrameNumbers(userCharacter_objConfig.up.manUp_key, {frame: [0, 1, 2, 3]}),
+            frameRate: character_AnimationFrameRate, 
             repeat: 0,
         }
         this.anims.create(ManWalkUpConfig)
         
         const ManWalkLeftConfig = {
-            key: Animation.ManWalkLeftKey,
-            frames: this.anims.generateFrameNumbers(CharactersKey.ManLeftKey, {frame: [0, 1, 2, 3]}),
-            frameRate: Difficulty.AnimationFrameRate,
+            key: userCharacter_animationsKey.walk_left.key,
+            frames: this.anims.generateFrameNumbers(userCharacter_objConfig.left.manLeft_key, {frame: [0, 1, 2, 3]}),
+            frameRate: character_AnimationFrameRate,
             repeat: 0,
         }
         this.anims.create(ManWalkLeftConfig)
         
         const ManWalkRightConfig = {
-            key: Animation.ManWalkRightKey,
-            frames: this.anims.generateFrameNumbers(CharactersKey.ManRightKey, {frame: [0, 1, 2, 3]}),
-            frameRate: Difficulty.AnimationFrameRate,
+            key: userCharacter_animationsKey.walk_right.key,
+            frames: this.anims.generateFrameNumbers(userCharacter_objConfig.right.manRight_key, {frame: [0, 1, 2, 3]}),
+            frameRate: character_AnimationFrameRate,
             repeat: 0,
         }
         this.anims.create(ManWalkRightConfig)
 
         const ManWalkDownConfig = {
-            key: Animation.ManWalkDownKey,
-            frames: this.anims.generateFrameNumbers(CharactersKey.ManDownKey, {frame: [0, 1, 2, 3]}),
-            frameRate: Difficulty.AnimationFrameRate, 
+            key: userCharacter_animationsKey.walk_down.key,
+            frames: this.anims.generateFrameNumbers(userCharacter_objConfig.down.manDown_key, {frame: [0, 1, 2, 3]}),
+            frameRate: character_AnimationFrameRate, 
             repeat: 0,
         }
         this.anims.create(ManWalkDownConfig)
     } 
     
     getPlayerFloor(){
-        const upEdge      = 321 * Sizes.mapScale 
-        const downEdge    = 559 * Sizes.mapScale
-        const leftEdge    = 770 * Sizes.mapScale
-        const rightEdge   = 1248 * Sizes.mapScale
+        const upEdge      = 321 * mapMain_scale 
+        const downEdge    = 559 * mapMain_scale
+        const leftEdge    = 770 * mapMain_scale
+        const rightEdge   = 1248 * mapMain_scale
 
         if(this.player.x > leftEdge && this.player.x < rightEdge && this.player.y > upEdge && this.player.y < downEdge)
         {
@@ -549,13 +550,13 @@ export default class MapaMain extends Phaser.Scene
 //              Resgata o ponto alvo e atualiza as coordenadas do alvo no obj de controle do jogador               
                 const next_Point = this.getObjectById(up_propertie.value)
 
-                this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
-                this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
+                this.playerState.targetX = Math.floor(next_Point.x * mapMain_scale) 
+                this.playerState.targetY = Math.floor(next_Point.y * mapMain_scale)
                 this.playerState.targetID = up_propertie.value
 //              Dispara o personagem na direção desejada usando a respectiva animação
-                this.player.key = CharactersKey.ManUpKey
-                this.player.play({key: Animation.ManWalkUpKey, repeat: -1}, true)
-                this.player.setVelocity(0, -Difficulty.Char_velocity)
+                this.player.key = userCharacter_objConfig.up.manUp_key
+                this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: -1}, true)
+                this.player.setVelocity(0, -character_velocity)
                 
 //              Atualiza o estado do personagem em: "movimentando" e "direção"
                 this.playerState.isMoving = true 
@@ -576,13 +577,13 @@ export default class MapaMain extends Phaser.Scene
 
                 const next_Point = this.getObjectById(down_propertie.value)
 
-                this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
-                this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
+                this.playerState.targetX = Math.floor(next_Point.x * mapMain_scale) 
+                this.playerState.targetY = Math.floor(next_Point.y * mapMain_scale)
                 this.playerState.targetID = down_propertie.value
                 
-                this.player.key = CharactersKey.ManDownKey
-                this.player.play({key: Animation.ManWalkDownKey, repeat: -1}, true)
-                this.player.setVelocity(0, Difficulty.Char_velocity)
+                this.player.key = userCharacter_objConfig.down.manDown_key
+                this.player.play({key: userCharacter_animationsKey.walk_down.key, repeat: -1}, true)
+                this.player.setVelocity(0, character_velocity)
 
                 this.playerState.isMoving = true 
                 this.playerState.direction = 'down'
@@ -604,13 +605,13 @@ export default class MapaMain extends Phaser.Scene
                 
                 const next_Point = this.getObjectById(left_propertie.value)
                 
-                this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
-                this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
+                this.playerState.targetX = Math.floor(next_Point.x * mapMain_scale) 
+                this.playerState.targetY = Math.floor(next_Point.y * mapMain_scale)
                 this.playerState.targetID = left_propertie.value
                 
-                this.player.key = CharactersKey.ManLeftKey
-                this.player.play({key: Animation.ManWalkLeftKey, repeat: -1}, true)
-                this.player.setVelocity(-Difficulty.Char_velocity, 0)
+                this.player.key = userCharacter_objConfig.left.manLeft_key
+                this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: -1}, true)
+                this.player.setVelocity(-character_velocity, 0)
                 
                 this.playerState.isMoving = true 
                 this.playerState.direction = 'left'
@@ -631,13 +632,13 @@ export default class MapaMain extends Phaser.Scene
 
                 const next_Point = this.getObjectById(right_propertie.value)
 
-                this.playerState.targetX = Math.floor(next_Point.x * Sizes.mapScale) 
-                this.playerState.targetY = Math.floor(next_Point.y * Sizes.mapScale)
+                this.playerState.targetX = Math.floor(next_Point.x * mapMain_scale) 
+                this.playerState.targetY = Math.floor(next_Point.y * mapMain_scale)
                 this.playerState.targetID = right_propertie.value
                 
-                this.player.key = CharactersKey.ManRightKey
-                this.player.play({key: Animation.ManWalkRightKey, repeat: -1}, true)
-                this.player.setVelocity(Difficulty.Char_velocity, 0)
+                this.player.key = userCharacter_objConfig.right.manRight_key
+                this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: -1}, true)
+                this.player.setVelocity(character_velocity, 0)
                 
                 this.playerState.isMoving = true 
                 this.playerState.direction = 'right'
@@ -654,25 +655,25 @@ export default class MapaMain extends Phaser.Scene
             if(this.player.y <= this.playerState.targetY + 8 && this.player.y >= this.playerState.targetY + 8) 
             {
                 this.playerState.direction = 'up'
-                this.player.key = CharactersKey.ManUpKey
-                this.player.play({key: Animation.ManWalkUpKey, repeat: -1}, true)
-                this.player.setVelocity(0, -Difficulty.Char_velocity)
+                this.player.key = userCharacter_objConfig.up.manUp_key
+                this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: -1}, true)
+                this.player.setVelocity(0, -character_velocity)
             }
             else
             {
                 if ( this.player.x > this.playerState.targetX)
                 {
                     this.playerState.direction = 'left'
-                    this.player.key = CharactersKey.ManLeftKey
-                    this.player.play({key: Animation.ManWalkLeftKey, repeat: -1}, true)
-                    this.player.setVelocity(-Difficulty.Char_velocity, 0)
+                    this.player.key = userCharacter_objConfig.left.manLeft_key
+                    this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: -1}, true)
+                    this.player.setVelocity(-character_velocity, 0)
                 } 
                 else                           
                 {                                                                           
                     this.playerState.direction = 'right'
-                    this.player.key = CharactersKey.ManRightKey
-                    this.player.play({key: Animation.ManWalkRightKey, repeat: -1}, true)
-                    this.player.setVelocity(Difficulty.Char_velocity, 0)
+                    this.player.key = userCharacter_objConfig.right.manRight_key
+                    this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: -1}, true)
+                    this.player.setVelocity(character_velocity, 0)
                 }                
             }                                                                
             break
@@ -680,25 +681,25 @@ export default class MapaMain extends Phaser.Scene
             if(this.player.y <= this.playerState.targetY + 8 && this.player.y >= this.playerState.targetY + 8)
             {
                 this.playerState.direction = 'down'
-                this.player.key = CharactersKey.ManDownKey
-                this.player.play({key: Animation.ManWalkDownKey, repeat: -1}, true)
-                this.player.setVelocity(0, Difficulty.Char_velocity)
+                this.player.key = userCharacter_objConfig.down.manDown_key
+                this.player.play({key: userCharacter_animationsKey.walk_down.key, repeat: -1}, true)
+                this.player.setVelocity(0, character_velocity)
             }
             else
             {
                 if(this.player.x > this.playerState.targetX)                                
                 {                                   
                     this.playerState.direction = 'left'
-                    this.player.key = CharactersKey.ManLeftKey
-                    this.player.play({key: Animation.ManWalkLeftKey, repeat: -1}, true)
-                    this.player.setVelocity(-Difficulty.Char_velocity, 0)
+                    this.player.key = userCharacter_objConfig.left.manLeft_key
+                    this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: -1}, true)
+                    this.player.setVelocity(-character_velocity, 0)
                 } 
                 else                          
                 {                                                                           
                     this.playerState.direction = 'right'
-                    this.player.key = CharactersKey.ManRightKey
-                    this.player.play({key: Animation.ManWalkRightKey, repeat: -1}, true)
-                    this.player.setVelocity(Difficulty.Char_velocity, 0)
+                    this.player.key = userCharacter_objConfig.right.manRight_key
+                    this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: -1}, true)
+                    this.player.setVelocity(character_velocity, 0)
                 }
             }
             break
@@ -706,9 +707,9 @@ export default class MapaMain extends Phaser.Scene
             if(this.player.x <= this.playerState.targetX + 8 && this.player.x >= this.playerState.targetX + 8)
             {   
                 this.playerState.direction = 'left'
-                this.player.key = CharactersKey.ManLeftKey
-                this.player.play({key: Animation.ManWalkLeftKey, repeat: -1}, true)
-                this.player.setVelocity(-Difficulty.Char_velocity, 0)
+                this.player.key = userCharacter_objConfig.left.manLeft_key
+                this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: -1}, true)
+                this.player.setVelocity(-character_velocity, 0)
 
             }
             else
@@ -716,16 +717,16 @@ export default class MapaMain extends Phaser.Scene
                 if(this.player.y > this.playerState.targetY)                                
                 {                                                                        
                     this.playerState.direction = 'up'
-                    this.player.key = CharactersKey.ManUpKey
-                    this.player.play({key: Animation.ManWalkUpKey, repeat: -1}, true)
-                    this.player.setVelocity(0, -Difficulty.Char_velocity)
+                    this.player.key = userCharacter_objConfig.up.manUp_key
+                    this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: -1}, true)
+                    this.player.setVelocity(0, -character_velocity)
                 }
                 else                           
                 {                                                                           
                     this.playerState.direction = 'down'
-                    this.player.key = CharactersKey.ManDownKey
-                    this.player.play({key: Animation.ManWalkDownKey, repeat: -1}, true)
-                    this.player.setVelocity(0, Difficulty.Char_velocity)
+                    this.player.key = userCharacter_objConfig.down.manDown_key
+                    this.player.play({key: userCharacter_animationsKey.walk_down.key, repeat: -1}, true)
+                    this.player.setVelocity(0, character_velocity)
                 }
             }                                                                     
             break
@@ -733,25 +734,25 @@ export default class MapaMain extends Phaser.Scene
             if(this.player.x <= this.playerState.targetX + 8 && this.player.x >= this.playerState.targetX + 8)
             {
                 this.playerState.direction = 'right'
-                this.player.key = CharactersKey.ManRightKey
-                this.player.play({key: Animation.ManWalkRightKey, repeat: -1}, true)
-                this.player.setVelocity(Difficulty.Char_velocity, 0)
+                this.player.key = userCharacter_objConfig.right.manRight_key
+                this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: -1}, true)
+                this.player.setVelocity(character_velocity, 0)
             }
             else
             {
                 if(this.player.y > this.playerState.targetY)                                
                 {                                 
                     this.playerState.direction = 'up'
-                    this.player.key = CharactersKey.ManUpKey
-                    this.player.play({key: Animation.ManWalkUpKey, repeat: -1}, true)
-                    this.player.setVelocity(0, -Difficulty.Char_velocity)
+                    this.player.key = userCharacter_objConfig.up.manUp_key
+                    this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: -1}, true)
+                    this.player.setVelocity(0, -character_velocity)
                 }
                 else if(this.player.y < this.playerState.targetY)                           
                 {                                                                           
                     this.playerState.direction = 'down'
-                    this.player.key = CharactersKey.ManDownKey
-                    this.player.play({key: Animation.ManWalkDownKey, repeat: -1}, true)
-                    this.player.setVelocity(0, Difficulty.Char_velocity)
+                    this.player.key = userCharacter_objConfig.down.manDown_key
+                    this.player.play({key: userCharacter_animationsKey.walk_down.key, repeat: -1}, true)
+                    this.player.setVelocity(0, character_velocity)
                 }
             }
             break

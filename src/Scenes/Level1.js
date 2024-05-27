@@ -4,12 +4,12 @@ import Phaser from "phaser";
 // Scenes
 import { MainUserInterface } from '../Consts/SceneKeys'    // ATENCION
 // Constants
-import {MapL1Key, L1_ObjConfigTileset, L1_LayerID, ObjectLayerKeys} from '../Consts/MapKeys'
-import {L1Map_Scale, L1Map_Height, L1Map_Width } from '../Consts/Sizes'
-import * as Difficulty from '../Consts/Difficulty'
-import * as Animation from '../Consts/Animations'
-import * as CharactersKey from '../Consts/CharacterKeys'
-import * as SongsKey from '../Consts/SongsKey'
+import {mapL1_key, l1_tilesetObjConfig, l1_layers_ID, objectsLayers_keys} from '../Consts/MapKeys'
+import {l1Map_scale, l1Map_height, l1Map_width } from '../Consts/Sizes'
+import { userCharacter_objConfig } from '../Consts/CharacterKeys'
+import { level1_delayMapScrolling, level1_SpeedMapScrolling, character_AnimationFrameRate } from '../Consts/Difficulty'
+import { userCharacter_animationsKey } from '../Consts/Animations'
+
 
 let level_data = {
     timer: 0,
@@ -53,52 +53,51 @@ export default class Game extends Phaser.Scene
             // implementar timeline de instruçoes para level 1
         })
         
-        const map = this.make.tilemap({key: MapL1Key})
+        const map = this.make.tilemap({key: mapL1_key})
         
-        const tile_1 = map.addTilesetImage(L1_ObjConfigTileset[0].name, L1_ObjConfigTileset[0].key, 16, 16)
-        const tile_2 = map.addTilesetImage(L1_ObjConfigTileset[1].name, L1_ObjConfigTileset[1].key, 16, 16)
-        const tile_3 = map.addTilesetImage(L1_ObjConfigTileset[2].name, L1_ObjConfigTileset[2].key, 16, 16)
-        const tile_4 = map.addTilesetImage(L1_ObjConfigTileset[3].name, L1_ObjConfigTileset[3].key, 16, 16)
-        const tile_5 = map.addTilesetImage(L1_ObjConfigTileset[4].name, L1_ObjConfigTileset[4].key, 16, 16)
-        const tile_6 = map.addTilesetImage(L1_ObjConfigTileset[5].name, L1_ObjConfigTileset[5].key, 16, 16)
-        const tile_7 = map.addTilesetImage(L1_ObjConfigTileset[6].name, L1_ObjConfigTileset[6].key, 16, 16)
+        const tile_1 = map.addTilesetImage(l1_tilesetObjConfig[0].name, l1_tilesetObjConfig[0].key, 16, 16)
+        const tile_2 = map.addTilesetImage(l1_tilesetObjConfig[1].name, l1_tilesetObjConfig[1].key, 16, 16)
+        const tile_3 = map.addTilesetImage(l1_tilesetObjConfig[2].name, l1_tilesetObjConfig[2].key, 16, 16)
+        const tile_4 = map.addTilesetImage(l1_tilesetObjConfig[3].name, l1_tilesetObjConfig[3].key, 16, 16)
+        const tile_5 = map.addTilesetImage(l1_tilesetObjConfig[4].name, l1_tilesetObjConfig[4].key, 16, 16)
+        const tile_6 = map.addTilesetImage(l1_tilesetObjConfig[5].name, l1_tilesetObjConfig[5].key, 16, 16)
+        const tile_7 = map.addTilesetImage(l1_tilesetObjConfig[6].name, l1_tilesetObjConfig[6].key, 16, 16)
         
         const tilesArray = [tile_1, tile_2, tile_3, tile_4, tile_5, tile_6, tile_7]
         
-
-        map.createLayer(L1_LayerID.layer1, tilesArray, 0, 0).setScale(L1Map_Scale)
-        map.createLayer(L1_LayerID.layer2, tilesArray, 0, 0).setScale(L1Map_Scale)
-        map.createLayer(L1_LayerID.layer3, tilesArray, 0, 0).setScale(L1Map_Scale)
-        map.createLayer(L1_LayerID.layer4, tilesArray, 0, 0).setScale(L1Map_Scale)
-        map.createLayer(L1_LayerID.layer5, tilesArray, 0, 0).setScale(L1Map_Scale)
-        map.createLayer(L1_LayerID.layer6, tilesArray, 0, 0).setScale(L1Map_Scale)
+        map.createLayer(l1_layers_ID.layer1, tilesArray, 0, 0).setScale(l1Map_scale)
+        map.createLayer(l1_layers_ID.layer2, tilesArray, 0, 0).setScale(l1Map_scale)
+        map.createLayer(l1_layers_ID.layer3, tilesArray, 0, 0).setScale(l1Map_scale)
+        map.createLayer(l1_layers_ID.layer4, tilesArray, 0, 0).setScale(l1Map_scale)
+        map.createLayer(l1_layers_ID.layer5, tilesArray, 0, 0).setScale(l1Map_scale)
+        map.createLayer(l1_layers_ID.layer6, tilesArray, 0, 0).setScale(l1Map_scale)
         
-        this.cameras.main.setBounds(0, 0, map.widthInPixels * L1Map_Scale, map.heightInPixels * L1Map_Scale) // limites da camera
-        this.cameras.main.setScroll( 0, (L1Map_Height * L1Map_Scale)) // configurando posicionamento da camera
-        this.physics.world.setBounds(0, 0, (map.widthInPixels * L1Map_Scale), (map.heightInPixels * L1Map_Scale))
+        this.cameras.main.setBounds(0, 0, map.widthInPixels * l1Map_scale, map.heightInPixels * l1Map_scale) // limites da camera
+        this.cameras.main.setScroll( 0, (l1Map_height * l1Map_scale)) // configurando posicionamento da camera
+        this.physics.world.setBounds(0, 0, (map.widthInPixels * l1Map_scale), (map.heightInPixels * l1Map_scale))
         
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
         
         // this.createNeededAnimation() // criar apenas uma vez (mapaMain)
         
-        this.player = this.physics.add.sprite( ((L1Map_Width + 40) * L1Map_Scale) / 2, (L1Map_Height - 30) * L1Map_Scale, CharactersKey.ManUpKey).setScale(L1Map_Scale * 1.8)
+        this.player = this.physics.add.sprite( ((l1Map_width + 40) * l1Map_scale) / 2, (l1Map_height - 30) * l1Map_scale, userCharacter_objConfig.up.manUp_key).setScale(l1Map_scale * 1.8)
         this.player.setCollideWorldBounds(true);
 
-        const mapObjects = map.getObjectLayer(ObjectLayerKeys.WallLayerKey)["objects"] 
+        const mapObjects = map.getObjectLayer(objectsLayers_keys.WallLayerKey)["objects"] 
         
         mapObjects.forEach(object => {
             switch(object.name){
                 default:
                     if(object.rectangle)
                     {
-                        this.objRec = this.add.rectangle((object.x * L1Map_Scale), (object.y * L1Map_Scale), (object.width * L1Map_Scale), (object.height * L1Map_Scale)).setDisplayOrigin(0)
+                        this.objRec = this.add.rectangle((object.x * l1Map_scale), (object.y * l1Map_scale), (object.width * l1Map_scale), (object.height * l1Map_scale)).setDisplayOrigin(0)
                         this.physics.add.existing(this.objRec, true)
                         this.physics.add.collider(this.player, this.objRec)
                     }
                     else if(object.ellipse)
                     {
-                        this.objEllips = this.add.circle((object.x * L1Map_Scale), (object.y * L1Map_Scale), (object.height * L1Map_Scale / 2), 0xff0000).setOrigin(0)
+                        this.objEllips = this.add.circle((object.x * l1Map_scale), (object.y * l1Map_scale), (object.height * l1Map_scale / 2), 0xff0000).setOrigin(0)
                         this.physics.add.existing(this.objEllips, true)
                         this.physics.add.collider(this.player, this.objEllips)
                     }
@@ -128,7 +127,7 @@ export default class Game extends Phaser.Scene
         if(this.currentGameState != this.GameStatesObj.Running && !this.GameStatesObj.hasBegun) return
         this.handleLMainCharacterMovements()
         if (this.GameStatesObj.hasMapScrolled) this.keepCharacterInCameraBounds()  
-        this.time.delayedCall(Difficulty.DelayMapScrooling, () => {
+        this.time.delayedCall(level1_delayMapScrolling, () => {
             if(level_data.aux_controlDelay == 0)
             {
                 level_data.aux_controlDelay ++
@@ -148,34 +147,34 @@ export default class Game extends Phaser.Scene
 
             if( noLeftRightKey || noUpKey || noDownKey )
             {
-                    this.player.key = CharactersKey.ManUpKey
-                    this.player.play({key: Animation.ManWalkUpKey, repeat: 0}, true)
+                    this.player.key = userCharacter_objConfig.up.manUp_key
+                    this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: 0}, true)
                     this.player.setVelocity(0, y)
             }
             else
             {   
                 if( this.cursor.left.isDown )
                 {   
-                    this.player.key =  CharactersKey.ManLeftKey
-                    this.player.play(Animation.ManWalkLeftKey, true)
+                    this.player.key =  userCharacter_objConfig.left.manLeft_key
+                    this.player.play(userCharacter_animationsKey.walk_left.key, true)
                     this.player.setVelocity(-100, y)        
                 }
                 else if (this.cursor.right.isDown)
                 {
-                    this.player.key = CharactersKey.ManRightKey
-                    this.player.play(Animation.ManWalkRightKey, true)
+                    this.player.key = userCharacter_objConfig.right.manRight_key
+                    this.player.play(userCharacter_animationsKey.walk_right.key, true)
                     this.player.setVelocity(100, y)        
                 }
                 else if(this.cursor.up.isDown)
                 {
-                    this.player.key = CharactersKey.ManUpKey
-                    this.player.play({key: Animation.ManWalkUpKey, repeat: 0}, true)
+                    this.player.key = userCharacter_objConfig.up.manUp_key
+                    this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: 0}, true)
                     this.player.setVelocity(0, -100)        
                 } 
                 else if(this.cursor.down.isDown)
                 {
-                    this.player.key = CharactersKey.ManDownKey
-                    this.player.play(Animation.ManWalkDownKey, true)
+                    this.player.key = userCharacter_objConfig.manDown_key
+                    this.player.play(userCharacter_animationsKey.walk_down.key, true)
                     this.player.setVelocity(0, 100)        
                 }
                 else{                                   // isMapScrolling = false
@@ -199,7 +198,7 @@ export default class Game extends Phaser.Scene
     handleMapScrolling(){
         if(this.cameras.main.scrollY > 0)
         {   
-            this.cameras.main.scrollY -= Difficulty.SpeedMapScrolling
+            this.cameras.main.scrollY -= level1_SpeedMapScrolling
             if(!this.GameStatesObj.isMapScrolling)
             {
                 this.GameStatesObj.isMapScrolling = true
@@ -221,33 +220,33 @@ export default class Game extends Phaser.Scene
 
     createNeededAnimation() { // criar apenas uma vez (preload)
         const ManWalkUpConfig = {
-            key: Animation.ManWalkUpKey,
-            frames: this.anims.generateFrameNumbers(CharactersKey.ManUpKey, {frame: [0, 1, 2, 3]}),
-            frameRate: Difficulty.AnimationFrameRate, 
+            key: userCharacter_animationsKey.walk_up.key,
+            frames: this.anims.generateFrameNumbers(userCharacter_objConfig.up.manUp_key, {frame: [0, 1, 2, 3]}),
+            frameRate: character_AnimationFrameRate, 
             repeat: 0,
         }
         this.anims.create(ManWalkUpConfig)
         
         const ManWalkLeftConfig = {
-            key: Animation.ManWalkLeftKey,
-            frames: this.anims.generateFrameNumbers(CharactersKey.ManLeftKey, {frame: [0, 1, 2, 3]}),
-            frameRate: Difficulty.AnimationFrameRate,
+            key: userCharacter_animationsKey.walk_left.key,
+            frames: this.anims.generateFrameNumbers(userCharacter_objConfig.left.manLeft_key, {frame: [0, 1, 2, 3]}),
+            frameRate: character_AnimationFrameRate,
             repeat: 0,
         }
         this.anims.create(ManWalkLeftConfig)
         
         const ManWalkRightConfig = {
-            key: Animation.ManWalkRightKey,
-            frames: this.anims.generateFrameNumbers(CharactersKey.ManRightKey, {frame: [0, 1, 2, 3]}),
-            frameRate: Difficulty.AnimationFrameRate,
+            key: userCharacter_animationsKey.walk_right.key,
+            frames: this.anims.generateFrameNumbers(userCharacter_objConfig.right.manRight_key, {frame: [0, 1, 2, 3]}),
+            frameRate: character_AnimationFrameRate,
             repeat: 0,
         }
         this.anims.create(ManWalkRightConfig)
 
         const ManWalkDownConfig = {
-            key: Animation.ManWalkDownKey,
-            frames: this.anims.generateFrameNumbers(CharactersKey.ManDownKey, {frame: [0, 1, 2, 3]}),
-            frameRate: Difficulty.AnimationFrameRate, 
+            key: userCharacter_animationsKey.walk_down.key,
+            frames: this.anims.generateFrameNumbers(userCharacter_objConfig.manDown_key, {frame: [0, 1, 2, 3]}),
+            frameRate: character_AnimationFrameRate, 
             repeat: 0,
         }
         this.anims.create(ManWalkDownConfig)

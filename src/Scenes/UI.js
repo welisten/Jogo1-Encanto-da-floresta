@@ -3,13 +3,15 @@
 import Phaser from "phaser";
 
 //Consts
-import { containerGame_Width, containerGame_Height, mapScale } from "../Consts/Sizes"
-import { HeartBarKey } from "../Consts/SpriteSheets";
-import { DialogBox_Key, TimerKey, directionsImagesObj, CityMap_Key, GuapiMapObj } from "../Consts/ImagesKeys";
+import { containerGame_width, containerGame_height, mapMain_scale } from "../Consts/Sizes"
+import { lifeBar } from "../Consts/SpriteSheets";
+import { uiImages } from "../Consts/ImagesKeys";
+
+// From others modules
 import { level_data } from "../Scenes/Level1"
 import { text_UI, GameState } from "../Scenes/MapaMain"
 
-let time_UI = level_data.timer
+let timer_UI = level_data.timer
 let queue = []
 
 
@@ -26,20 +28,20 @@ export default class GameBackground extends Phaser.Scene
     create() 
     {
     //  Moldura
-        this.add.rectangle(10, 10, ( containerGame_Width - 20 ), ( containerGame_Height - 20 ), '0xffffff', 1 )
+        this.add.rectangle(10, 10, ( containerGame_width - 20 ), ( containerGame_height - 20 ), '0xffffff', 1 )
             .setOrigin( 0 )
             .setStrokeStyle( 3, '0xffffff', 1 )
             .isFilled = false
 
         
     //  Corações
-        this.add.sprite(20, 20, HeartBarKey, 0)
+        this.add.sprite(20, 20, lifeBar.lifeBar_key, 0)
             .setOrigin(0)
             .setScale(.5)
-        this.add.sprite(50, 20, HeartBarKey, 0)
+        this.add.sprite(50, 20, lifeBar.lifeBar_key, 0)
             .setOrigin(0)
             .setScale(.5)
-        this.add.sprite(80, 20, HeartBarKey, 3)
+        this.add.sprite(80, 20, lifeBar.lifeBar_key, 3)
             .setOrigin(0)
             .setScale(.5)
 
@@ -48,7 +50,7 @@ export default class GameBackground extends Phaser.Scene
         const timerGraficFrame = this.add.graphics()
         timerGraficFrame.fillStyle(0xffffff, 0.5)
         
-        const x = containerGame_Width - 98
+        const x = containerGame_width - 98
         const y = 15
         const width = 80
         const height = 50
@@ -57,27 +59,27 @@ export default class GameBackground extends Phaser.Scene
         timerGraficFrame.fillRoundedRect(x, y, width, height, radius)
        
     //      Relógio(Icone)
-        this.add.image(containerGame_Width - 98, 23, TimerKey)
+        this.add.image(containerGame_width - 98, 23, uiImages.timer.key)
             .setOrigin(0)
             .setScale(1)
             .setTintFill("0x000000")
         
     //      Tempo(string)
-        this.timer = this.add.text(containerGame_Width - 65, 23, time_UI < 10 ? `0${time_UI}`: `${time_UI}`, {
+        this.timer = this.add.text(containerGame_width - 65, 23, timer_UI < 10 ? `0${timer_UI}`: `${timer_UI}`, {
             fontSize: 35,
             color: '0x000000'
         })
             .setOrigin(0)
         
     //      Caixa de dialogo
-        this.dialogBox = this.add.image( (containerGame_Width / 2) , (containerGame_Height - 70), DialogBox_Key)
+        this.dialogBox = this.add.image( (containerGame_width / 2) , (containerGame_height - 70), uiImages.dialogBox.key)
             .setOrigin(0.5)
             .setScale(1.7, 0.8)
 
         this.dialogBox.setAlpha(0)
 
     //      Texto da caixa de dialogo
-        this.textOfDialogBox = this.add.text((containerGame_Width / 2), containerGame_Height - 110, '', {
+        this.textOfDialogBox = this.add.text((containerGame_width / 2), containerGame_height - 110, '', {
             fontSize: 24,
             color: "0xffffff",
             wordWrap: {
@@ -87,11 +89,11 @@ export default class GameBackground extends Phaser.Scene
             align: 'center',
         }).setOrigin(0.5, 0)
 
-        this.textOfDialogBox.setLineSpacing(8)
+        this.textOfDialogBox.setLineSpacing(6)
 
     //      Top Informations
         const CM_height = 244
-        this.CityMap_info_popUp = this.add.image( (containerGame_Width / 2) , (-CM_height), CityMap_Key)
+        this.CityMap_info_popUp = this.add.image( (containerGame_width / 2) , (-CM_height), uiImages.cityMap_Sign.key)
                 .setOrigin(0.5, 0)
                 .setAlpha(0)
                 .setDepth(10)
@@ -115,12 +117,13 @@ export default class GameBackground extends Phaser.Scene
             persist: true
         })
     //      Mapa Guapi
-        this.GuapiMap = this.add.image( (containerGame_Width / 2) , (containerGame_Height / 2), GuapiMapObj.key)
+        this.cityMap_map = this.add.image( (containerGame_width / 2) , (containerGame_height / 2), uiImages.cityMap_Map.key)
             .setOrigin(0.5)
             .setScale(.55)
             .setAlpha(0)
-        this.GuapiMap_in = this.tweens.add({
-            targets: this.GuapiMap,
+
+        this.cityMap_map_in = this.tweens.add({
+            targets: this.cityMap_map,
             alpha: 1,
             duration: 500,
             ease: 'Linear',
@@ -128,8 +131,9 @@ export default class GameBackground extends Phaser.Scene
             paused: true,
             persist: true
         })
-        this.GuapiMap_out = this.tweens.add({
-            targets: this.GuapiMap,
+
+        this.cityMap_map_out = this.tweens.add({
+            targets: this.cityMap_map,
             alpha: 0,
             duration: 250,
             ease: 'Linear',
@@ -137,12 +141,13 @@ export default class GameBackground extends Phaser.Scene
             paused: true,
             persist: true
         })
+
         this.cursor = this.input.keyboard.createCursorKeys() 
     
     }
 
     update(){
-        this.handel_timerEl(time_UI, level_data)
+        this.handel_timerEl(timer_UI, level_data)
         this.check_Add_textToQueue(text_UI)
         this.handel_Queue(queue, this.controlTextObj.interfaceText_stt)
         
@@ -162,7 +167,7 @@ export default class GameBackground extends Phaser.Scene
         if(GameState.isGuapimirimSignVisible)
         {
             if(this.cursor.space.isDown){
-                this.GuapiMap_out.play()
+                this.cityMap_map_out.play()
 
                 GameState.isGuapimirimSignVisible = false
                 GameState.isPlayerAbleToMove      = true
@@ -214,7 +219,7 @@ export default class GameBackground extends Phaser.Scene
         GameState.isTopInformationVisible = false
         GameState.isPlayerAbleToMove = false
 
-        this.GuapiMap_in.play()
+        this.cityMap_map_in.play()
         this.time.addEvent({
             delay: 250,
             callback: () => GameState.isGuapimirimSignVisible = true,
@@ -270,8 +275,8 @@ export default class GameBackground extends Phaser.Scene
         
         let aux         = 0
         let aux_balance = 0
-        let x           = (containerGame_Width - this.dialogBox.width) / 2 - 10
-        let y           = this.textOfDialogBox.y - 10
+        let x           = (containerGame_width - this.dialogBox.width) / 2 - 10
+        let y           = this.textOfDialogBox.y - 5
         
         this.typewriter = this.time.addEvent({ 
             delay: 50, 
@@ -281,36 +286,36 @@ export default class GameBackground extends Phaser.Scene
                 
                 if(indexsArr.length > 0 && aux < indexsArr.length){
                     let tracked_index = indexsArr[aux] == 0 ? indexsArr[aux] : indexsArr[aux] - aux_balance
-                    let line_hight = 27 * mapScale
+                    let line_hight = 20 * mapMain_scale
 
                     if(this.currentIndex == tracked_index){
                         switch(directionsSign[aux]){
                             case "[up]":
-                                this.arrows.push(this.add.sprite(x, y, directionsImagesObj.up_key).setScale(.25).setOrigin(0))
+                                this.arrows.push(this.add.sprite(x, y, uiImages.arrows.up.key).setScale(.18).setOrigin(0))
                                 this.tweens.add({
                                     targets: this.arrows[this.arrows.length - 1],
                                     x: x,
                                     y: y,
-                                    scaleX: .28,
-                                    scaleY: .28,
+                                    scaleX: .19,
+                                    scaleY: .19,
                                     alpha: 1,
                                     duration: 250,
                                     ease: 'Linear',
                                     repeat: -1,
-                                    yoyo: true
+                                    yoyo: true,
                                 }).play()
                                 y           +=  line_hight
                                 aux_balance +=  directionsSign[aux].length
                                 aux++
                                 break
                             case "[down]":
-                                this.arrows.push(this.add.sprite(x, y, directionsImagesObj.down_key).setScale(.25).setOrigin(0))
+                                this.arrows.push(this.add.sprite(x, y, uiImages.arrows.down.key).setScale(.25).setOrigin(0))
                                 this.tweens.add({
                                     targets: this.arrows[this.arrows.length - 1],
                                     x: x,
                                     y: y,
-                                    scaleX: .28,
-                                    scaleY: .28,
+                                    scaleX: .19,
+                                    scaleY: .19,
                                     alpha: 1,
                                     duration: 250,
                                     ease: 'Linear',
@@ -322,13 +327,13 @@ export default class GameBackground extends Phaser.Scene
                                 aux++
                                 break
                             case "[left]":
-                                this.arrows.push(this.add.sprite(x, y, directionsImagesObj.left_key).setScale(.25).setOrigin(0))
+                                this.arrows.push(this.add.sprite(x, y, uiImages.arrows.left.key).setScale(.25).setOrigin(0))
                                 this.tweens.add({
                                     targets: this.arrows[this.arrows.length - 1],
                                     x: x,
                                     y: y,
-                                    scaleX: .28,
-                                    scaleY: .28,
+                                    scaleX: .19,
+                                    scaleY: .19,
                                     alpha: 1,
                                     duration: 250,
                                     ease: 'Linear',
@@ -340,13 +345,13 @@ export default class GameBackground extends Phaser.Scene
                                 aux++
                                 break
                             case "[right]":
-                                this.arrows.push(this.add.sprite(x, y, directionsImagesObj.right_key).setScale(.25).setOrigin(0))
+                                this.arrows.push(this.add.sprite(x, y, uiImages.arrows.right.key).setScale(.25).setOrigin(0))
                                 this.tweens.add({
                                     targets: this.arrows[this.arrows.length - 1],
                                     x: x,
                                     y: y,
-                                    scaleX: .28,
-                                    scaleY: .28,
+                                    scaleX: .19,
+                                    scaleY: .19,
                                     alpha: 1,
                                     duration: 250,
                                     ease: 'Linear',
