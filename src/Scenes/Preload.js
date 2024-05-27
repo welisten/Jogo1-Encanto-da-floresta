@@ -19,7 +19,6 @@ export default class Preload extends Phaser.Scene{
     
     preload(){
         const load =  this.load
-        
 
         // TITLE
         //      Songs
@@ -37,7 +36,7 @@ export default class Preload extends Phaser.Scene{
         
         // MAIN
         //     Songs
-        load.audio(SongsKey.MMMusicKey, SongsKey.MMMusicURL, SongsKey.MMMusicConfig)
+        load.audio(SongsKey.MMMusicKey, SongsKey.MMMusicURL, SongsKey.MMMusicConfig)     
         
         // CHARACTERS
         load.spritesheet(
@@ -66,8 +65,8 @@ export default class Preload extends Phaser.Scene{
             CharactersKey.ManLeftURL,
             CharactersKey.ManLeft_FrameSettings,
             CharactersKey.ManLeft_FrameAmount
-        )     
-        
+        )
+
         // USER INTERFACE
         //       Heart Bar
         load.spritesheet(
@@ -105,7 +104,6 @@ export default class Preload extends Phaser.Scene{
         load.image(MapKeys.L1_ObjConfigTileset[5].key, MapKeys.L1_ObjConfigTileset[5].url, { frameWidth: 16 })
         load.image(MapKeys.L1_ObjConfigTileset[6].key, MapKeys.L1_ObjConfigTileset[6].url, { frameWidth: 16 })
 
-
         // this.load.spritesheet(
         //     CharactersKey.DeerStagNeKey,
         //     CharactersKey.DeerStagNeURL,
@@ -116,6 +114,6 @@ export default class Preload extends Phaser.Scene{
     
 
     create(){
-        this.scene.start(Title)
+        this.scene.start(MapaMain)
     }
 }

@@ -4,24 +4,24 @@
 -----------------------------------------------     (ANDAMENTO)     ------------------------------------------------------
 
       1 - Limpeza de codigo
-            - eliminar var usar apenas let e const
-            - deixar os nomes dos dados e funções todas em ingles
+      OK    - eliminar var usar apenas let e const
+      OK    - deixar os nomes dos dados e funções todas em ingles
             - verificar a conformidade entre a ATIVIDADE e o NOME DAS FUNÇÕES que as executas
             - verificar a conformidade entre Os DADO e os NOME DAS VARIAVEIS que os carregam
-            - excluir dados e lógicas irrelevantes
-            - verificar formatação do código
-            - eliminar console.logs
+      OK    - excluir dados e lógicas irrelevantes
+      OK    - verificar formatação do código
+      OK    - eliminar console.logs
             - elencar casos de testes para as funções verificadas
             - compartimentalizar as constantes que demandam tal ação
 
-      2 - Implementar uma logica para a definição da escala do mapa Level1
+OK   2 - Implementar uma logica para a definição da escala do mapa Level1
 
 ( 2 )------------------------------------(      AJUSTES DE OTIMIZAÇÃO     )-----------------------------------------------
 -----------------------------------------------     (ANDAMENTO)     ------------------------------------------------------
 
-      1 - Tentar substitur as varias interaçoes sobre o array de objetos por apenas uma interação onde todos os outros  array
+OK    1 - Tentar substitur as varias interaçoes sobre o array de objetos por apenas uma interação onde todos os outros array
              já são definidos
-      2 - Fazer os imports apenas das contantes necessárias
+->    2 - Fazer os imports apenas das contantes necessárias
       3 - Estudar as circunstâncias e possibilidades de substituir as variaveis das classe das Cenas do jogo por variaveis 
              de escopo mais  abstratos
 

@@ -130,13 +130,13 @@ export default class MapaMain extends Phaser.Scene
         this.layer_buildingsf2  =  map.createLayer(MapKeys.mapaMainLayerID.layer12, tilesArray, 0, 0).setScale(Sizes.mapScale)
         
         this.cameras.main.setBounds(0, 0, (map.widthInPixels * Sizes.mapScale), (map.heightInPixels * Sizes.mapScale), true) // limites da camera
-        this.physics.world.setBounds(0, 0, (map.widthInPixels * Sizes.L1MapScale), (map.heightInPixels * Sizes.L1MapScale))
+        this.physics.world.setBounds(0, 0, (map.widthInPixels * Sizes.mapScale), (map.heightInPixels * Sizes.mapScale))
 
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
 
-        timeline_1.play()
-        // GameState.isPlayerAbleToMove        = true                                      //retirar
+        // timeline_1.play()
+        GameState.isPlayerAbleToMove        = true                                      //retirar
         GameState.defaultMotionControls     = false
         GameState.accessibleMotionControls  = true
         
@@ -162,7 +162,7 @@ export default class MapaMain extends Phaser.Scene
                 case 'decision_break':
                     if(object.id != 2)
                     {
-                        const circle = this.add.circle(Math.round(object.x * Sizes.L1MapScale), Math.round(object.y * Sizes.L1MapScale), .5).setOrigin(0)
+                        const circle = this.add.circle(Math.round(object.x * Sizes.mapScale), Math.round(object.y * Sizes.mapScale), .5).setOrigin(0)
 
                         this.physics.add.existing(circle, true)
                         this.physics.add.overlap(this.player, circle, () => {
@@ -219,7 +219,7 @@ export default class MapaMain extends Phaser.Scene
                 case 'level':
                     let hasOverlapOccurred = false
                     
-                    const rec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0)
+                    const rec = this.add.rectangle((object.x * Sizes.mapScale), (object.y * Sizes.mapScale), (object.width * Sizes.mapScale), (object.height * Sizes.mapScale)).setDisplayOrigin(0)
                     
                     this.physics.add.existing(rec, true)
                     this.physics.add.overlap(rec, this.player, () => {
@@ -233,7 +233,7 @@ export default class MapaMain extends Phaser.Scene
                             {
                                 hasOverlapOccurred = true
                                 GameState.isPlayerAbleToMove = false
-                                this.sendTextToUI('')
+                                this.sendStringToUI('')
                                 
                                 this.time.addEvent({
                                     delay: 500,
@@ -250,13 +250,13 @@ export default class MapaMain extends Phaser.Scene
                     break
                     
                 case 'info':
-                    const recInfo = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0)
+                    const recInfo = this.add.rectangle((object.x * Sizes.mapScale), (object.y * Sizes.mapScale), (object.width * Sizes.mapScale), (object.height * Sizes.mapScale)).setDisplayOrigin(0)
                     this.physics.add.existing(recInfo, true)
-                    this.physics.add.overlap(recInfo, this.player, () => this.on_Info_Overlap(object))
+                    this.physics.add.overlap(recInfo, this.player, () => this.onInfoElementsOverlap(object))
                     break
                 
                 case 'fence':
-                    const recFence = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0).setDepth(10)
+                    const recFence = this.add.rectangle((object.x * Sizes.mapScale), (object.y * Sizes.mapScale), (object.width * Sizes.mapScale), (object.height * Sizes.mapScale)).setDisplayOrigin(0).setDepth(10)
                     this.physics.add.existing(recFence, true)
                     this.physics.add.collider(this.player, recFence)
                     break
@@ -283,12 +283,12 @@ export default class MapaMain extends Phaser.Scene
 
                 default:
                     if(object.rectangle){
-                        const objRec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0).setDepth(10)
+                        const objRec = this.add.rectangle((object.x * Sizes.mapScale), (object.y * Sizes.mapScale), (object.width * Sizes.mapScale), (object.height * Sizes.mapScale)).setDisplayOrigin(0).setDepth(10)
                         this.physics.add.existing(objRec, true)
                         this.physics.add.collider(this.player, objRec)
                         
                      }else if(object.ellipse){
-                         const objEllips = this.add.circle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.height * Sizes.L1MapScale / 2)).setOrigin(0)
+                         const objEllips = this.add.circle((object.x * Sizes.mapScale), (object.y * Sizes.mapScale), (object.height * Sizes.mapScale / 2)).setOrigin(0)
                          this.physics.add.existing(objEllips, true)
                          this.physics.add.collider(this.player, objEllips)
                     }
@@ -354,16 +354,16 @@ export default class MapaMain extends Phaser.Scene
         }
     }
 
-    sendTextToUI(string){
+    sendStringToUI(string){
         text_UI = string
     }
 
     getObjectById(objectId) {
-        let objectLayer = this.make.tilemap({key: MapKeys.MapKey}).getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1);
+        const objectLayer = this.make.tilemap({key: MapKeys.MapKey}).getObjectLayer(MapKeys.ObjectLayerKeys.MapaMainLayer_obj1);
         
         if (!objectLayer) 
         {
-            console.error("Camada de objetos não encontrada.");
+            console.error("Camada de objetos não encontrada.");                     //                  O-O
             return null;
         }
         
@@ -454,7 +454,7 @@ export default class MapaMain extends Phaser.Scene
             repeat: 0,
         }
         this.anims.create(ManWalkDownConfig)
-    }
+    } 
     
     getPlayerFloor(){
         const upEdge      = 321 * Sizes.mapScale 
@@ -513,10 +513,10 @@ export default class MapaMain extends Phaser.Scene
         }
     }
 
-    on_Info_Overlap(e){
-        if(e.properties[1].value == 'placa')
+    onInfoElementsOverlap(element){
+        if(element.properties[1].value == 'placa')
         {
-            this.sendTextToUI(e.properties[0].value)
+            this.sendStringToUI(element.properties[0].value)
         }
     }
 

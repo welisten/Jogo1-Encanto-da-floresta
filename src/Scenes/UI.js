@@ -3,7 +3,7 @@
 import Phaser from "phaser";
 
 //Consts
-import { containerGameWidth, containerGameHeight, mapScale } from "../Consts/Sizes"
+import { containerGame_Width, containerGame_Height, mapScale } from "../Consts/Sizes"
 import { HeartBarKey } from "../Consts/SpriteSheets";
 import { DialogBox_Key, TimerKey, directionsImagesObj, CityMap_Key, GuapiMapObj } from "../Consts/ImagesKeys";
 import { level_data } from "../Scenes/Level1"
@@ -26,7 +26,7 @@ export default class GameBackground extends Phaser.Scene
     create() 
     {
     //  Moldura
-        this.add.rectangle(10, 10, ( containerGameWidth - 20 ), ( containerGameHeight - 20 ), '0xffffff', 1 )
+        this.add.rectangle(10, 10, ( containerGame_Width - 20 ), ( containerGame_Height - 20 ), '0xffffff', 1 )
             .setOrigin( 0 )
             .setStrokeStyle( 3, '0xffffff', 1 )
             .isFilled = false
@@ -48,7 +48,7 @@ export default class GameBackground extends Phaser.Scene
         const timerGraficFrame = this.add.graphics()
         timerGraficFrame.fillStyle(0xffffff, 0.5)
         
-        const x = containerGameWidth - 98
+        const x = containerGame_Width - 98
         const y = 15
         const width = 80
         const height = 50
@@ -57,27 +57,27 @@ export default class GameBackground extends Phaser.Scene
         timerGraficFrame.fillRoundedRect(x, y, width, height, radius)
        
     //      Relógio(Icone)
-        this.add.image(containerGameWidth - 98, 23, TimerKey)
+        this.add.image(containerGame_Width - 98, 23, TimerKey)
             .setOrigin(0)
             .setScale(1)
             .setTintFill("0x000000")
         
     //      Tempo(string)
-        this.timer = this.add.text(containerGameWidth - 65, 23, time_UI < 10 ? `0${time_UI}`: `${time_UI}`, {
+        this.timer = this.add.text(containerGame_Width - 65, 23, time_UI < 10 ? `0${time_UI}`: `${time_UI}`, {
             fontSize: 35,
             color: '0x000000'
         })
             .setOrigin(0)
         
     //      Caixa de dialogo
-        this.dialogBox = this.add.image( (containerGameWidth / 2) , (containerGameHeight - 70), DialogBox_Key)
+        this.dialogBox = this.add.image( (containerGame_Width / 2) , (containerGame_Height - 70), DialogBox_Key)
             .setOrigin(0.5)
             .setScale(1.7, 0.8)
 
         this.dialogBox.setAlpha(0)
 
     //      Texto da caixa de dialogo
-        this.textOfDialogBox = this.add.text((containerGameWidth / 2), containerGameHeight - 110, '', {
+        this.textOfDialogBox = this.add.text((containerGame_Width / 2), containerGame_Height - 110, '', {
             fontSize: 24,
             color: "0xffffff",
             wordWrap: {
@@ -91,7 +91,7 @@ export default class GameBackground extends Phaser.Scene
 
     //      Top Informations
         const CM_height = 244
-        this.CityMap_info_popUp = this.add.image( (containerGameWidth / 2) , (-CM_height), CityMap_Key)
+        this.CityMap_info_popUp = this.add.image( (containerGame_Width / 2) , (-CM_height), CityMap_Key)
                 .setOrigin(0.5, 0)
                 .setAlpha(0)
                 .setDepth(10)
@@ -115,7 +115,7 @@ export default class GameBackground extends Phaser.Scene
             persist: true
         })
     //      Mapa Guapi
-        this.GuapiMap = this.add.image( (containerGameWidth / 2) , (containerGameHeight / 2), GuapiMapObj.key)
+        this.GuapiMap = this.add.image( (containerGame_Width / 2) , (containerGame_Height / 2), GuapiMapObj.key)
             .setOrigin(0.5)
             .setScale(.55)
             .setAlpha(0)
@@ -270,7 +270,7 @@ export default class GameBackground extends Phaser.Scene
         
         let aux         = 0
         let aux_balance = 0
-        let x           = (containerGameWidth - this.dialogBox.width) / 2 - 10
+        let x           = (containerGame_Width - this.dialogBox.width) / 2 - 10
         let y           = this.textOfDialogBox.y - 10
         
         this.typewriter = this.time.addEvent({ 
@@ -395,7 +395,6 @@ export default class GameBackground extends Phaser.Scene
         return amountOccurrences
     }
     
-
     handle_endOfString(currentIndex, stringLength){       //  VERIFICA se é a ultima letra do texto e dispara a função de configuração de controles após 1 seg
         if( currentIndex >= stringLength - 1 ) 
         {

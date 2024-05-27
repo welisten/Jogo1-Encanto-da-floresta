@@ -4,8 +4,8 @@ import Phaser from "phaser";
 // Scenes
 import { MainUserInterface } from '../Consts/SceneKeys'    // ATENCION
 // Constants
-import * as MapKeys from '../Consts/MapKeys'
-import * as Sizes from '../Consts/Sizes'
+import {MapL1Key, L1_ObjConfigTileset, L1_LayerID, ObjectLayerKeys} from '../Consts/MapKeys'
+import {L1Map_Scale, L1Map_Height, L1Map_Width } from '../Consts/Sizes'
 import * as Difficulty from '../Consts/Difficulty'
 import * as Animation from '../Consts/Animations'
 import * as CharactersKey from '../Consts/CharacterKeys'
@@ -40,6 +40,8 @@ export default class Game extends Phaser.Scene
         const gameCanvas = this.sys.game.canvas
         gameCanvas.style.border = "5px solid #40A2E3";
         gameCanvas.style.borderRadius = "20px"
+
+        this.GameContainerEl = document.getElementById('gameContainer')
     }
 
     create()
@@ -49,55 +51,54 @@ export default class Game extends Phaser.Scene
         this.cameras.main.once('camerafadeoutcomplete', (camera) => {
             return
             // implementar timeline de instruçoes para level 1
-
         })
-
-        const map = this.make.tilemap({key: MapKeys.MapL1Key})
         
-        const tile_1 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[0].name, MapKeys.L1_ObjConfigTileset[0].key, 16, 16)
-        const tile_2 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[1].name, MapKeys.L1_ObjConfigTileset[1].key, 16, 16)
-        const tile_3 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[2].name, MapKeys.L1_ObjConfigTileset[2].key, 16, 16)
-        const tile_4 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[3].name, MapKeys.L1_ObjConfigTileset[3].key, 16, 16)
-        const tile_5 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[4].name, MapKeys.L1_ObjConfigTileset[4].key, 16, 16)
-        const tile_6 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[5].name, MapKeys.L1_ObjConfigTileset[5].key, 16, 16)
-        const tile_7 = map.addTilesetImage(MapKeys.L1_ObjConfigTileset[6].name, MapKeys.L1_ObjConfigTileset[6].key, 16, 16)
+        const map = this.make.tilemap({key: MapL1Key})
+        
+        const tile_1 = map.addTilesetImage(L1_ObjConfigTileset[0].name, L1_ObjConfigTileset[0].key, 16, 16)
+        const tile_2 = map.addTilesetImage(L1_ObjConfigTileset[1].name, L1_ObjConfigTileset[1].key, 16, 16)
+        const tile_3 = map.addTilesetImage(L1_ObjConfigTileset[2].name, L1_ObjConfigTileset[2].key, 16, 16)
+        const tile_4 = map.addTilesetImage(L1_ObjConfigTileset[3].name, L1_ObjConfigTileset[3].key, 16, 16)
+        const tile_5 = map.addTilesetImage(L1_ObjConfigTileset[4].name, L1_ObjConfigTileset[4].key, 16, 16)
+        const tile_6 = map.addTilesetImage(L1_ObjConfigTileset[5].name, L1_ObjConfigTileset[5].key, 16, 16)
+        const tile_7 = map.addTilesetImage(L1_ObjConfigTileset[6].name, L1_ObjConfigTileset[6].key, 16, 16)
         
         const tilesArray = [tile_1, tile_2, tile_3, tile_4, tile_5, tile_6, tile_7]
         
+
+        map.createLayer(L1_LayerID.layer1, tilesArray, 0, 0).setScale(L1Map_Scale)
+        map.createLayer(L1_LayerID.layer2, tilesArray, 0, 0).setScale(L1Map_Scale)
+        map.createLayer(L1_LayerID.layer3, tilesArray, 0, 0).setScale(L1Map_Scale)
+        map.createLayer(L1_LayerID.layer4, tilesArray, 0, 0).setScale(L1Map_Scale)
+        map.createLayer(L1_LayerID.layer5, tilesArray, 0, 0).setScale(L1Map_Scale)
+        map.createLayer(L1_LayerID.layer6, tilesArray, 0, 0).setScale(L1Map_Scale)
         
-        map.createLayer(MapKeys.L1_LayerID.layer1, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
-        map.createLayer(MapKeys.L1_LayerID.layer2, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
-        map.createLayer(MapKeys.L1_LayerID.layer3, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
-        map.createLayer(MapKeys.L1_LayerID.layer4, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
-        map.createLayer(MapKeys.L1_LayerID.layer5, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
-        map.createLayer(MapKeys.L1_LayerID.layer6, tilesArray, 0, 0).setScale(Sizes.L1MapScale)
-        
-        this.cameras.main.setBounds(0, 0, map.widthInPixels * Sizes.L1MapScale, map.heightInPixels * Sizes.L1MapScale) // limites da camera
-        this.cameras.main.setScroll( 0, (Sizes.L1MapHeight * Sizes.L1MapScale)) // configurando posicionamento da camera
-        this.physics.world.setBounds(0, 0, (map.widthInPixels * Sizes.L1MapScale), (map.heightInPixels * Sizes.L1MapScale))
+        this.cameras.main.setBounds(0, 0, map.widthInPixels * L1Map_Scale, map.heightInPixels * L1Map_Scale) // limites da camera
+        this.cameras.main.setScroll( 0, (L1Map_Height * L1Map_Scale)) // configurando posicionamento da camera
+        this.physics.world.setBounds(0, 0, (map.widthInPixels * L1Map_Scale), (map.heightInPixels * L1Map_Scale))
         
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
         
-        this.createNeededAnimation() // criar apenas uma vez (preload)
+        // this.createNeededAnimation() // criar apenas uma vez (mapaMain)
         
-        this.player = this.physics.add.sprite( ((Sizes.L1MapWidth - 128) * Sizes.L1MapScale) / 2, (Sizes.L1MapHeight - 30) * Sizes.L1MapScale, CharactersKey.ManUpKey).setScale(Sizes.characterScale)
+        this.player = this.physics.add.sprite( ((L1Map_Width + 40) * L1Map_Scale) / 2, (L1Map_Height - 30) * L1Map_Scale, CharactersKey.ManUpKey).setScale(L1Map_Scale * 1.8)
         this.player.setCollideWorldBounds(true);
 
-        const mapObjects = map.getObjectLayer(MapKeys.ObjectLayerKeys.WallLayerKey)["objects"] 
+        const mapObjects = map.getObjectLayer(ObjectLayerKeys.WallLayerKey)["objects"] 
         
         mapObjects.forEach(object => {
             switch(object.name){
                 default:
                     if(object.rectangle)
                     {
-                        this.objRec = this.add.rectangle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.width * Sizes.L1MapScale), (object.height * Sizes.L1MapScale)).setDisplayOrigin(0)
+                        this.objRec = this.add.rectangle((object.x * L1Map_Scale), (object.y * L1Map_Scale), (object.width * L1Map_Scale), (object.height * L1Map_Scale)).setDisplayOrigin(0)
                         this.physics.add.existing(this.objRec, true)
                         this.physics.add.collider(this.player, this.objRec)
                     }
                     else if(object.ellipse)
                     {
-                        this.objEllips = this.add.circle((object.x * Sizes.L1MapScale), (object.y * Sizes.L1MapScale), (object.height * Sizes.L1MapScale / 2), 0xff0000).setOrigin(0)
+                        this.objEllips = this.add.circle((object.x * L1Map_Scale), (object.y * L1Map_Scale), (object.height * L1Map_Scale / 2), 0xff0000).setOrigin(0)
                         this.physics.add.existing(this.objEllips, true)
                         this.physics.add.collider(this.player, this.objEllips)
                     }
@@ -117,14 +118,13 @@ export default class Game extends Phaser.Scene
 
 
     update() {  // SE O FOGO ESTIVER PAUSADO OU SE ELE NÃO ESTIVER RODADNDO AS FUNÇOES DO UPDATE NÃO IRÃO SER LIDAS
-        console.log(`    ESTADO DA FASE:
-        O Jogo começou = ${this.GameStatesObj.hasBegun}
-        O mapa ta rodando = ${this.GameStatesObj.isMapScrolling}
-        O Jogo está pausado = ${this.GameStatesObj.isPaused}
-        O Jogo termino = ${this.GameStatesObj.isFinished}
-        O Mapa terminou = ${this.GameStatesObj.hasMapScrolled}
-        `)
-        
+        // // console.log(`    ESTADO DA FASE:
+        // O Jogo começou = ${this.GameStatesObj.hasBegun}
+        // O mapa ta rodando = ${this.GameStatesObj.isMapScrolling}
+        // O Jogo está pausado = ${this.GameStatesObj.isPaused}
+        // O Jogo termino = ${this.GameStatesObj.isFinished}
+        // O Mapa terminou = ${this.GameStatesObj.hasMapScrolled}
+        // // `) 
         if(this.currentGameState != this.GameStatesObj.Running && !this.GameStatesObj.hasBegun) return
         this.handleLMainCharacterMovements()
         if (this.GameStatesObj.hasMapScrolled) this.keepCharacterInCameraBounds()  

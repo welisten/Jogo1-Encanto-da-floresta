@@ -10,14 +10,14 @@ import Level1 from './Scenes/Level1.js'
 import UI from './Scenes/UI.js'
 
 //  Consts
-import { containerGameWidth, containerGameHeight } from './Consts/Sizes.js'
+import { containerGame_Width, containerGame_Height } from './Consts/Sizes.js'
 import * as SceneKeys from './Consts/SceneKeys'
 
 const config = {
     //  width: window.innerWidth,
     //  height: window.innerHeight,
-    width: containerGameWidth,
-    height: containerGameHeight,
+    width: containerGame_Width ,
+    height: containerGame_Height,
      type: Phaser.AUTO,
      backgroundColor: 0x000000,
      parent: 'gameContainer',
