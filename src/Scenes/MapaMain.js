@@ -124,8 +124,8 @@ export default class MapaMain extends Phaser.Scene
 
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
-        
-        
+        const {width, height} = this.scale
+        console.log(width, height)
     //  timeline_1.play()
         GameState.isPlayerAbleToMove        = true                                      //retirar
         GameState.defaultMotionControls     = false

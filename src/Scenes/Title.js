@@ -9,7 +9,6 @@ export default class Title extends Phaser.Scene{
         this.load.audio(SongsKey.MusicG1Key, SongsKey.MusicG1URL, SongsKey.MusicG1Config)
 
         this.load.image(ImagesKeys.Background, ImagesKeys.Background_URL)
-
         this.load.image(ImagesKeys.Rocks_2, ImagesKeys.Rocks2_URL)
         this.load.image(ImagesKeys.Rocks_1, ImagesKeys.Rocks1_URL)
         
@@ -23,15 +22,14 @@ export default class Title extends Phaser.Scene{
     }
 
     init(){
-        const gameCanvas = this.sys.game.canvas
-        gameCanvas.style.border = "5px solid #40A2E3";
+        const gameCanvas              = this.sys.game.canvas
+        gameCanvas.style.border       = "5px solid #40A2E3";
         gameCanvas.style.borderRadius = "20px"
     }
 
     create(){
-
         this.sound.play(SongsKey.MusicG1Key)
-
+        
         const {width, height} = this.scale
 
         this.bg = this.add.tileSprite(0, 0, width, height, ImagesKeys.Background)
@@ -107,6 +105,11 @@ export default class Title extends Phaser.Scene{
     }
 
     update(){
+        this.paralax()
+        this.handleKeybord()
+    }
+
+    paralax(){
         this.bg.tilePositionX += 0.1
         this.rock1.tilePositionX += 1.9
         this.rock2.tilePositionX += 1
@@ -114,7 +117,9 @@ export default class Title extends Phaser.Scene{
         this.clouds2.tilePositionX += 1.5
         this.clouds3.tilePositionX += 0.5
         this.clouds4.tilePositionX += 2.5
+    }
 
+    handleKeybord(){
         this.input.keyboard.once('keydown-SPACE', () => {
             this.sound.stopAll( )
             this.scene.start(MapaMain)
