@@ -6,19 +6,7 @@ import * as SongsKey from '../Consts/SongsKey'
 
 export default class Title extends Phaser.Scene{
     preload(){
-        this.load.audio(SongsKey.MusicG1Key, SongsKey.MusicG1URL, SongsKey.MusicG1Config)
 
-        this.load.image(ImagesKeys.Background, ImagesKeys.Background_URL)
-        this.load.image(ImagesKeys.Rocks_2, ImagesKeys.Rocks2_URL)
-        this.load.image(ImagesKeys.Rocks_1, ImagesKeys.Rocks1_URL)
-        
-        this.load.image(ImagesKeys.Clouds_1, ImagesKeys.Clouds1_URL)
-        this.load.image(ImagesKeys.Clouds_2, ImagesKeys.Clouds2_URL)
-        this.load.image(ImagesKeys.Clouds_3, ImagesKeys.Clouds3_URL)
-        this.load.image(ImagesKeys.Clouds_4, ImagesKeys.Clouds4_URL)
-
-        this.load.image(ImagesKeys.Logo2, ImagesKeys.Logo2_URL)
-        this.load.image(ImagesKeys.RecStart, ImagesKeys.RecStart_URL)
     }
 
     init(){

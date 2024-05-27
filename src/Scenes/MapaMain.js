@@ -45,8 +45,18 @@ export default class MapaMain extends Phaser.Scene
     }
 
     preload(){
+    //  Map
+        this.load.tilemapTiledJSON(MapKeys.MapKey, MapKeys.MapURL, null, Phaser.Tilemaps.TILLED_JSON)
         
-        
+        this.load.image(MapKeys.objConfigTilesetMap[0].key, MapKeys.objConfigTilesetMap[0].url, { frameWidth: 16 })
+        this.load.image(MapKeys.objConfigTilesetMap[1].key, MapKeys.objConfigTilesetMap[1].url, { frameWidth: 16 })
+        this.load.image(MapKeys.objConfigTilesetMap[2].key, MapKeys.objConfigTilesetMap[2].url, { frameWidth: 16 })
+        this.load.image(MapKeys.objConfigTilesetMap[3].key, MapKeys.objConfigTilesetMap[3].url, { frameWidth: 16 })
+        this.load.image(MapKeys.objConfigTilesetMap[4].key, MapKeys.objConfigTilesetMap[4].url, { frameWidth: 16 })
+        this.load.image(MapKeys.objConfigTilesetMap[5].key, MapKeys.objConfigTilesetMap[5].url, { frameWidth: 16 })
+        this.load.image(MapKeys.objConfigTilesetMap[6].key, MapKeys.objConfigTilesetMap[6].url, { frameWidth: 16 })
+        this.load.image(MapKeys.objConfigTilesetMap[7].key, MapKeys.objConfigTilesetMap[7].url, { frameWidth: 16 })        
+        this.load.image(MapKeys.objConfigTilesetMap[8].key, MapKeys.objConfigTilesetMap[8].url, { frameWidth: 16 })
     }
    
     init(){
@@ -124,10 +134,9 @@ export default class MapaMain extends Phaser.Scene
 
         this.scene.run(MainUserInterface)
         this.scene.bringToTop(MainUserInterface)
-        const {width, height} = this.scale
-        console.log(width, height)
-    //  timeline_1.play()
-        GameState.isPlayerAbleToMove        = true                                      //retirar
+
+        timeline_1.play()
+        // GameState.isPlayerAbleToMove        = true                                      //retirar
         GameState.defaultMotionControls     = false
         GameState.accessibleMotionControls  = true
         
