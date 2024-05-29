@@ -2,14 +2,17 @@
 
 import Phaser from "phaser";
 
+//Scenes
+
+
 //Consts
 import { containerGame_width, containerGame_height, mapMain_scale } from "../Consts/Sizes"
 import { lifeBar } from "../Consts/SpriteSheets";
 import { uiImages } from "../Consts/ImagesKeys";
 
 // From others modules
-import { level_data } from "../Scenes/Level1"
-import { text_UI, GameState } from "../Scenes/MapaMain"
+import { level_data } from "../Consts/LevelStatesObj"
+import { userIterfaceState, gameState } from "../Consts/GameStateObj"
 
 let timer_UI = level_data.timer
 let queue = []
@@ -22,8 +25,6 @@ export default class GameBackground extends Phaser.Scene
         this.currentIndex = 0
         this.controlTextObj = { interfaceText_stt: 'paused' }
         this.arrows = []
-        
-
     }
     create() 
     {
@@ -148,35 +149,34 @@ export default class GameBackground extends Phaser.Scene
 
     update(){
         this.handel_timerEl(timer_UI, level_data)
-        this.check_Add_textToQueue(text_UI)
+        this.check_Add_textToQueue(userIterfaceState.text)
         this.handel_Queue(queue, this.controlTextObj.interfaceText_stt)
-        
-        if(GameState.isTopInformationAble) 
+        if(gameState.isTopInformationAble) 
         {                                                                                                        // PASSO 2
-            this.showTopInformation(GameState.topInformationType)
-            GameState.isTopInformationAble = false
+            this.showTopInformation(gameState.topInformationType)
+            gameState.isTopInformationAble = false
         }
 
-        if(GameState.isGuapimirimSignAble)
+        if(gameState.isGuapimirimSignAble)
         {
             this.cityMap_info_out.play()
             this.bringMapToScrean()
-            GameState.isGuapimirimSignAble = false // está aqui para garantir que essa função seja chamada somente uma vez
+            gameState.isGuapimirimSignAble = false // está aqui para garantir que essa função seja chamada somente uma vez
         }
         
-        if(GameState.isGuapimirimSignVisible)
+        if(gameState.isGuapimirimSignVisible)
         {
             if(this.cursor.space.isDown){
                 this.cityMap_map_out.play()
 
-                GameState.isGuapimirimSignVisible = false
-                GameState.isPlayerAbleToMove      = true
-                GameState.isGuapimirimSignAble    = false
-                GameState.isTopInformationAble    = false
+                gameState.isGuapimirimSignVisible = false
+                gameState.isPlayerAbleToMove      = true
+                gameState.isGuapimirimSignAble    = false
+                gameState.isTopInformationAble    = false
                 
                 this.time.addEvent({
                     delay: 3000,
-                    callback: () => GameState.counter_1 = 0,
+                    callback: () => gameState.counter_1 = 0,
                     loop: false
                 })
             }
@@ -186,28 +186,28 @@ export default class GameBackground extends Phaser.Scene
 
     showTopInformation(type){ // PASSO 3
         if(type == 'CityMap'){
-            GameState.isPlayerAbleToMove = false
+            gameState.isPlayerAbleToMove = false
 
             this.CityMap_info_popUp.setAlpha(1)
             this.cityMap_info_in.play()
 
-            GameState.isTopInformationVisible = true
-            GameState.topInformationType = ''
+            gameState.isTopInformationVisible = true
+            gameState.topInformationType = ''
             
             this.time.addEvent({
                 delay: 2000,
                 callback: () => {
-                    if(!GameState.isGuapimirimSignVisible) {
+                    if(!gameState.isGuapimirimSignVisible) {
                         this.cityMap_info_out.play()
                         this.time.addEvent({
                             delay: 3000,
-                            callback: () => GameState.counter_1 = 0,
+                            callback: () => gameState.counter_1 = 0,
                             loop: false
                         })
                     }
-                    GameState.isTopInformationVisible = false
-                    GameState.isGuapimirimSignAble    = false
-                    GameState.isPlayerAbleToMove      = true
+                    gameState.isTopInformationVisible = false
+                    gameState.isGuapimirimSignAble    = false
+                    gameState.isPlayerAbleToMove      = true
                 }
             })
         }
@@ -216,13 +216,13 @@ export default class GameBackground extends Phaser.Scene
     }
 
     bringMapToScrean() { // PASSO 4
-        GameState.isTopInformationVisible = false
-        GameState.isPlayerAbleToMove = false
+        gameState.isTopInformationVisible = false
+        gameState.isPlayerAbleToMove = false
 
         this.cityMap_map_in.play()
         this.time.addEvent({
             delay: 250,
-            callback: () => GameState.isGuapimirimSignVisible = true,
+            callback: () => gameState.isGuapimirimSignVisible = true,
             loop: false
         })          
     }
@@ -527,6 +527,5 @@ export default class GameBackground extends Phaser.Scene
 const addToUIQueue = (text, align) => GameBackground.prototype.addToQueue(queue, text, align)
 export{
     queue,
-    // this.,
     addToUIQueue
 }

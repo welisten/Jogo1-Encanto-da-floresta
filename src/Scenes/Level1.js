@@ -1,52 +1,37 @@
 // Scene (Cena) principal do Jogo
 
 import Phaser from "phaser";
+
 // Scenes
-import { MainUserInterface } from '../Consts/SceneKeys'    // ATENCION
+import { mainUserInterface } from '../Consts/SceneKeys'    // ATENCION
 // Constants
-import {mapL1_key, l1_tilesetObjConfig, l1_layers_ID, objectsLayers_keys} from '../Consts/MapKeys'
-import {l1Map_scale, l1Map_height, l1Map_width } from '../Consts/Sizes'
+import { mapL1_key, l1_tilesetObjConfig, l1_layers_ID, objectsLayers_keys } from '../Consts/MapKeys'
+import { l1Map_scale, l1Map_height, l1Map_width, transitionFadeDuration } from '../Consts/Sizes'
 import { userCharacter_objConfig } from '../Consts/CharacterKeys'
 import { level1_delayMapScrolling, level1_SpeedMapScrolling, character_AnimationFrameRate } from '../Consts/Difficulty'
 import { userCharacter_animationsKey } from '../Consts/Animations'
-
-
-let level_data = {
-    timer: 0,
-    running: false,
-    aux_controlDelay: 0
-}
+// Level data
+import { level_data, levelStatesObj } from "../Consts/LevelStatesObj"
 
 export default class Game extends Phaser.Scene
 {
     /** Lembre-se que quando implementados o fim da fase e o botão de pausar 
      * devemos atualizar tanto GameStatesObj quanto currentGameState */
+    
     init(){
         this.enableKeyboard = false
-        this.GameStatesObj = {
-            Running: 'running',
-            Finished: 'finished',
-            Paused: 'paused',
-            hasBegun: false,
-            isPaused: false,
-            isFinished: false,
-            isMapScrolling: false,
-            hasMapScrolled: false
-        }
-        
-        this.currentGameState = this.GameStatesObj.Running
+        this.currentGameState = levelStatesObj.Running
+        this.GameContainerEl = document.getElementById('gameContainer')
         
         // styles
         const gameCanvas = this.sys.game.canvas
         gameCanvas.style.border = "5px solid #40A2E3";
         gameCanvas.style.borderRadius = "20px"
-
-        this.GameContainerEl = document.getElementById('gameContainer')
     }
 
     create()
     { 
-        this.cameras.main.fadeIn(1000, 0, 0, 0); // Fade a partir do preto em 1 segundo
+        this.cameras.main.fadeIn(transitionFadeDuration, 0, 0, 0); // Fade a partir do preto em 1 segundo
         
         this.cameras.main.once('camerafadeoutcomplete', (camera) => {
             return
@@ -76,9 +61,9 @@ export default class Game extends Phaser.Scene
         this.cameras.main.setScroll( 0, (l1Map_height * l1Map_scale)) // configurando posicionamento da camera
         this.physics.world.setBounds(0, 0, (map.widthInPixels * l1Map_scale), (map.heightInPixels * l1Map_scale))
         
-        this.scene.run(MainUserInterface)
-        this.scene.bringToTop(MainUserInterface)
-        
+        this.scene.run(mainUserInterface)
+        this.scene.bringToTop(mainUserInterface)
+
         // this.createNeededAnimation() // criar apenas uma vez (mapaMain)
         
         this.player = this.physics.add.sprite( ((l1Map_width + 40) * l1Map_scale) / 2, (l1Map_height - 30) * l1Map_scale, userCharacter_objConfig.up.manUp_key).setScale(l1Map_scale * 1.8)
@@ -112,21 +97,14 @@ export default class Game extends Phaser.Scene
             },
             loop: true
         })
-        this.GameStatesObj.hasBegun = true
+        levelStatesObj.hasBegun = true
     }
 
 
-    update() {  // SE O FOGO ESTIVER PAUSADO OU SE ELE NÃO ESTIVER RODADNDO AS FUNÇOES DO UPDATE NÃO IRÃO SER LIDAS
-        // // console.log(`    ESTADO DA FASE:
-        // O Jogo começou = ${this.GameStatesObj.hasBegun}
-        // O mapa ta rodando = ${this.GameStatesObj.isMapScrolling}
-        // O Jogo está pausado = ${this.GameStatesObj.isPaused}
-        // O Jogo termino = ${this.GameStatesObj.isFinished}
-        // O Mapa terminou = ${this.GameStatesObj.hasMapScrolled}
-        // // `) 
-        if(this.currentGameState != this.GameStatesObj.Running && !this.GameStatesObj.hasBegun) return
+    update() {  // SE O FOGO ESTIVER PAUSADO OU SE ELE NÃO ESTIVER RODADNDO AS FUNÇOES DO UPDATE NÃO IRÃO SER LIDAS 
+        if(this.currentGameState != levelStatesObj.Running && !levelStatesObj.hasBegun) return
         this.handleLMainCharacterMovements()
-        if (this.GameStatesObj.hasMapScrolled) this.keepCharacterInCameraBounds()  
+        if (levelStatesObj.hasMapScrolled) this.keepCharacterInCameraBounds()  
         this.time.delayedCall(level1_delayMapScrolling, () => {
             if(level_data.aux_controlDelay == 0)
             {
@@ -139,11 +117,11 @@ export default class Game extends Phaser.Scene
 
     handleLMainCharacterMovements(){
         if(this.enableKeyboard){  
-            const noLeftRightKey = (this.GameStatesObj.isMapScrolling && !this.cursor.left.isDown && !this.cursor.right.isDown)
-            const noUpKey        = (this.GameStatesObj.isMapScrolling && this.cursor.up.isDown)
-            const noDownKey      = (this.GameStatesObj.isMapScrolling && this.cursor.down.isDown)
+            const noLeftRightKey = (levelStatesObj.isMapScrolling && !this.cursor.left.isDown && !this.cursor.right.isDown)
+            const noUpKey        = (levelStatesObj.isMapScrolling && this.cursor.up.isDown)
+            const noDownKey      = (levelStatesObj.isMapScrolling && this.cursor.down.isDown)
             
-            const y = !this.GameStatesObj.isMapScrolling ? 0 : -100
+            const y = !levelStatesObj.isMapScrolling ? 0 : -100
 
             if( noLeftRightKey || noUpKey || noDownKey )
             {
@@ -199,18 +177,18 @@ export default class Game extends Phaser.Scene
         if(this.cameras.main.scrollY > 0)
         {   
             this.cameras.main.scrollY -= level1_SpeedMapScrolling
-            if(!this.GameStatesObj.isMapScrolling)
+            if(!levelStatesObj.isMapScrolling)
             {
-                this.GameStatesObj.isMapScrolling = true
+                levelStatesObj.isMapScrolling = true
                 level_data.running = true
             }
         } 
         else
         {
-            if(this.GameStatesObj.isMapScrolling)
+            if(levelStatesObj.isMapScrolling)
             {
-                this.GameStatesObj.isMapScrolling = false
-                this.GameStatesObj.hasMapScrolled =  true
+                levelStatesObj.isMapScrolling = false
+                levelStatesObj.hasMapScrolled =  true
                 this.time.removeEvent(this.cronometro)
                 level_data.running = false
             }
@@ -256,8 +234,4 @@ export default class Game extends Phaser.Scene
     toggleKeyboardControl() {
         this.enableKeyboard = !this.enableKeyboard;
     }
-}
-
-export{
-    level_data
 }

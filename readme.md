@@ -6,28 +6,28 @@
       1 - Limpeza de codigo
       OK    - eliminar var usar apenas let e const
       OK    - deixar os nomes dos dados e funções todas em ingles
-            - verificar a conformidade entre a ATIVIDADE e o NOME DAS FUNÇÕES que as executas
-            - verificar a conformidade entre Os DADO e os NOME DAS VARIAVEIS que os carregam
+      OK    - verificar a conformidade entre a ATIVIDADE e o NOME DAS FUNÇÕES que as executas
+      OK    - verificar a conformidade entre Os DADO e os NOME DAS VARIAVEIS que os carregam
       OK    - excluir dados e lógicas irrelevantes
       OK    - verificar formatação do código
-      OK    - eliminar console.logs
-            - elencar casos de testes para as funções verificadas
-            - compartimentalizar as constantes que demandam tal ação
+      OK    - eliminar console.logs DESNECESSÁRIOS
+->          - elencar casos de testes para as funções verificadas
+      OK    - compartimentalizar as constantes que demandam tal ação
 
 OK   2 - Implementar uma logica para a definição da escala do mapa Level1
 
 ( 2 )------------------------------------(      AJUSTES DE OTIMIZAÇÃO     )-----------------------------------------------
------------------------------------------------     (ANDAMENTO)     ------------------------------------------------------
+-----------------------------------------------     (CONCLUIDO)     ------------------------------------------------------
 
-OK    1 - Tentar substitur as varias interaçoes sobre o array de objetos por apenas uma interação onde todos os outros array
+OK    1 - Tentar substitur as varias interaçoes sobre o array de objetos por apenas uma interação onde todos os outros arr
              já são definidos
-->    2 - Fazer os imports apenas das contantes necessárias
-            - PRELOAD
-            - TITLE
-            - MAPA MAIN
-            - lEVEL 1 
-            - MAIN
-      3 - Estudar as circunstâncias e possibilidades de substituir as variaveis das classe das Cenas do jogo por        variaveis de escopo mais  abstratos
+OK    2 - Fazer os imports apenas das contantes necessárias
+        OK    - PRELOAD
+        OK    - TITLE
+        OK    - MAPA MAIN
+        OK    - lEVEL 1 
+        OK    - MAIN
+OK      3 - Estudar as circunstâncias e possibilidades de substituir as variaveis das classe das Cenas do jogo por        variaveis de escopo mais  abstratos
 
 ( 3 )------------------------------------(      ATIVIDADES DA SPRIT      )------------------------------------------------
 -----------------------------------------------     (ANDAMENTO)     ------------------------------------------------------
@@ -75,6 +75,7 @@ AJUSTES:
       - AJUSTAR PROFUNDIDADE DO PERSONAGEM EM RELAÇÃO AS ARVORES NO LEVEL 1
       - AJUSTAR ALINHAMENTO DOS Decisions_break NO TILED
       - REPRODUZAIR PASSOS AO ANDAR
+      - MUSICAS PARA LEVEL1
 
 OTIMIZAÇÂO:
       - onde alocar os assets ?
