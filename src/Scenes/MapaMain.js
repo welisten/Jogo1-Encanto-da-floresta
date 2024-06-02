@@ -52,8 +52,8 @@ export default class MapaMain extends Phaser.Scene
     { 
 
         const initStrLength = 204
-
         this.sound.play(mapMainSongs.mapaMain_theme.key, {volume: gameState.General_songs_volume})
+
 
         const timeline_1 = this.add.timeline(
         [      // Compartimentalizar
@@ -107,14 +107,19 @@ export default class MapaMain extends Phaser.Scene
         this.scene.run(mainUserInterface)
         this.scene.bringToTop(mainUserInterface)
 
-        // timeline_1.play()
+        if( !localStorage.getItem('initPoint')){
+            timeline_1.play()
+            gameState.isPlayerAbleToMove = false                                      
+
+        } 
         gameState.isPlayerAbleToMove        = true                                      //retirar
         gameState.defaultMotionControls     = false
         gameState.accessibleMotionControls  = true
         
         this.createAllNeededAnimation()
-        
-        const initPoint = this.getObjectById(2)
+
+        let idInit = localStorage.getItem('initPoint') ? JSON.parse(localStorage.getItem('initPoint')) : 2
+        const initPoint = localStorage.getItem('initPoint') ? this.getObjectById(idInit) : this.getObjectById(idInit)
 
         this.player = this.physics.add.sprite( Math.floor(initPoint.x * mapMain_scale), Math.floor(initPoint.y * mapMain_scale), userCharacter_objConfig.down.manDown_key).setDepth(2).setScale(character_scale)
         this.player.setCollideWorldBounds(true);
@@ -147,6 +152,7 @@ export default class MapaMain extends Phaser.Scene
                             if(this.isCompletelyInside(circle, this.player))
                             {
                                 playerState.point_id = object.id
+                                localStorage.setItem('initPoint', JSON.stringify(object.id))
                                 switch(playerState.direction)
                                 {
                                     case('up'):

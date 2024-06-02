@@ -34,7 +34,7 @@ OK      3 - Estudar as circunstâncias e possibilidades de substituir as variave
       1 -          Salvar variaveis no localStorage para serem capturadas quando o jogo abrir.
                         - Quais ?
                               - Nome do jogador (colocar em locais do texto da time line para aumentar a interação com o usuário )
-                              - Ultimo ponto passado pelo jogador
+                  OK          - Ultimo ponto passado pelo jogador
                               - Ultima fase jogada pelo jogador
                               - Vida do jogador
                         - Aonde ?
