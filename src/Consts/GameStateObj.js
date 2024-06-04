@@ -1,4 +1,4 @@
-const gameState = {
+let gameState = {
     Running: 'running',
     Finished: 'finished',
     isPaused: false,
@@ -13,13 +13,14 @@ const gameState = {
     isGuapimirimSignVisible: false,
     isTopInformationVisible: false,
     topInformationType: '',
-    counter_1: 0
+    counter_cityMap: 0 // manter em 0
 }
 
-const playerState = {
+let playerState = {
     isMoving: false,
     floor: 'floor_2',
     point_id: 2,
+    lastPoint_id: undefined,
     point_x: undefined,
     point_y: undefined,
     targetID: undefined,
@@ -33,8 +34,17 @@ const userIterfaceState = {
     text: ''
 }
 
+function updateStates(){
+    if(localStorage.getItem('gameState')){
+        gameState = JSON.parse(localStorage.getItem('gameState'))
+        if(localStorage.getItem('playerState')){
+            playerState = JSON.parse(localStorage.getItem('playerState'))
+        }
+    }
+}
 export{
     gameState,
     playerState,
-    userIterfaceState
+    userIterfaceState,
+    updateStates
 }

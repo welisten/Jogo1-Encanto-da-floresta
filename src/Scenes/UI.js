@@ -175,8 +175,8 @@ export default class GameBackground extends Phaser.Scene
                 gameState.isTopInformationAble    = false
                 
                 this.time.addEvent({
-                    delay: 3000,
-                    callback: () => gameState.counter_1 = 0,
+                    delay: 2000,
+                    callback: () => gameState.counter_cityMap = 0,
                     loop: false
                 })
             }
@@ -201,7 +201,7 @@ export default class GameBackground extends Phaser.Scene
                         this.cityMap_info_out.play()
                         this.time.addEvent({
                             delay: 3000,
-                            callback: () => gameState.counter_1 = 0,
+                            callback: () => gameState.counter_cityMap = 0,
                             loop: false
                         })
                     }

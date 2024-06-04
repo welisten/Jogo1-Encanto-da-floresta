@@ -31,19 +31,20 @@ OK      3 - Estudar as circunstâncias e possibilidades de substituir as variave
 
 ( 3 )------------------------------------(      ATIVIDADES DA SPRIT      )------------------------------------------------
 -----------------------------------------------     (ANDAMENTO)     ------------------------------------------------------
-      1 -          Salvar variaveis no localStorage para serem capturadas quando o jogo abrir.
+      1 -  OK        Salvar variaveis no localStorage para serem capturadas quando o jogo abrir.
                         - Quais ?
-                              - Nome do jogador (colocar em locais do texto da time line para aumentar a interação com o usuário )
+                  FINAL       - Nome do jogador (colocar em locais do texto da time line para aumentar a interação com o usuário )
                   OK          - Ultimo ponto passado pelo jogador
-                              - Ultima fase jogada pelo jogador
-                              - Vida do jogador
+                  OK          - Ultima fase jogada pelo jogador
+                  FINAL       - Vida do jogador
+                        
                         - Aonde ?
-                              - Nome            -> Entre o título e o Mapa main
-                              - Ultimo ponto    -> Toda vez que um novo ponto entrar em sobreposição com player
-                              - Ultima fase     -> Toda vez que uma fase for terminada
-                              - Vida            -> Quando a vida for alterada
+                  FINAL       - Nome            -> Entre o título e o Mapa main
+                  OK          - Ultimo ponto    -> Toda vez que um novo ponto entrar em sobreposição com player
+                  Ok          - Ultima fase     -> Toda vez que uma fase for terminada
+                  FINAL       - Vida            -> Quando a vida for alterada
 
-      2 -          Ajustar personagem ao mudar movimentação(a sprite deve ser posta no local do current_point)
+      2 - OK      Ajustar personagem ao mudar movimentação(a sprite deve ser posta no local do current_point)
                         - Quando ?
                               - Quando alternado de default para accessible 
                         - Como ?

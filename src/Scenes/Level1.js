@@ -101,7 +101,7 @@ export default class Game extends Phaser.Scene
     }
 
 
-    update() {  // SE O FOGO ESTIVER PAUSADO OU SE ELE NÃO ESTIVER RODADNDO AS FUNÇOES DO UPDATE NÃO IRÃO SER LIDAS 
+    update() {  // SE O JOGO ESTIVER PAUSADO OU SE ELE NÃO ESTIVER RODADNDO AS FUNÇOES DO UPDATE NÃO IRÃO SER LIDAS 
         if(this.currentGameState != levelStatesObj.Running && !levelStatesObj.hasBegun) return
         this.handleLMainCharacterMovements()
         if (levelStatesObj.hasMapScrolled) this.keepCharacterInCameraBounds()  
@@ -191,6 +191,7 @@ export default class Game extends Phaser.Scene
                 levelStatesObj.hasMapScrolled =  true
                 this.time.removeEvent(this.cronometro)
                 level_data.running = false
+                localStorage.setItem('currentLevel', 1)
             }
         }
 

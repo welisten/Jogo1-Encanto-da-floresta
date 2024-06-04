@@ -12,7 +12,6 @@ import UI from './Scenes/UI.js'
 //  Consts
 import { containerGame_width, containerGame_height } from './Consts/Sizes.js'
 import { preload, title, mapaMain, mainUserInterface, level1 } from './Consts/SceneKeys'
-import * as SceneKeys from './Consts/SceneKeys'
 
 const config = {
     //  width: window.innerWidth,

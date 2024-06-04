@@ -15,7 +15,7 @@ import { userCharacter_animationsKey } from '../Consts/Animations'
 
 import { addToUIQueue } from "../Scenes/UI";
 
-import { gameState, playerState, userIterfaceState } from "../Consts/GameStateObj";
+import { gameState, playerState, userIterfaceState, updateStates } from "../Consts/GameStateObj";
 
 
 export default class MapaMain extends Phaser.Scene
@@ -106,21 +106,36 @@ export default class MapaMain extends Phaser.Scene
 
         this.scene.run(mainUserInterface)
         this.scene.bringToTop(mainUserInterface)
+        let idInit = undefined
 
-        if( !localStorage.getItem('initPoint')){
+
+        if( !localStorage.getItem('lastPoint')){                   //   PRIMEIRA VEZ JOGANDO                         
             timeline_1.play()
-            gameState.isPlayerAbleToMove = false                                      
+            gameState.isPlayerAbleToMove = false
+            idInit = 2
+            localStorage.setItem('lastPoint', 2)
 
-        } 
+        } else {                                                   //   NÃO É A PRIMEIRA VEZ JOGANDO
+            updateStates()
+
+            idInit = this.getOnStorage('lastPoint')
+
+            playerState.point_id = this.getOnStorage('lastPoint')
+            playerState.point_x = this.getObjectById(playerState.point_id).x * mapMain_scale 
+            playerState.point_y = this.getObjectById(playerState.point_id).y * mapMain_scale
+            playerState.targetID = undefined 
+            playerState.targetX = undefined
+            playerState.targetY = undefined
+            gameState.counter_cityMap = 0
+        }
+        const initPoint = this.getObjectById(idInit) 
+
         gameState.isPlayerAbleToMove        = true                                      //retirar
         gameState.defaultMotionControls     = false
         gameState.accessibleMotionControls  = true
         
         this.createAllNeededAnimation()
-
-        let idInit = localStorage.getItem('initPoint') ? JSON.parse(localStorage.getItem('initPoint')) : 2
-        const initPoint = localStorage.getItem('initPoint') ? this.getObjectById(idInit) : this.getObjectById(idInit)
-
+        
         this.player = this.physics.add.sprite( Math.floor(initPoint.x * mapMain_scale), Math.floor(initPoint.y * mapMain_scale), userCharacter_objConfig.down.manDown_key).setDepth(2).setScale(character_scale)
         this.player.setCollideWorldBounds(true);
         this.player.body.setSize(4, 4)
@@ -146,13 +161,14 @@ export default class MapaMain extends Phaser.Scene
 
                             if(playerState.point_id == object.id)
                             {
+                                // console.log('deu ruin')
                                 return    
                             }
+                            
                         
                             if(this.isCompletelyInside(circle, this.player))
-                            {
+                            {   
                                 playerState.point_id = object.id
-                                localStorage.setItem('initPoint', JSON.stringify(object.id))
                                 switch(playerState.direction)
                                 {
                                     case('up'):
@@ -192,8 +208,27 @@ export default class MapaMain extends Phaser.Scene
                             }
                         })   
                     } 
-                    break
+                    break                
                 
+                case 'save_point':
+
+                    const recSave = this.add.rectangle((object.x * mapMain_scale), (object.y * mapMain_scale), (object.width * mapMain_scale), (object.height * mapMain_scale)).setDisplayOrigin(0).setDepth(10)
+                    this.physics.add.existing(recSave, true)
+                    this.physics.add.overlap(this.player, recSave, () => {
+
+                        if(this.getOnStorage('lastPoint') != object.properties[0].value){
+                            // console.log(this.getOnStorage('lastPoint'), object.properties[0].value)
+                            playerState.lastPoint_id = object.properties[0].value
+                            playerState.isMoving = false
+
+                            localStorage.setItem('lastPoint', JSON.stringify(object.properties[0].value))
+                            localStorage.setItem('gameState', JSON.stringify(gameState))
+                            localStorage.setItem('playerState', JSON.stringify(playerState))
+                        }
+                    
+                    })
+                    break
+
                 case 'level':
                     let hasOverlapOccurred = false
                     
@@ -209,6 +244,10 @@ export default class MapaMain extends Phaser.Scene
                             
                             if(isPlayerCompletelyInside)
                             {
+                                if(object.properties[0].value <= JSON.parse(this.getOnStorage('currentLevel'))){                       //DATA
+
+                                    return
+                                }
                                 hasOverlapOccurred = true
                                 gameState.isPlayerAbleToMove = false
                                 this.sendStringToUI('')
@@ -225,8 +264,8 @@ export default class MapaMain extends Phaser.Scene
                             }
                         }
                     })
-                    break
-                    
+                    break   
+
                 case 'info':
                     const recInfo = this.add.rectangle((object.x * mapMain_scale), (object.y * mapMain_scale), (object.width * mapMain_scale), (object.height * mapMain_scale)).setDisplayOrigin(0)
                     this.physics.add.existing(recInfo, true)
@@ -251,10 +290,12 @@ export default class MapaMain extends Phaser.Scene
                             
                     this.physics.add.existing(recCityMap, true)
                     this.physics.add.overlap(this.player, recCityMap, () => {
-                        if(!gameState.isTopInformationAble && gameState.counter_1 == 0){
+                        console.log('fora')
+                        if(!gameState.isTopInformationAble && gameState.counter_cityMap == 0){
+                            console.log('dentro')
                             gameState.isTopInformationAble = true
                             gameState.topInformationType = 'CityMap'
-                            gameState.counter_1++
+                            gameState.counter_cityMap++
                         }
         })
                     break
@@ -274,16 +315,43 @@ export default class MapaMain extends Phaser.Scene
             }
         })
 
+        // if(this.getOnStorage('initPoint')){
+        //     playerState.lastPoint_id = this.getOnStorage('initPoint')
+        // } 
+
         
         //----------------------       DOM        -----------------------
         const accessible_btn = document.getElementById('alternativeMovements')
         const mute_btn = document.getElementById('mute')
         
         accessible_btn.onclick = () => {
-            accessible_btn.classList.toggle('active')
+            this.player.setVelocity(0, 0)
+            playerState.isMoving = false
 
-            gameState.accessibleMotionControls = !gameState.accessibleMotionControls
-            gameState.defaultMotionControls = !gameState.defaultMotionControls
+            this.player.anims.stop()
+            if(accessible_btn.classList.contains('active')) { // Default
+                accessible_btn.classList.remove('active')
+
+                gameState.accessibleMotionControls = false
+                gameState.defaultMotionControls = true
+            }else{                                            // Acessible
+
+                if(playerState.lastPoint_id){
+                    let x = this.getObjectById(playerState.lastPoint_id).x * mapMain_scale
+                    let y = this.getObjectById(playerState.lastPoint_id).y * mapMain_scale
+                    
+                    updateStates()
+                    this.player.x = x
+                    this.player.y = y
+                    this.player.play({key: userCharacter_animationsKey.walk_down.key, repeat: 0}, true)
+
+                    gameState.accessibleMotionControls = true
+                    gameState.defaultMotionControls = false
+                }
+
+                accessible_btn.classList.add('active')
+            }            
+            
         }
 
         mute_btn.onclick = () => {
@@ -303,6 +371,7 @@ export default class MapaMain extends Phaser.Scene
                 this.sound.volume = 1
             }
         }
+
     }
 
     update() {
@@ -743,6 +812,10 @@ export default class MapaMain extends Phaser.Scene
           inner.x + inner.width <= (outer.x - 2) + outer.width &&
           inner.y + inner.height <= (outer.y - 2) + outer.height
         );
+    }
+
+    getOnStorage(key){
+        return JSON.parse(localStorage.getItem(key))
     }
 }
 
