@@ -84,6 +84,35 @@ i{
 }
 
 
+#gameAcessibleContainer{
+    position: absolute;
+    bottom: 5px;
+    left: calc(100% + 2vh);
+    height: 50vh;
+    width:  30%;
+    padding: 0vh 5vh 5vh 5vh;
+    text-align: center;
 
+    border: #0000ff solid 1px;
+    border-radius: 15px;
+    background-color: #fff;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+#acessibleText{
+    font-size: 1.5rem;
+    color: #0000ff;
+}
+
+.textTitle{
+    font-weight: bold;
+    font-size: 2rem;
+    text-decoration: underline;
+    color: #1b1b1b;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
 
 /*# sourceMappingURL=/style.e308ff8e.css.map */

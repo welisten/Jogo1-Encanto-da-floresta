@@ -17,6 +17,7 @@ let gameState = {
 }
 
 let playerState = {
+    life: 3,
     isMoving: false,
     floor: 'floor_2',
     point_id: 2,

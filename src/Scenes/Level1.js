@@ -1,27 +1,48 @@
 // Scene (Cena) principal do Jogo
 
+
+// -> implementar timeline de inicio de jogo
+//      -> entrada do player
+//      -> contagem regressiva
+//      -> inicio do jogo
+
+// -> implementar logica do jogo
+// Sistema que ao ser acionado, a cada INTERVALO X ele gera um numero aleatório entre 1 e 3
+// referente as colunas onde cada tronco deve descer. a condição de parada é o GameState.isScrolling
+
+
 import Phaser from "phaser";
 
 // Scenes
 import { mainUserInterface } from '../Consts/SceneKeys'    // ATENCION
 // Constants
 import { mapL1_key, l1_tilesetObjConfig, l1_layers_ID, objectsLayers_keys } from '../Consts/MapKeys'
-import { l1Map_scale, l1Map_height, l1Map_width, transitionFadeDuration } from '../Consts/Sizes'
+import { l1Map_scale, l1Map_height, l1Map_width, transitionFadeDuration, containerGame_height } from '../Consts/Sizes'
 import { userCharacter_objConfig } from '../Consts/CharacterKeys'
 import { level1_delayMapScrolling, level1_SpeedMapScrolling, character_AnimationFrameRate } from '../Consts/Difficulty'
 import { userCharacter_animationsKey } from '../Consts/Animations'
+import { stem } from '../Consts/SpriteSheets'
+
 // Level data
 import { level_data, levelStatesObj } from "../Consts/LevelStatesObj"
+import { playerState } from "../Consts/GameStateObj";
 
 export default class Game extends Phaser.Scene
 {
     /** Lembre-se que quando implementados o fim da fase e o botão de pausar 
      * devemos atualizar tanto GameStatesObj quanto currentGameState */
-    
+    preload(){
+        this.load.image(
+            stem.stem_key,
+            stem.stem_URL,
+        )
+    }
     init(){
         this.enableKeyboard = false
         this.currentGameState = levelStatesObj.Running
+        
         this.GameContainerEl = document.getElementById('gameContainer')
+        this.AcessibleTextBodyEl = document.querySelector('.textBody')
         
         // styles
         const gameCanvas = this.sys.game.canvas
@@ -64,7 +85,7 @@ export default class Game extends Phaser.Scene
         this.scene.run(mainUserInterface)
         this.scene.bringToTop(mainUserInterface)
 
-        // this.createNeededAnimation() // criar apenas uma vez (mapaMain)
+        this.createNeededAnimation() // criar apenas uma vez (mapaMain)
         
         this.player = this.physics.add.sprite( ((l1Map_width + 40) * l1Map_scale) / 2, (l1Map_height - 30) * l1Map_scale, userCharacter_objConfig.up.manUp_key).setScale(l1Map_scale * 1.8)
         this.player.setCollideWorldBounds(true);
@@ -98,6 +119,8 @@ export default class Game extends Phaser.Scene
             loop: true
         })
         levelStatesObj.hasBegun = true
+        console.log(this.AcessibleTextBodyEl)
+        // this.AcessibleTextBodyEl.innerText
     }
 
 
@@ -113,6 +136,88 @@ export default class Game extends Phaser.Scene
             }
             this.handleMapScrolling()
         })
+    }
+
+    gameLogic(){
+        let aux = 1
+        let collumn = undefined
+        
+        if(levelStatesObj.isMapScrolling){
+            this.gameMachineTimer = this.time.addEvent({
+                delay: 3000,
+                callback: () => {
+                    collumn = Phaser.Math.Between(1,3)
+                    let auxGameLogic = 0
+
+                    if(this.cameras.main.scrollY > containerGame_height + 100)
+                    {   
+                        switch(collumn){
+                           case 1:
+                               const stem1 = this.add.image(288 * l1Map_scale, this.cameras.main.scrollY - 16 * l1Map_scale, stem.stem_key)
+                               .setDepth(100)
+                               .setOrigin(0)
+                               .setScale(l1Map_scale)
+
+                               this.physics.add.existing(stem1, true)
+                               this.physics.add.overlap(this.player, stem1, () => {
+                                if(auxGameLogic == 0){
+                                    if(playerState.life > 0.5){
+                                        playerState.life = playerState.life - 0.5
+                                    } else {
+                                        playerState.life = 0
+                                    }
+                                    auxGameLogic++
+                                }
+                               })
+                               break
+
+                           case 2:
+                               const stem2 = this.add.image(336 * l1Map_scale, this.cameras.main.scrollY - 16 * l1Map_scale, stem.stem_key)
+                               .setDepth(100)
+                               .setOrigin(0)
+                               .setScale(l1Map_scale)
+
+                               this.physics.add.existing(stem2, true)
+                               this.physics.add.overlap(this.player, stem2, () => {
+                                if(auxGameLogic == 0){
+                                    if(playerState.life > 0.5){
+                                        playerState.life = playerState.life - 0.5
+                                    } else {
+                                        playerState.life = 0
+                                    }
+                                    auxGameLogic++
+                                }
+                               })
+                               break
+
+                           case 3:
+                               const stem3 = this.add.image(384 * l1Map_scale, this.cameras.main.scrollY - 16 * l1Map_scale, stem.stem_key)
+                               .setDepth(100)
+                               .setOrigin(0)
+                               .setScale(l1Map_scale)
+                               this.physics.add.existing(stem3, true)
+                               this.physics.add.overlap(this.player, stem3, () => {
+                                if(auxGameLogic == 0){
+                                    if(playerState.life > 0.5){
+                                        playerState.life = playerState.life - 0.5
+                                    } else {
+                                        playerState.life = 0
+                                    }
+                                    auxGameLogic++
+                                }
+                               })
+                               break
+                        }
+                        
+                    this.AcessibleTextBodyEl.innerHTML = `<p>Chamada - ${aux}</p><p>Coluna - ${collumn}</p><p>Vida - ${playerState.life}</p>`
+                    aux++
+                    } else{
+                        this.AcessibleTextBodyEl.innerHTML = `<p>Fim da produção</p>`
+                    }
+                },
+                loop: true
+            })
+        }
     }
 
     handleLMainCharacterMovements(){
@@ -181,12 +286,15 @@ export default class Game extends Phaser.Scene
             {
                 levelStatesObj.isMapScrolling = true
                 level_data.running = true
+                this.gameLogic()
             }
         } 
         else
         {
             if(levelStatesObj.isMapScrolling)
             {
+                this.gameMachineTimer.destroy()
+                console.log('fim')
                 levelStatesObj.isMapScrolling = false
                 levelStatesObj.hasMapScrolled =  true
                 this.time.removeEvent(this.cronometro)
@@ -224,7 +332,7 @@ export default class Game extends Phaser.Scene
 
         const ManWalkDownConfig = {
             key: userCharacter_animationsKey.walk_down.key,
-            frames: this.anims.generateFrameNumbers(userCharacter_objConfig.manDown_key, {frame: [0, 1, 2, 3]}),
+            frames: this.anims.generateFrameNumbers(userCharacter_objConfig.down.manDown_key, {frame: [0, 1, 2, 3]}),
             frameRate: character_AnimationFrameRate, 
             repeat: 0,
         }

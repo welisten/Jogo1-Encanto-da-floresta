@@ -12,7 +12,7 @@ import { uiImages } from "../Consts/ImagesKeys";
 
 // From others modules
 import { level_data } from "../Consts/LevelStatesObj"
-import { userIterfaceState, gameState } from "../Consts/GameStateObj"
+import { userIterfaceState, gameState, playerState } from "../Consts/GameStateObj"
 
 let timer_UI = level_data.timer
 let queue = []
@@ -22,6 +22,7 @@ export default class GameBackground extends Phaser.Scene
 {
     init(){
         this.auxText = ''
+        this.auxLife = 0
         this.currentIndex = 0
         this.controlTextObj = { interfaceText_stt: 'paused' }
         this.arrows = []
@@ -36,15 +37,15 @@ export default class GameBackground extends Phaser.Scene
 
         
     //  Corações
-        this.add.sprite(20, 20, lifeBar.lifeBar_key, 0)
-            .setOrigin(0)
-            .setScale(.5)
-        this.add.sprite(50, 20, lifeBar.lifeBar_key, 0)
-            .setOrigin(0)
-            .setScale(.5)
-        this.add.sprite(80, 20, lifeBar.lifeBar_key, 3)
-            .setOrigin(0)
-            .setScale(.5)
+        // this.add.sprite(20, 20, lifeBar.lifeBar_key, 0)
+        //     .setOrigin(0)
+        //     .setScale(.5)
+        // this.add.sprite(50, 20, lifeBar.lifeBar_key, 0)
+        //     .setOrigin(0)
+        //     .setScale(.5)
+        // this.add.sprite(80, 20, lifeBar.lifeBar_key, 0)
+        //     .setOrigin(0)
+        //     .setScale(.5)
 
     //  Timer
     //      Moldura
@@ -149,6 +150,7 @@ export default class GameBackground extends Phaser.Scene
 
     update(){
         this.handel_timerEl(timer_UI, level_data)
+        this.handlePlayerLife(playerState.life)
         this.check_Add_textToQueue(userIterfaceState.text)
         this.handel_Queue(queue, this.controlTextObj.interfaceText_stt)
         if(gameState.isTopInformationAble) 
@@ -181,7 +183,50 @@ export default class GameBackground extends Phaser.Scene
                 })
             }
         } 
+        console.log(playerState.life)
 
+    }
+
+    handlePlayerLife(life){
+        if(this.auxLife == life){
+            return
+        }   
+
+        let heart1 = this.add.sprite(20, 20, lifeBar.lifeBar_key, 0).setOrigin(0).setScale(.5)
+        let heart2 = this.add.sprite(50, 20, lifeBar.lifeBar_key, 0).setOrigin(0).setScale(.5)
+        let heart3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 0).setOrigin(0).setScale(.5)
+
+        switch(playerState.life / .5){
+            // case 6:
+
+            //     break
+            case 5:
+        
+                break
+            case 4:
+                // heart3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+
+                break
+            case 3:
+                // heart2 = this.add.sprite(50, 20, lifeBar.lifeBar_key, 2).setOrigin(0).setScale(.5)
+                // heart3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+                break
+            case 2:
+                // heart2 = this.add.sprite(50, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+                // heart3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+                break
+            case 1:
+                // heart1 = this.add.sprite(20, 20, lifeBar.lifeBar_key, 2).setOrigin(0).setScale(.5)
+                // heart2 = this.add.sprite(50, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+                // heart3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+                break
+            default:
+                // heart1 = this.add.sprite(20, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+                // heart2 = this.add.sprite(50, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+                // heart3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+                break
+        }
+        this.auxLife = life
     }
 
     showTopInformation(type){ // PASSO 3

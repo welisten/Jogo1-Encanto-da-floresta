@@ -10,7 +10,7 @@ import { level1, title, mapaMain } from "../Consts/SceneKeys";//                
 
 import { mapL1_key, mapL1_URL, l1_tilesetObjConfig } from '../Consts/MapKeys'
 import { userCharacter_objConfig } from '../Consts/CharacterKeys'
-import { lifeBar } from '../Consts/SpriteSheets'
+import { lifeBar, stem } from '../Consts/SpriteSheets'
 import { titleImages, uiImages } from '../Consts/ImagesKeys'
 import { titleSongs, mapMainSongs, level1Songs } from '../Consts/SongsKey'
 
@@ -94,7 +94,6 @@ export default class Preload extends Phaser.Scene{
         load.audio(level1Songs.footstepsOnWater.key, level1Songs.footstepsOnWater.url, level1Songs.footstepsOnWater.config)     
         load.audio(level1Songs.waterfallSong.key, level1Songs.waterfallSong.url, level1Songs.waterfallSong.config)     
 
-
         load.tilemapTiledJSON(mapL1_key, mapL1_URL, null, Phaser.Tilemaps.TILLED_JSON)
         
         load.image(l1_tilesetObjConfig[0].key, l1_tilesetObjConfig[0].url, { frameWidth: 16 })
@@ -115,6 +114,6 @@ export default class Preload extends Phaser.Scene{
     
 
     create(){
-        this.scene.start(mapaMain)
+        this.scene.start(level1)
     }
 }

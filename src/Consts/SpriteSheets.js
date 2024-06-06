@@ -5,8 +5,16 @@ const lifeBar = {
     lifeBar_FrameAmount: 5
 }
 
+const stem = {
+    stem_key: 'Stem',
+    stem_URL: 'public/assets/imgs/stem.png',
+    stem_FrameSettings: { frameWidth: 48, frameHeight: 16 },
+    stem_FrameAmount: 3
+}
+
 
 
 export {
-    lifeBar
+    lifeBar,
+    stem
 }
