@@ -19,9 +19,10 @@ import { mainUserInterface } from '../Consts/SceneKeys'    // ATENCION
 import { mapL1_key, l1_tilesetObjConfig, l1_layers_ID, objectsLayers_keys } from '../Consts/MapKeys'
 import { l1Map_scale, l1Map_height, l1Map_width, transitionFadeDuration, containerGame_height } from '../Consts/Sizes'
 import { userCharacter_objConfig } from '../Consts/CharacterKeys'
-import { level1_delayMapScrolling, level1_SpeedMapScrolling, character_AnimationFrameRate } from '../Consts/Difficulty'
-import { userCharacter_animationsKey } from '../Consts/Animations'
-import { stem } from '../Consts/SpriteSheets'
+import { level1_delayMapScrolling, level1_SpeedMapScrolling, character_AnimationFrameRate, stemDelay } from '../Consts/Difficulty'
+import { userCharacter_animationsKey, lifeBart_animationsKey } from '../Consts/Animations'
+import { stem, lifeBar } from '../Consts/SpriteSheets'
+import { level1Songs } from "../Consts/SongsKey";
 
 // Level data
 import { level_data, levelStatesObj } from "../Consts/LevelStatesObj"
@@ -52,6 +53,9 @@ export default class Game extends Phaser.Scene
 
     create()
     { 
+        // this.sound.play(level1Songs.waterfallSong.key, level1Songs.waterfallSong.config)
+        // this.sound.play(level1Songs.footstepsOnWater.key, level1Songs.footstepsOnWater.config)
+
         this.cameras.main.fadeIn(transitionFadeDuration, 0, 0, 0); // Fade a partir do preto em 1 segundo
         
         this.cameras.main.once('camerafadeoutcomplete', (camera) => {
@@ -71,16 +75,17 @@ export default class Game extends Phaser.Scene
         
         const tilesArray = [tile_1, tile_2, tile_3, tile_4, tile_5, tile_6, tile_7]
         
-        map.createLayer(l1_layers_ID.layer1, tilesArray, 0, 0).setScale(l1Map_scale)
-        map.createLayer(l1_layers_ID.layer2, tilesArray, 0, 0).setScale(l1Map_scale)
-        map.createLayer(l1_layers_ID.layer3, tilesArray, 0, 0).setScale(l1Map_scale)
-        map.createLayer(l1_layers_ID.layer4, tilesArray, 0, 0).setScale(l1Map_scale)
-        map.createLayer(l1_layers_ID.layer5, tilesArray, 0, 0).setScale(l1Map_scale)
-        map.createLayer(l1_layers_ID.layer6, tilesArray, 0, 0).setScale(l1Map_scale)
+        map.createLayer(l1_layers_ID.layer1, tilesArray, 0, 0).setScale(l1Map_scale).setDepth(1)
+        map.createLayer(l1_layers_ID.layer2, tilesArray, 0, 0).setScale(l1Map_scale).setDepth(2)
+        map.createLayer(l1_layers_ID.layer3, tilesArray, 0, 0).setScale(l1Map_scale).setDepth(3)
+        map.createLayer(l1_layers_ID.layer4, tilesArray, 0, 0).setScale(l1Map_scale).setDepth(5)
+        map.createLayer(l1_layers_ID.layer5, tilesArray, 0, 0).setScale(l1Map_scale).setDepth(6)
+        map.createLayer(l1_layers_ID.layer6, tilesArray, 0, 0).setScale(l1Map_scale).setDepth(7)
         
         this.cameras.main.setBounds(0, 0, map.widthInPixels * l1Map_scale, map.heightInPixels * l1Map_scale) // limites da camera
         this.cameras.main.setScroll( 0, (l1Map_height * l1Map_scale)) // configurando posicionamento da camera
         this.physics.world.setBounds(0, 0, (map.widthInPixels * l1Map_scale), (map.heightInPixels * l1Map_scale))
+        console.log(map.widthInPixels * l1Map_scale, map.heightInPixels * l1Map_scale)
         
         this.scene.run(mainUserInterface)
         this.scene.bringToTop(mainUserInterface)
@@ -88,8 +93,9 @@ export default class Game extends Phaser.Scene
         this.createNeededAnimation() // criar apenas uma vez (mapaMain)
         
         this.player = this.physics.add.sprite( ((l1Map_width + 40) * l1Map_scale) / 2, (l1Map_height - 30) * l1Map_scale, userCharacter_objConfig.up.manUp_key).setScale(l1Map_scale * 1.8)
+        this.player.body.setSize(4, 4)
+        this.player.setDepth(4)
         this.player.setCollideWorldBounds(true);
-
         const mapObjects = map.getObjectLayer(objectsLayers_keys.WallLayerKey)["objects"] 
         
         mapObjects.forEach(object => {
@@ -119,8 +125,8 @@ export default class Game extends Phaser.Scene
             loop: true
         })
         levelStatesObj.hasBegun = true
-        console.log(this.AcessibleTextBodyEl)
         // this.AcessibleTextBodyEl.innerText
+        this.lifeaffected_tween = this.tweens
     }
 
 
@@ -136,17 +142,22 @@ export default class Game extends Phaser.Scene
             }
             this.handleMapScrolling()
         })
+        this.cameras.main.update()
     }
 
     gameLogic(){
         let aux = 1
         let collumn = undefined
+        let auxCollum = null
         
         if(levelStatesObj.isMapScrolling){
             this.gameMachineTimer = this.time.addEvent({
-                delay: 3000,
+                delay: stemDelay,
                 callback: () => {
                     collumn = Phaser.Math.Between(1,3)
+                    while(collumn == auxCollum) collumn = Phaser.Math.Between(1,3)
+                    auxCollum = collumn
+
                     let auxGameLogic = 0
 
                     if(this.cameras.main.scrollY > containerGame_height + 100)
@@ -157,17 +168,22 @@ export default class Game extends Phaser.Scene
                                .setDepth(100)
                                .setOrigin(0)
                                .setScale(l1Map_scale)
+                               .setDepth(3)
 
                                this.physics.add.existing(stem1, true)
                                this.physics.add.overlap(this.player, stem1, () => {
-                                if(auxGameLogic == 0){
-                                    if(playerState.life > 0.5){
-                                        playerState.life = playerState.life - 0.5
-                                    } else {
-                                        playerState.life = 0
+                                   if(auxGameLogic == 0){
+                                    level_data.hit++
+                                       if(playerState.life > 0.5){
+                                            this.sound.play(level1Songs.lifeAffected.key, level1Songs.lifeAffected.config)
+                                            playerState.life = playerState.life - 0.5
+                                        } else {
+                                            playerState.life = 0
+                                        this.sound.play(level1Songs.gameOver.key, level1Songs.gameOver.config)
+
+                                        }
+                                        auxGameLogic++
                                     }
-                                    auxGameLogic++
-                                }
                                })
                                break
 
@@ -176,17 +192,21 @@ export default class Game extends Phaser.Scene
                                .setDepth(100)
                                .setOrigin(0)
                                .setScale(l1Map_scale)
+                               .setDepth(3)
 
                                this.physics.add.existing(stem2, true)
                                this.physics.add.overlap(this.player, stem2, () => {
-                                if(auxGameLogic == 0){
-                                    if(playerState.life > 0.5){
-                                        playerState.life = playerState.life - 0.5
-                                    } else {
-                                        playerState.life = 0
+                                   if(auxGameLogic == 0){
+                                    level_data.hit++
+                                       if(playerState.life > 0.5){
+                                            this.sound.play(level1Songs.lifeAffected.key, level1Songs.lifeAffected.config)
+                                            playerState.life = playerState.life - 0.5
+                                        } else {
+                                            playerState.life = 0
+                                            this.sound.play(level1Songs.gameOver.key, level1Songs.gameOver.config)
+                                        }
+                                        auxGameLogic++
                                     }
-                                    auxGameLogic++
-                                }
                                })
                                break
 
@@ -195,21 +215,26 @@ export default class Game extends Phaser.Scene
                                .setDepth(100)
                                .setOrigin(0)
                                .setScale(l1Map_scale)
+                               .setDepth(3)
+
                                this.physics.add.existing(stem3, true)
                                this.physics.add.overlap(this.player, stem3, () => {
-                                if(auxGameLogic == 0){
-                                    if(playerState.life > 0.5){
-                                        playerState.life = playerState.life - 0.5
-                                    } else {
-                                        playerState.life = 0
+                                   if(auxGameLogic == 0){
+                                    level_data.hit++
+                                       if(playerState.life > 0.5){
+                                            this.sound.play(level1Songs.lifeAffected.key, level1Songs.lifeAffected.config)
+                                            playerState.life = playerState.life - 0.5
+                                        } else {
+                                            playerState.life = 0
+                                            this.sound.play(level1Songs.gameOver.key, level1Songs.gameOver.config)
+                                        }
+                                        auxGameLogic++
                                     }
-                                    auxGameLogic++
-                                }
                                })
                                break
                         }
                         
-                    this.AcessibleTextBodyEl.innerHTML = `<p>Chamada - ${aux}</p><p>Coluna - ${collumn}</p><p>Vida - ${playerState.life}</p>`
+                    this.AcessibleTextBodyEl.innerHTML = `<p>Chamada - ${aux}</p><p>Coluna - ${collumn}</p><p>Vida - ${playerState.life}</p><p>HIT - ${level_data.hit}</p>`
                     aux++
                     } else{
                         this.AcessibleTextBodyEl.innerHTML = `<p>Fim da produção</p>`
@@ -219,6 +244,7 @@ export default class Game extends Phaser.Scene
             })
         }
     }
+
 
     handleLMainCharacterMovements(){
         if(this.enableKeyboard){  
@@ -300,6 +326,11 @@ export default class Game extends Phaser.Scene
                 this.time.removeEvent(this.cronometro)
                 level_data.running = false
                 localStorage.setItem('currentLevel', 1)
+                // TOCAR VITÓRIA
+                // MOSTRAR PONTUAÇÃO E VITÓRIA
+                // SALVAR
+                //  -> VIDA
+                //  -> STATUS (CURRENT LEVEL)
             }
         }
 
@@ -337,6 +368,29 @@ export default class Game extends Phaser.Scene
             repeat: 0,
         }
         this.anims.create(ManWalkDownConfig)
+        const heartFull = {
+            key: lifeBart_animationsKey.heart_full.key,
+            frames: this.anims.generateFrameNumbers(lifeBar.lifeBar_key, {start: 4, end: 0}),
+            frameRate: 5, 
+            repeat: 0,
+        }
+        this.anims.create(heartFull)
+
+        const heartHalf = {
+            key: lifeBart_animationsKey.heart_half.key,
+            frames: this.anims.generateFrameNumbers(lifeBar.lifeBar_key, {start: 0, end: 2}),
+            frameRate: 3, 
+            repeat: 0
+        }
+        this.anims.create(heartHalf)
+
+        const heartEmpty = {
+            key: lifeBart_animationsKey.heart_empty.key,
+            frames: this.anims.generateFrameNumbers(lifeBar.lifeBar_key, {start: 2, end: 4}),
+            frameRate: 3, 
+            repeat: 0
+        }
+        this.anims.create(heartEmpty)
 
     }
 

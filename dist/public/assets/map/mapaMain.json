@@ -2711,72 +2711,6 @@
                  "y":638.666666666667
                 }, 
                 {
-                 "height":24.6666333333333,
-                 "id":290,
-                 "name":"info",
-                 "properties":[
-                        {
-                         "name":"info",
-                         "type":"string",
-                         "value":"Cachoeira da Prainha\n"
-                        }, 
-                        {
-                         "name":"tipo",
-                         "type":"string",
-                         "value":"placa"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":30.6667,
-                 "x":401.333316666667,
-                 "y":403.666683333333
-                }, 
-                {
-                 "height":47.3333,
-                 "id":291,
-                 "name":"info",
-                 "properties":[
-                        {
-                         "name":"info",
-                         "type":"string",
-                         "value":"- Floresta da Lagoa"
-                        }, 
-                        {
-                         "name":"tipo",
-                         "type":"string",
-                         "value":"placa"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":30.6667,
-                 "x":1434.66665,
-                 "y":487.000016666667
-                }, 
-                {
-                 "height":47.3333,
-                 "id":292,
-                 "name":"info",
-                 "properties":[
-                        {
-                         "name":"info",
-                         "type":"string",
-                         "value":"- Cachoeira da Concordia\n"
-                        }, 
-                        {
-                         "name":"tipo",
-                         "type":"string",
-                         "value":"placa"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":30.6667,
-                 "x":1549.99998333333,
-                 "y":492.33335
-                }, 
-                {
                  "height":47.3333,
                  "id":293,
                  "name":"info",
@@ -3314,6 +3248,11 @@
                          "value":false
                         }, 
                         {
+                         "name":"target",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"up",
                          "type":"bool",
                          "value":false
@@ -3355,7 +3294,7 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":560,
+                 "x":576,
                  "y":416
                 }, 
                 {
@@ -3445,28 +3384,6 @@
                  "width":39.6667,
                  "x":459.66665,
                  "y":400.6667
-                }, 
-                {
-                 "height":24.6666,
-                 "id":332,
-                 "name":"info",
-                 "properties":[
-                        {
-                         "name":"info",
-                         "type":"string",
-                         "value":"Parque Nacional\n"
-                        }, 
-                        {
-                         "name":"tipo",
-                         "type":"string",
-                         "value":"placa"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":30.6667,
-                 "x":521.66665,
-                 "y":404.1667
                 }, 
                 {
                  "height":34.3333,
@@ -3668,6 +3585,74 @@
                  "width":63.5833,
                  "x":447.95835,
                  "y":383.75
+                }, 
+                {
+                 "height":34.5,
+                 "id":342,
+                 "name":"explore",
+                 "properties":[
+                        {
+                         "name":"target",
+                         "type":"int",
+                         "value":308
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":15.5,
+                 "x":528.5,
+                 "y":399.5
+                }, 
+                {
+                 "height":34.5,
+                 "id":343,
+                 "name":"explore",
+                 "properties":[
+                        {
+                         "name":"target",
+                         "type":"int",
+                         "value":308
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":15.5,
+                 "x":416.25,
+                 "y":398.25
+                }, 
+                {
+                 "height":34.5,
+                 "id":344,
+                 "name":"explore",
+                 "properties":[
+                        {
+                         "name":"target",
+                         "type":"int",
+                         "value":306
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":9,
+                 "x":1461.25,
+                 "y":496.75
+                }, 
+                {
+                 "height":34.5,
+                 "id":345,
+                 "name":"explore",
+                 "properties":[
+                        {
+                         "name":"target",
+                         "type":"int",
+                         "value":306
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":9,
+                 "x":1539.25,
+                 "y":495.75
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -3676,7 +3661,7 @@
          "y":0
         }],
  "nextlayerid":14,
- "nextobjectid":341,
+ "nextobjectid":348,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

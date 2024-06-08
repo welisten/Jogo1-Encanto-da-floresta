@@ -26,7 +26,7 @@ const level1Songs = {
         key: 'footsteps on water',
         url: 'public/assets/songs/footstepsOnWaterFast.mp3',
         config: {
-            volume: 0,
+            volume: 0.5,
             rate: 1.5,
             loop: true 
         }
@@ -35,9 +35,25 @@ const level1Songs = {
         key: 'waterfall 1',
         url: 'public/assets/songs/waterfall2.ogg',
         config: {
-            volume: 0.3,
+            volume: 0.2,
             rate: 1,
             loop: true
+        }
+    },
+    gameOver:{
+        key: 'game over',
+        url: 'public/assets/songs/gameOver.mp3',
+        config: {
+            volume: 1,
+            loop: false
+        }
+    },
+    lifeAffected:{
+        key: 'life affected',
+        url: 'public/assets/songs/lifeAffected.mp3',
+        config: {
+            volume: 0.4,
+            loop: false
         }
     }
 }

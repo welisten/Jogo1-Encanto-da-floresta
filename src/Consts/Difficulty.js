@@ -5,11 +5,13 @@ const level1_characterSpeed = level1_SpeedMapScrolling
 const character_AnimationFrameRate = '8'
 const level1_delayMapScrooling = 1000
 const character_velocity = 120
+const stemDelay = 1000
 
 export {
     level1_SpeedMapScrolling,
     level1_characterSpeed,
     character_AnimationFrameRate,
     level1_delayMapScrooling,
-    character_velocity 
+    character_velocity,
+    stemDelay
 }

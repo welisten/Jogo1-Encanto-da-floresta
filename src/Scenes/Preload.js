@@ -13,6 +13,7 @@ import { userCharacter_objConfig } from '../Consts/CharacterKeys'
 import { lifeBar, stem } from '../Consts/SpriteSheets'
 import { titleImages, uiImages } from '../Consts/ImagesKeys'
 import { titleSongs, mapMainSongs, level1Songs } from '../Consts/SongsKey'
+import { containerGame_height, containerGame_width } from "../Consts/Sizes";
 
 export default class Preload extends Phaser.Scene{
     
@@ -71,8 +72,8 @@ export default class Preload extends Phaser.Scene{
         load.spritesheet(
             lifeBar.lifeBar_key,
             lifeBar.lifeBar_URL,
-            lifeBar.lifeBar_FrameSettings,
-            lifeBar.lifeBar_FrameAmount
+            lifeBar.lifeBar_frameSettings,
+            lifeBar.lifeBar_frameAmount
         )
         //      Dialog Box
         load.image(uiImages.dialogBox.key, uiImages.dialogBox.url)
@@ -93,6 +94,8 @@ export default class Preload extends Phaser.Scene{
         // Level_1
         load.audio(level1Songs.footstepsOnWater.key, level1Songs.footstepsOnWater.url, level1Songs.footstepsOnWater.config)     
         load.audio(level1Songs.waterfallSong.key, level1Songs.waterfallSong.url, level1Songs.waterfallSong.config)     
+        load.audio(level1Songs.gameOver.key, level1Songs.gameOver.url, level1Songs.gameOver.config)     
+        load.audio(level1Songs.lifeAffected.key, level1Songs.lifeAffected.url, level1Songs.lifeAffected.config)     
 
         load.tilemapTiledJSON(mapL1_key, mapL1_URL, null, Phaser.Tilemaps.TILLED_JSON)
         
@@ -110,10 +113,34 @@ export default class Preload extends Phaser.Scene{
         //     CharactersKey.DeerStagNe_FrameSettings,
         //     CharactersKey.DeerStagNe_FrameAmount
         // )
+
+        let loadingText = this.add.text(containerGame_width / 2, containerGame_height/2, 'Carregando...', { fontSize: '32px', fill: '#ffffff' }).setOrigin(0.5, 0.5);
+
+        let progressBar = this.add.graphics();
+        let progressBox = this.add.graphics();
+        const progressBox_width = 320
+        const progressBox_height = 50
+        const progressBar_width = 300
+        const progressBar_height = 30
+
+        progressBox.fillStyle(0x222222, 0.8);
+        progressBox.fillRect((containerGame_width / 2) - (progressBox_width / 2) , ((containerGame_height / 2) - (progressBox_height / 2) + 50) , 320, 50);
+
+        this.load.on('progress', function (value) {
+            progressBar.clear();
+            progressBar.fillStyle(0xffffff, 1);
+            progressBar.fillRect((containerGame_width / 2) - (progressBar_width / 2) , ((containerGame_height / 2) - (progressBar_height / 2) + 50), 300 * value, 30);
+        });
+
+        this.load.on('complete', function () {
+            progressBar.destroy();
+            progressBox.destroy();
+            loadingText.destroy();
+        });
     }
     
 
     create(){
-        this.scene.start(level1)
+        this.scene.start(mapaMain)
     }
 }

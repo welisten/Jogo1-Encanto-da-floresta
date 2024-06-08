@@ -9,13 +9,15 @@ import {mainUserInterface, level1} from '../Consts/SceneKeys'                   
 import { mapMain_key, mapMain_URL, mapMain_tilesetObjConfig, mapMainLayers_ID, objectsLayers_keys}from '../Consts/MapKeys'
 import { userCharacter_objConfig } from '../Consts/CharacterKeys'
 import { mapMainSongs } from '../Consts/SongsKey'
-import { mapMain_scale, character_scale } from '../Consts/Sizes'
+import { mapMain_scale, character_scale, containerGame_height, containerGame_width } from '../Consts/Sizes'
 import { character_velocity, character_AnimationFrameRate } from '../Consts/Difficulty'
-import { userCharacter_animationsKey } from '../Consts/Animations'
+import { userCharacter_animationsKey, lifeBart_animationsKey } from '../Consts/Animations'
+import { lifeBar } from "../Consts/SpriteSheets";
 
 import { addToUIQueue } from "../Scenes/UI";
 
 import { gameState, playerState, userIterfaceState, updateStates } from "../Consts/GameStateObj";
+import { level_data } from "../Consts/LevelStatesObj";
 
 
 export default class MapaMain extends Phaser.Scene
@@ -108,7 +110,6 @@ export default class MapaMain extends Phaser.Scene
         this.scene.bringToTop(mainUserInterface)
         let idInit = undefined
 
-
         if( !localStorage.getItem('lastPoint')){                   //   PRIMEIRA VEZ JOGANDO                         
             timeline_1.play()
             gameState.isPlayerAbleToMove = false
@@ -121,24 +122,30 @@ export default class MapaMain extends Phaser.Scene
             idInit = this.getOnStorage('lastPoint')
 
             playerState.point_id = this.getOnStorage('lastPoint')
+            level_data.hit = this.getOnStorage('playerLife')
             playerState.point_x = this.getObjectById(playerState.point_id).x * mapMain_scale 
             playerState.point_y = this.getObjectById(playerState.point_id).y * mapMain_scale
             playerState.targetID = undefined 
             playerState.targetX = undefined
             playerState.targetY = undefined
             gameState.counter_cityMap = 0
+            // playerState.floor = this.getPlayerFloor()
         }
         const initPoint = this.getObjectById(idInit) 
-
-        gameState.isPlayerAbleToMove        = true                                      //retirar
-        gameState.defaultMotionControls     = false
-        gameState.accessibleMotionControls  = true
+        
+        gameState.isPlayerAbleToMove = true                                      //retirar
+        gameState.defaultMotionControls = false
+        gameState.accessibleMotionControls = true
         
         this.createAllNeededAnimation()
         
         this.player = this.physics.add.sprite( Math.floor(initPoint.x * mapMain_scale), Math.floor(initPoint.y * mapMain_scale), userCharacter_objConfig.down.manDown_key).setDepth(2).setScale(character_scale)
         this.player.setCollideWorldBounds(true);
         this.player.body.setSize(4, 4)
+        
+        if(localStorage.getItem('lastPoint')){
+            this.setLayersDepth(this.getPlayerFloor())
+        }
         
         playerState.point_x = this.player.x
         playerState.point_y = this.player.y
@@ -165,10 +172,25 @@ export default class MapaMain extends Phaser.Scene
                                 return    
                             }
                             
+                            
                         
                             if(this.isCompletelyInside(circle, this.player))
                             {   
                                 playerState.point_id = object.id
+                                if(object.id == 327 || object.id == 328 || object.id == 329 || object.id == 330){
+                                    if(gameState.accessibleMotionControls === true){
+                                        accessible_btn.classList.remove('active')
+
+                                        gameState.isExploreAble = true
+                                        gameState.accessibleMotionControls = false
+                                        gameState.defaultMotionControls = true
+                                        gameState.explore = true
+                                        document.querySelector('.textBody').innerHTML = `<p>CG_width: ${containerGame_width}</p><p>CG_height: ${containerGame_height}</p>`
+
+                                        this.player.body.setSize((10 * mapMain_scale), (16 * mapMain_scale))
+                                        //MODO EXPLORAÇÃO ATIVADO   
+                                    }
+                                }
                                 switch(playerState.direction)
                                 {
                                     case('up'):
@@ -210,6 +232,159 @@ export default class MapaMain extends Phaser.Scene
                     } 
                     break                
                 
+                case 'explore':
+                    const recExplore = this.add.rectangle(object.x * mapMain_scale, object.y * mapMain_scale, object.width * mapMain_scale, object.height * mapMain_scale)
+                    recExplore.setOrigin(0)
+                    
+                    this.physics.add.existing(recExplore, true)
+                    this.physics.add.overlap(this.player, recExplore, () => {
+                        if(gameState.explore){
+                            accessible_btn.classList.add('active')
+        
+                            gameState.accessibleMotionControls = true
+                            gameState.defaultMotionControls = false
+                            gameState.isExploreAble = true
+                            
+                            this.player.body.setSize(4, 4)
+
+                            const target = this.getObjectById(object.properties[0].value)
+                            let auxTweens = 0
+                            switch(this.player.anims.currentAnim.key){
+                                case 'walk up':
+                                    // TWEENS
+                                    if(auxTweens == 0 ){
+                                        auxTweens++
+                                        gameState.explore = false
+                                        this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: 1}, false)
+                                        
+                                        const tweens_walkUp =  this.tweens.add({
+                                            targets: this.player,
+                                            y: playerState.targetY,
+                                            duration: 500,
+                                            ease: 'Linear',
+                                            onComplete: () => {
+                                                tweens_walkUp.destroy()
+                                                this.player.y = playerState.targetY
+                                                if(this.player.x < Math.floor(target.x * mapMain_scale)){
+                                                    this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: 1}, true)
+                                                }else{
+                                                    this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, true)
+                                                }
+                                                const tweens_walkRight = this.tweens.add({
+                                                    targets: this.player,
+                                                    y: playerState.targetY,
+                                                    x: Math.floor(target.x * mapMain_scale),
+                                                    duration: 750,
+                                                    ease: 'Linear',
+                                                    onComplete:() => {
+                                                        tweens_walkRight.destroy()
+                                                        gameState.isPlayerAbleToMove = false
+                                                        auxTweens = 0
+                                                        playerState.targetID = target.id
+                                                        playerState.targetX = Math.floor(target.x * mapMain_scale)
+                                                        playerState.targetY = Math.floor(target.y * mapMain_scale)
+                                                        this.player.play({key: userCharacter_animationsKey.walk_down.key, repeat: 0}, true)
+
+
+                                                        this.time.addEvent({
+                                                            delay: 1200,
+                                                            callback: () => gameState.isPlayerAbleToMove = true,
+                                                            loop: false
+                                                        })
+                                                    }
+                                                }).play()
+                                            },
+                                            repeat: 0,
+                                            yoyo: false
+                                        }).play()
+                                    }
+                                break
+
+                                case 'walk down':
+                                    // TWEENS
+                                    if(auxTweens == 0 ){
+                                        auxTweens++
+                                        gameState.explore = false
+                                        this.player.play({key: userCharacter_animationsKey.walk_down.key, repeat: 1}, false)
+                                        
+                                        const tweens_walkDown =  this.tweens.add({
+                                            targets: this.player,
+                                            y: playerState.targetY,
+                                            duration: 500,
+                                            ease: 'Linear',
+                                            onComplete: () => {
+                                                tweens_walkDown.destroy()
+                                                this.player.y = playerState.targetY
+                                                if(this.player.x < Math.floor(target.x * mapMain_scale)){
+                                                    this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: 1}, true)
+                                                }else{
+                                                    this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, true)
+                                                }                                                const tweens_walkLeft = this.tweens.add({
+                                                    targets: this.player,
+                                                    y: playerState.targetY,
+                                                    x: Math.floor(target.x * mapMain_scale),
+                                                    duration: 750,
+                                                    ease: 'Linear',
+                                                    onComplete:() => {
+                                                        tweens_walkLeft.destroy()
+                                                        gameState.isPlayerAbleToMove = false
+                                                        auxTweens = 0
+                                                        playerState.targetID = target.id
+                                                        playerState.targetX = Math.floor(target.x * mapMain_scale)
+                                                        playerState.targetY = Math.floor(target.y * mapMain_scale)
+                                                        this.player.play({key: userCharacter_animationsKey.walk_down.key, repeat: 0}, true)
+
+                                                        this.time.addEvent({
+                                                            delay: 1200,
+                                                            callback: () => gameState.isPlayerAbleToMove = true,
+                                                            loop: false
+                                                        })
+                                                    }
+                                                }).play()
+                                            },
+                                            repeat: 0,
+                                            yoyo: false
+                                        }).play()
+                                    }
+                                    break
+
+                                case 'walk left':
+                                    console.log(target)
+                                    gameState.explore = false
+                                    playerState.targetID = target.id
+                                    playerState.targetX = Math.floor(target.x * mapMain_scale)
+                                    this.player.y = playerState.targetY
+                                    playerState.targetY = Math.floor(target.y * mapMain_scale)
+                                    gameState.isPlayerAbleToMove = false
+                                    this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, false)
+
+                                    this.time.addEvent({
+                                        delay: 1200,
+                                        callback: () => gameState.isPlayerAbleToMove = true,
+                                        loop: false
+                                    })
+                                break
+
+                                case 'walk right':
+                                    gameState.explore = false
+                                    playerState.targetID = target.id
+                                    playerState.targetX = Math.floor(target.x * mapMain_scale)
+                                    this.player.y = playerState.targetY
+                                    playerState.targetY = Math.floor(target.y * mapMain_scale)
+                                    gameState.isPlayerAbleToMove = false
+                                    this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: 1}, false)
+
+                                    this.time.addEvent({
+                                        delay: 1200,
+                                        callback: () => gameState.isPlayerAbleToMove = true,
+                                        loop: false
+                                    })
+                                break
+                            }
+                        }
+                    })
+                break
+
                 case 'save_point':
 
                     const recSave = this.add.rectangle((object.x * mapMain_scale), (object.y * mapMain_scale), (object.width * mapMain_scale), (object.height * mapMain_scale)).setDisplayOrigin(0).setDepth(10)
@@ -224,6 +399,9 @@ export default class MapaMain extends Phaser.Scene
                             localStorage.setItem('lastPoint', JSON.stringify(object.properties[0].value))
                             localStorage.setItem('gameState', JSON.stringify(gameState))
                             localStorage.setItem('playerState', JSON.stringify(playerState))
+                            if(this.getOnStorage('playerLife') != level_data.hit){
+                                localStorage.setItem('playerLife', JSON.stringify(level_data.hit))
+                            }
                         }
                     
                     })
@@ -290,9 +468,7 @@ export default class MapaMain extends Phaser.Scene
                             
                     this.physics.add.existing(recCityMap, true)
                     this.physics.add.overlap(this.player, recCityMap, () => {
-                        console.log('fora')
                         if(!gameState.isTopInformationAble && gameState.counter_cityMap == 0){
-                            console.log('dentro')
                             gameState.isTopInformationAble = true
                             gameState.topInformationType = 'CityMap'
                             gameState.counter_cityMap++
@@ -375,7 +551,7 @@ export default class MapaMain extends Phaser.Scene
     }
 
     update() {
-
+        document.querySelector('.textBody').innerHTML = `<p>id_target:  ${playerState.targetID}</p><p>target-y:  ${playerState.targetY}</p><p>player-y:  ${Math.floor(this.player.y)}</p><p>target-x:  ${playerState.targetX}</p><p>player-x:  ${Math.floor(this.player.x)}</p>`
         if(gameState.accessibleMotionControls) 
         {
             this.alternativeCharacterMoveControl()   
@@ -396,6 +572,7 @@ export default class MapaMain extends Phaser.Scene
          
         if(playerState.floor != this.getPlayerFloor())
         {
+            console.log('dentro')
             this.setLayersDepth(this.getPlayerFloor())    
         }
     }
@@ -405,11 +582,10 @@ export default class MapaMain extends Phaser.Scene
     }
 
     getObjectById(objectId) {
-        const objectLayer = this.make.tilemap({key: mapMain_key}).getObjectLayer(objectsLayers_keys.MapaMainLayer_obj1);
-        
+        const objectLayer = this.make.tilemap({key: mapMain_key}).getObjectLayer(objectsLayers_keys.MapaMainLayer_obj1)
         if (!objectLayer) 
         {
-            console.error("Camada de objetos não encontrada.");                     //                  O-O
+            console.error("Camada de objetos não encontrada.");                                                         //    O-O
             return null;
         }
         
@@ -425,7 +601,6 @@ export default class MapaMain extends Phaser.Scene
                 this.player.key = userCharacter_objConfig.up.manUp_key
                 this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: 0}, true)
                 this.player.setVelocity(0, -character_velocity)        
-
             }
             else if (this.cursor.down.isDown)
             {
@@ -500,9 +675,34 @@ export default class MapaMain extends Phaser.Scene
             repeat: 0,
         }
         this.anims.create(ManWalkDownConfig)
+
+
+        const heartFull = {
+            key: lifeBart_animationsKey.heart_full.key,
+            frames: this.anims.generateFrameNumbers(lifeBar.lifeBar_key, {start: 4, end: 0}),
+            frameRate: 5, 
+            repeat: 0,
+        }
+        this.anims.create(heartFull)
+
+        const heartHalf = {
+            key: lifeBart_animationsKey.heart_half.key,
+            frames: this.anims.generateFrameNumbers(lifeBar.lifeBar_key, {start: 0, end: 2}),
+            frameRate: 3, 
+            repeat: 0
+        }
+        this.anims.create(heartHalf)
+
+        const heartEmpty = {
+            key: lifeBart_animationsKey.heart_empty.key,
+            frames: this.anims.generateFrameNumbers(lifeBar.lifeBar_key, {start: 2, end: 4}),
+            frameRate: 3, 
+            repeat: 0
+        }
+        this.anims.create(heartEmpty)
     } 
     
-    getPlayerFloor(){
+    getPlayerFloor(x = this.player.x, y = this.player.y){
         const upEdge      = 321 * mapMain_scale 
         const downEdge    = 559 * mapMain_scale
         const leftEdge    = 770 * mapMain_scale
@@ -653,6 +853,7 @@ export default class MapaMain extends Phaser.Scene
                 playerState.targetX = Math.floor(next_Point.x * mapMain_scale) 
                 playerState.targetY = Math.floor(next_Point.y * mapMain_scale)
                 playerState.targetID = left_propertie.value
+                console.log(playerState.targetID)
                 
                 this.player.key = userCharacter_objConfig.left.manLeft_key
                 this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: -1}, true)
@@ -732,7 +933,7 @@ export default class MapaMain extends Phaser.Scene
             }
             else
             {
-                if(this.player.x > playerState.targetX)                                
+                if(this.player.x > playerState.targetX)                              
                 {                                   
                     playerState.direction = 'left'
                     this.player.key = userCharacter_objConfig.left.manLeft_key
@@ -750,7 +951,7 @@ export default class MapaMain extends Phaser.Scene
             break
             case('left'): 
             if(this.player.x <= playerState.targetX + 8 && this.player.x >= playerState.targetX + 8)
-            {   
+            {   console.log('proximo ao alvo')
                 playerState.direction = 'left'
                 this.player.key = userCharacter_objConfig.left.manLeft_key
                 this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: -1}, true)
@@ -759,6 +960,8 @@ export default class MapaMain extends Phaser.Scene
             }
             else
             {
+               console.log('não está proximo ao alvo')
+                
                 if(this.player.y > playerState.targetY)                                
                 {                                                                        
                     playerState.direction = 'up'

@@ -17,8 +17,8 @@ body {
 
 #gameContainer{
     position: relative;
-    max-width: 1300px;
-    max-height: 1100px;
+    /* max-width: 1300px;
+    max-height: 1100px; */
 }
 
 #gameControls{
@@ -88,7 +88,7 @@ i{
     position: absolute;
     bottom: 5px;
     left: calc(100% + 2vh);
-    height: 50vh;
+    height: 100%;
     width:  30%;
     padding: 0vh 5vh 5vh 5vh;
     text-align: center;

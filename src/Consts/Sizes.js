@@ -6,10 +6,10 @@ const mapMain_Width     = 1760
 const mapMain_Height    = 800
 
 const l1Map_width   = 688
-const l1Map_height  = 2016
+const l1Map_height  = 12096
 
-const containerGame_width   = window.innerWidth * .5 > 1300 ? 1300 : window.innerWidth * .5
-const containerGame_height  = window.innerHeight * .6 > 1100 ? 1100  : window.innerHeight * .6
+const containerGame_width   = window.innerWidth * .5 >1050 ? 1050 : window.innerWidth * .5 
+const containerGame_height  = 540// window.innerHeight * .6
 
 const screen_width  = window.innerWidth - 20
 const screen_height =  window.innerHeight - 20

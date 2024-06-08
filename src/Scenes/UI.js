@@ -13,6 +13,7 @@ import { uiImages } from "../Consts/ImagesKeys";
 // From others modules
 import { level_data } from "../Consts/LevelStatesObj"
 import { userIterfaceState, gameState, playerState } from "../Consts/GameStateObj"
+import { lifeBart_animationsKey } from "../Consts/Animations";
 
 let timer_UI = level_data.timer
 let queue = []
@@ -37,37 +38,37 @@ export default class GameBackground extends Phaser.Scene
 
         
     //  Corações
-        // this.add.sprite(20, 20, lifeBar.lifeBar_key, 0)
-        //     .setOrigin(0)
-        //     .setScale(.5)
-        // this.add.sprite(50, 20, lifeBar.lifeBar_key, 0)
-        //     .setOrigin(0)
-        //     .setScale(.5)
-        // this.add.sprite(80, 20, lifeBar.lifeBar_key, 0)
-        //     .setOrigin(0)
-        //     .setScale(.5)
+        this.heart_1 = this.add.sprite(20, 20, lifeBar.lifeBar_key, 0)
+            .setOrigin(0)
+            .setScale(.5)
+        this.heart_2 = this.add.sprite(50, 20, lifeBar.lifeBar_key, 0)
+            .setOrigin(0)
+            .setScale(.5)
+        this.heart_3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 0)
+            .setOrigin(0)
+            .setScale(.5)
 
     //  Timer
     //      Moldura
         const timerGraficFrame = this.add.graphics()
         timerGraficFrame.fillStyle(0xffffff, 0.5)
         
-        const x = containerGame_width - 98
-        const y = 15
-        const width = 80
+        const x = containerGame_width - 118
+        const y = 20
+        const width = 100
         const height = 50
         const radius = 20
 
         timerGraficFrame.fillRoundedRect(x, y, width, height, radius)
        
     //      Relógio(Icone)
-        this.add.image(containerGame_width - 98, 23, uiImages.timer.key)
+        this.add.image(containerGame_width - 115, 27, uiImages.timer.key)
             .setOrigin(0)
             .setScale(1)
             .setTintFill("0x000000")
         
     //      Tempo(string)
-        this.timer = this.add.text(containerGame_width - 65, 23, timer_UI < 10 ? `0${timer_UI}`: `${timer_UI}`, {
+        this.timer = this.add.text(containerGame_width - 85, 27, timer_UI < 10 ? `0${timer_UI}`: `${timer_UI}`, {
             fontSize: 35,
             color: '0x000000'
         })
@@ -183,8 +184,71 @@ export default class GameBackground extends Phaser.Scene
                 })
             }
         } 
-        console.log(playerState.life)
 
+        if(gameState.isExploreAble) this.handleExplore()
+
+    }
+    handleExplore(){
+        if(gameState.explore){
+
+            const graficSign = this.add.graphics()
+            const gS_width = containerGame_width * 0.45
+            const gS_Height = containerGame_height * 0.1
+
+            graficSign.fillStyle(0xffffff, 0.5)
+            graficSign.fillRect((containerGame_width / 2  - (gS_width / 2)), containerGame_height * .1,gS_width, gS_Height)
+            
+            const gSBorder = this.add.graphics()
+            gSBorder.lineStyle(3, 0x00ff00)
+            gSBorder.strokeRect((containerGame_width / 2  - (gS_width / 2)), containerGame_height * .1,gS_width, gS_Height)
+
+            const gsText = this.add.text(containerGame_width/2, (containerGame_height * .15)  , 'Modo Explorar Ativado', {
+                fill: '0x000000',
+                fontStyle: 'bold',
+                fontWeight: 'bold',
+                fontSize: containerGame_width * .03,
+            }).setOrigin(.5)
+
+            this.time.addEvent({
+                delay: 1500,
+                callback: () => {
+                    graficSign.destroy()
+                    gSBorder.destroy()
+                    gsText.text = ''
+                },
+                loop: false
+            })
+            gameState.isExploreAble = false
+        }else{
+            const graficSign = this.add.graphics()
+            const gS_width = containerGame_width * 0.5
+            const gS_Height = containerGame_height * 0.1
+
+            graficSign.fillStyle(0xffffff, 0.5)
+            graficSign.fillRect((containerGame_width / 2  - (gS_width / 2)), containerGame_height * .1,gS_width, gS_Height)
+            
+            const gSBorder = this.add.graphics()
+            gSBorder.lineStyle(3, 0xff00000)
+            gSBorder.strokeRect((containerGame_width / 2  - (gS_width / 2)), containerGame_height * .1,gS_width, gS_Height)
+
+            const gsText = this.add.text(containerGame_width/2, (containerGame_height * .15)  , 'Modo Explorar Desativado', {
+                fill: '0x000000',
+                fontStyle: 'bold',
+                fontWeight: 'bold',
+                fontSize: containerGame_width * .03,
+            }).setOrigin(.5)
+
+            this.time.addEvent({
+                delay: 1500,
+                callback: () => {
+                    graficSign.destroy()
+                    gSBorder.destroy()
+                    gsText.text = ''
+                },
+                loop: false
+            })
+            gameState.isExploreAble = false
+        }
     }
 
     handlePlayerLife(life){
@@ -192,39 +256,40 @@ export default class GameBackground extends Phaser.Scene
             return
         }   
 
-        let heart1 = this.add.sprite(20, 20, lifeBar.lifeBar_key, 0).setOrigin(0).setScale(.5)
-        let heart2 = this.add.sprite(50, 20, lifeBar.lifeBar_key, 0).setOrigin(0).setScale(.5)
-        let heart3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 0).setOrigin(0).setScale(.5)
+        
 
         switch(playerState.life / .5){
-            // case 6:
-
-            //     break
-            case 5:
-        
+            case 6:
+                this.heart_1.play({key: lifeBart_animationsKey.heart_full.key, repeat:0}, true)
+                this.heart_2.play({key: lifeBart_animationsKey.heart_full.key, repeat:0}, true)
+                this.heart_3.play({key: lifeBart_animationsKey.heart_full.key, repeat:0}, true)
                 break
-            case 4:
-                // heart3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
 
+            case 5:
+                this.heart_3.play({key: lifeBart_animationsKey.heart_half.key, repeat: 0}, true)
+                break
+
+            case 4:
+                this.heart_3.play({key: lifeBart_animationsKey.heart_empty.key, repeat: 0}, true)
                 break
             case 3:
-                // heart2 = this.add.sprite(50, 20, lifeBar.lifeBar_key, 2).setOrigin(0).setScale(.5)
-                // heart3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+                this.heart_2.play({key: lifeBart_animationsKey.heart_half.key, repeat:0}, true)
                 break
+
             case 2:
-                // heart2 = this.add.sprite(50, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
-                // heart3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+                this.heart_2.play({key: lifeBart_animationsKey.heart_empty.key, repeat:0}, true)
                 break
+
             case 1:
-                // heart1 = this.add.sprite(20, 20, lifeBar.lifeBar_key, 2).setOrigin(0).setScale(.5)
-                // heart2 = this.add.sprite(50, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
-                // heart3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+                this.heart_1.play({key: lifeBart_animationsKey.heart_half.key, repeat:0}, true)
                 break
-            default:
-                // heart1 = this.add.sprite(20, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
-                // heart2 = this.add.sprite(50, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
-                // heart3 = this.add.sprite(80, 20, lifeBar.lifeBar_key, 4).setOrigin(0).setScale(.5)
+
+            case 0:
+                this.heart_1.play({key: lifeBart_animationsKey.heart_empty.key, repeat:0}, true)
+                
+                // Chamar Game Over
                 break
+
         }
         this.auxLife = life
     }

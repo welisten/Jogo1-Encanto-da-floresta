@@ -20,9 +20,22 @@ const userCharacter_animationsKey = {
     }
 }
 
+const lifeBart_animationsKey = {
+    heart_full:{
+        key: 'heart full'
+    },
+    heart_half:{
+        key: 'heart half full'
+    }, 
+    heart_empty:{
+        key: 'heart empty'
+    }
+}
+
 const DeerKey =  "deer-stag"
 
 export {
     userCharacter_animationsKey,
+    lifeBart_animationsKey,
     DeerKey
 }

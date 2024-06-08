@@ -6,7 +6,7 @@ const mapMain_key = "mapMain_key"
 const mapMain_URL = "public/assets/map/mapaMain.json"
 
 const mapL1_key = 'mapLv1_key'
-const mapL1_URL = "public/assets/map/fase_1_map.json"
+const mapL1_URL = "public/assets/map/fase_1_map_full.json"
 
 const objectsLayers_keys = { // GENERAL
     WallLayerKey: "walls", //Levels

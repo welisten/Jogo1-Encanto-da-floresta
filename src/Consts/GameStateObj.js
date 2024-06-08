@@ -7,6 +7,8 @@ let gameState = {
     player_point: 'init',
     accessibleMotionControls: undefined,
     defaultMotionControls: undefined,
+    explore: false,
+    isExploreAble: false,
     General_songs_volume: 1,
     isGuapimirimSignAble: false,
     isTopInformationAble: false,

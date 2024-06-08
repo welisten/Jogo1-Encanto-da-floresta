@@ -1,5 +1,6 @@
 const level_data = {
     currentLevel: 0,
+    hit: 0,
     lastLevel: undefined,
     nextLevel: 1,
     timer: 0,

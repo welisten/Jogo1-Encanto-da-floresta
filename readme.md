@@ -36,13 +36,13 @@ OK      3 - Estudar as circunstâncias e possibilidades de substituir as variave
                   FINAL       - Nome do jogador (colocar em locais do texto da time line para aumentar a interação com o usuário )
                   OK          - Ultimo ponto passado pelo jogador
                   OK          - Ultima fase jogada pelo jogador
-                  FINAL       - Vida do jogador
+                  OK          - Vida do jogador
                         
                         - Aonde ?
                   FINAL       - Nome            -> Entre o título e o Mapa main
                   OK          - Ultimo ponto    -> Toda vez que um novo ponto entrar em sobreposição com player
                   Ok          - Ultima fase     -> Toda vez que uma fase for terminada
-                  FINAL       - Vida            -> Quando a vida for alterada
+                  OK          - Vida            -> Quando a vida for alterada
 
       2 - OK      Ajustar personagem ao mudar movimentação(a sprite deve ser posta no local do current_point)
                         - Quando ?
@@ -51,16 +51,16 @@ OK      3 - Estudar as circunstâncias e possibilidades de substituir as variave
                               - Atualizando a posição(X,Y) do personagem para os respectivos valores (PlayerState. point_x e point_y) 
 
       3 -          Logica para Desenvolvedor e Explorar
-                   Desenvolvedor
-                        -   Exibir imagem feita no canvas com informações sobre o desenvolvedor e o processo de desenvolvimento
-                              - Lembrar que essa comunicação é direcionada ao público alvo (Crianças de 4 - 8 anos)
                   Explorar
                         -   Ao se entrar nas areas de exploração a movimentação deve ser setada altomaticamente para default
                               OQUE OCORRERIA SE O BOTÃO DE ALTERNANCIA DE MOVIMENTAÇÃO FOR APERTADO ?
                               COMO A MOVIMENTAÇÃO IRA SE COMPORTAR IMEDIATAMENTE AO SAIR ?
+                   Desenvolvedor
+                        -   Exibir imagem feita no canvas com informações sobre o desenvolvedor e o processo de desenvolvimento
+                              - Lembrar que essa comunicação é direcionada ao público alvo (Crianças de 4 - 8 anos)
 
 
-      4 -          Fase L1 -> à definir
+      4 -  OK      Fase L1 -> à definir
 
       5 -          Movimentação acesível para fases -> à definir
 
