@@ -114,3 +114,7 @@ i{
     padding: 1rem;
     margin-bottom: 1rem;
 }
+
+.textBody p {
+    text-align: start;
+}

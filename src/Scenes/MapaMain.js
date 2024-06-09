@@ -129,11 +129,11 @@ export default class MapaMain extends Phaser.Scene
             playerState.targetX = undefined
             playerState.targetY = undefined
             gameState.counter_cityMap = 0
-            // playerState.floor = this.getPlayerFloor()
         }
+
         const initPoint = this.getObjectById(idInit) 
         
-        gameState.isPlayerAbleToMove = true                                      //retirar
+        gameState.isPlayerAbleToMove = true                                      
         gameState.defaultMotionControls = false
         gameState.accessibleMotionControls = true
         
@@ -248,6 +248,7 @@ export default class MapaMain extends Phaser.Scene
                             this.player.body.setSize(4, 4)
 
                             const target = this.getObjectById(object.properties[0].value)
+                            console.log(target.y * mapMain_scale)
                             let auxTweens = 0
                             switch(this.player.anims.currentAnim.key){
                                 case 'walk up':
@@ -319,7 +320,8 @@ export default class MapaMain extends Phaser.Scene
                                                     this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: 1}, true)
                                                 }else{
                                                     this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, true)
-                                                }                                                const tweens_walkLeft = this.tweens.add({
+                                                }                                                
+                                                const tweens_walkLeft = this.tweens.add({
                                                     targets: this.player,
                                                     y: playerState.targetY,
                                                     x: Math.floor(target.x * mapMain_scale),
@@ -349,36 +351,115 @@ export default class MapaMain extends Phaser.Scene
                                     break
 
                                 case 'walk left':
-                                    console.log(target)
-                                    gameState.explore = false
-                                    playerState.targetID = target.id
-                                    playerState.targetX = Math.floor(target.x * mapMain_scale)
-                                    this.player.y = playerState.targetY
-                                    playerState.targetY = Math.floor(target.y * mapMain_scale)
-                                    gameState.isPlayerAbleToMove = false
-                                    this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, false)
+                                    if(auxTweens == 0 ){
+                                        auxTweens++
+                                        gameState.explore = false
+                                        if(this.player.y < Math.floor(target.y * mapMain_scale)){
+                                            this.player.play({key: userCharacter_animationsKey.walk_down.key, repeat: 1}, true)
+                                        }else{
+                                            this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: 1}, true)
+                                        } 
+                                        
+                                        const tweens_walkHorizontaly =  this.tweens.add({
+                                            targets: this.player,
+                                            y:  Math.floor(target.y * mapMain_scale),
+                                            x: this.player.x,
+                                            duration: 250,
+                                            ease: 'Linear',
+                                            onComplete: () => {
+                                                tweens_walkHorizontaly.destroy()
+                                                if(this.player.x < Math.floor(target.x * mapMain_scale)){
+                                                    this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: 1}, true)
+                                                }else{
+                                                    this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, true)
+                                                }                                                
+                                                const tweens_walkVerticaly = this.tweens.add({
+                                                    targets: this.player,
+                                                    x: Math.floor(target.x * mapMain_scale),
+                                                    y: this.player.y,
+                                                    duration: 750,
+                                                    ease: 'Linear',
+                                                    onComplete:() => {
+                                                        tweens_walkVerticaly.destroy()
+                                                        gameState.isPlayerAbleToMove = false
+                                                        auxTweens = 0
+                                                        playerState.targetID = target.id
+                                                        playerState.targetX = Math.floor(target.x * mapMain_scale)
+                                                        playerState.targetY = Math.floor(target.y * mapMain_scale)
+                                                        this.player.play({key: userCharacter_animationsKey.walk_down.key, repeat: 0}, true)
 
-                                    this.time.addEvent({
-                                        delay: 1200,
-                                        callback: () => gameState.isPlayerAbleToMove = true,
-                                        loop: false
-                                    })
+                                                        this.time.addEvent({
+                                                            delay: 1200,
+                                                            callback: () => gameState.isPlayerAbleToMove = true,
+                                                            loop: false
+                                                        })
+                                                    }
+                                                }).play()
+                                            },
+                                            repeat: 0,
+                                            yoyo: false
+                                        }).play()
+                                    }
+
+                                    // gameState.explore = false
+                                    // playerState.targetID = target.id
+                                    // playerState.targetX = Math.floor(target.x * mapMain_scale)
+                                    // this.player.y = playerState.targetY
+                                    // playerState.targetY = Math.floor(target.y * mapMain_scale)
+                                    // gameState.isPlayerAbleToMove = false
+                                    // this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, false)
                                 break
 
                                 case 'walk right':
-                                    gameState.explore = false
-                                    playerState.targetID = target.id
-                                    playerState.targetX = Math.floor(target.x * mapMain_scale)
-                                    this.player.y = playerState.targetY
-                                    playerState.targetY = Math.floor(target.y * mapMain_scale)
-                                    gameState.isPlayerAbleToMove = false
-                                    this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: 1}, false)
+                                    if(auxTweens == 0 ){
+                                        auxTweens++
+                                        gameState.explore = false
+                                        if(this.player.y < Math.floor(target.y * mapMain_scale)){
+                                            this.player.play({key: userCharacter_animationsKey.walk_down.key, repeat: 1}, true)
+                                        }else{
+                                            this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: 1}, true)
+                                        } 
+                                        
+                                        const tweens_walkHorizontaly =  this.tweens.add({
+                                            targets: this.player,
+                                            y:  Math.floor(target.y * mapMain_scale),
+                                            x: this.player.x,
+                                            duration: 250,
+                                            ease: 'Linear',
+                                            onComplete: () => {
+                                                tweens_walkHorizontaly.destroy()
+                                                if(this.player.x < Math.floor(target.x * mapMain_scale)){
+                                                    this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: 1}, true)
+                                                }else{
+                                                    this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, true)
+                                                }                                                
+                                                const tweens_walkVerticaly = this.tweens.add({
+                                                    targets: this.player,
+                                                    x: Math.floor(target.x * mapMain_scale),
+                                                    y: this.player.y,
+                                                    duration: 750,
+                                                    ease: 'Linear',
+                                                    onComplete:() => {
+                                                        tweens_walkVerticaly.destroy()
+                                                        gameState.isPlayerAbleToMove = false
+                                                        auxTweens = 0
+                                                        playerState.targetID = target.id
+                                                        playerState.targetX = Math.floor(target.x * mapMain_scale)
+                                                        playerState.targetY = Math.floor(target.y * mapMain_scale)
+                                                        this.player.play({key: userCharacter_animationsKey.walk_down.key, repeat: 0}, true)
 
-                                    this.time.addEvent({
-                                        delay: 1200,
-                                        callback: () => gameState.isPlayerAbleToMove = true,
-                                        loop: false
-                                    })
+                                                        this.time.addEvent({
+                                                            delay: 1200,
+                                                            callback: () => gameState.isPlayerAbleToMove = true,
+                                                            loop: false
+                                                        })
+                                                    }
+                                                }).play()
+                                            },
+                                            repeat: 0,
+                                            yoyo: false
+                                        }).play()
+                                    }
                                 break
                             }
                         }
@@ -490,11 +571,6 @@ export default class MapaMain extends Phaser.Scene
                     break
             }
         })
-
-        // if(this.getOnStorage('initPoint')){
-        //     playerState.lastPoint_id = this.getOnStorage('initPoint')
-        // } 
-
         
         //----------------------       DOM        -----------------------
         const accessible_btn = document.getElementById('alternativeMovements')
@@ -572,7 +648,6 @@ export default class MapaMain extends Phaser.Scene
          
         if(playerState.floor != this.getPlayerFloor())
         {
-            console.log('dentro')
             this.setLayersDepth(this.getPlayerFloor())    
         }
     }
@@ -853,7 +928,6 @@ export default class MapaMain extends Phaser.Scene
                 playerState.targetX = Math.floor(next_Point.x * mapMain_scale) 
                 playerState.targetY = Math.floor(next_Point.y * mapMain_scale)
                 playerState.targetID = left_propertie.value
-                console.log(playerState.targetID)
                 
                 this.player.key = userCharacter_objConfig.left.manLeft_key
                 this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: -1}, true)
@@ -951,7 +1025,7 @@ export default class MapaMain extends Phaser.Scene
             break
             case('left'): 
             if(this.player.x <= playerState.targetX + 8 && this.player.x >= playerState.targetX + 8)
-            {   console.log('proximo ao alvo')
+            {   
                 playerState.direction = 'left'
                 this.player.key = userCharacter_objConfig.left.manLeft_key
                 this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: -1}, true)
@@ -960,8 +1034,6 @@ export default class MapaMain extends Phaser.Scene
             }
             else
             {
-               console.log('não está proximo ao alvo')
-                
                 if(this.player.y > playerState.targetY)                                
                 {                                                                        
                     playerState.direction = 'up'

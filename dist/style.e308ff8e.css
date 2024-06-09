@@ -115,4 +115,8 @@ i{
     margin-bottom: 1rem;
 }
 
+.textBody p {
+    text-align: start;
+}
+
 /*# sourceMappingURL=/style.e308ff8e.css.map */
