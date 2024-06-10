@@ -10,12 +10,15 @@ let gameState = {
     explore: false,
     isExploreAble: false,
     General_songs_volume: 1,
+    isDevelopersSignAble: false,
+    isDevelopersSignOn: false,
     isGuapimirimSignAble: false,
     isTopInformationAble: false,
     isGuapimirimSignVisible: false,
     isTopInformationVisible: false,
     topInformationType: '',
-    counter_cityMap: 0 // manter em 0
+    counter_cityMap: 0,// manter em 0
+    developerSign_step: 0 // manter em 0
 }
 
 let playerState = {

@@ -129,6 +129,7 @@ export default class MapaMain extends Phaser.Scene
             playerState.targetX = undefined
             playerState.targetY = undefined
             gameState.counter_cityMap = 0
+            gameState.developerSign_step = 0
         }
 
         const initPoint = this.getObjectById(idInit) 
@@ -172,6 +173,9 @@ export default class MapaMain extends Phaser.Scene
                                 return    
                             }
                             
+                            if(object.id == 308 && gameState.developerSign_step != 0){
+                                gameState.developerSign_step = 0
+                            } 
                             
                         
                             if(this.isCompletelyInside(circle, this.player))
@@ -465,6 +469,18 @@ export default class MapaMain extends Phaser.Scene
                         }
                     })
                 break
+                
+                case 'developers':
+                    const recDev = this.add.rectangle((object.x * mapMain_scale), (object.y * mapMain_scale), (object.width * mapMain_scale), (object.height * mapMain_scale)).setDisplayOrigin(0)
+                    this.physics.add.existing(recDev, true)
+                    this.physics.add.overlap(this.player, recDev, () => {
+                        if(!gameState.isDevelopersSignAble && gameState.developerSign_step == 0){
+
+                            gameState.isDevelopersSignAble = true
+                            gameState.developerSign_step++
+                        }
+                    })
+                break
 
                 case 'save_point':
 
@@ -627,7 +643,7 @@ export default class MapaMain extends Phaser.Scene
     }
 
     update() {
-        document.querySelector('.textBody').innerHTML = `<p>id_target:  ${playerState.targetID}</p><p>target-y:  ${playerState.targetY}</p><p>player-y:  ${Math.floor(this.player.y)}</p><p>target-x:  ${playerState.targetX}</p><p>player-x:  ${Math.floor(this.player.x)}</p>`
+        document.querySelector('.textBody').innerHTML = `<p>DEV_STEP:  ${gameState.developerSign_step}</p><p>DEV ABLE:  ${gameState.isDevelopersSignAble}</p>`
         if(gameState.accessibleMotionControls) 
         {
             this.alternativeCharacterMoveControl()   
@@ -649,6 +665,19 @@ export default class MapaMain extends Phaser.Scene
         if(playerState.floor != this.getPlayerFloor())
         {
             this.setLayersDepth(this.getPlayerFloor())    
+        }
+
+        if(gameState.isDevelopersSignAble) this.darkenScreen()
+    }
+    darkenScreen(){
+        if(!gameState.isDevelopersSignOn){
+            this.cameras.main.fadeOut(1000, 0, 0, 0); // Fade para preto em 1 segundo
+        }else if(gameState.developerSign_step == 2){
+            this.cameras.main.fadeFrom(1000,0, 0, 0)
+
+            gameState.developerSign_step++ // encerra o fluxo
+            gameState.isDevelopersSignOn = false
+            gameState.isDevelopersSignAble = false
         }
     }
 

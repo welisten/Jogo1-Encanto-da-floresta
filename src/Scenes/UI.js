@@ -31,7 +31,7 @@ export default class GameBackground extends Phaser.Scene
     create() 
     {
     //  Moldura
-        this.add.rectangle(10, 10, ( containerGame_width - 20 ), ( containerGame_height - 20 ), '0xffffff', 1 )
+        this.screenFrame = this.add.rectangle(10, 10, ( containerGame_width - 20 ), ( containerGame_height - 20 ), '0xffffff', 1 )
             .setOrigin( 0 )
             .setStrokeStyle( 3, '0xffffff', 1 )
             .isFilled = false
@@ -50,8 +50,8 @@ export default class GameBackground extends Phaser.Scene
 
     //  Timer
     //      Moldura
-        const timerGraficFrame = this.add.graphics()
-        timerGraficFrame.fillStyle(0xffffff, 0.5)
+        this.timerGraficFrame = this.add.graphics()
+        this.timerGraficFrame.fillStyle(0xffffff, 0.5)
         
         const x = containerGame_width - 118
         const y = 20
@@ -59,10 +59,10 @@ export default class GameBackground extends Phaser.Scene
         const height = 50
         const radius = 20
 
-        timerGraficFrame.fillRoundedRect(x, y, width, height, radius)
+        this.timerGraficFrame.fillRoundedRect(x, y, width, height, radius)
        
     //      Relógio(Icone)
-        this.add.image(containerGame_width - 115, 27, uiImages.timer.key)
+        this.clock = this.add.image(containerGame_width - 115, 27, uiImages.timer.key)
             .setOrigin(0)
             .setScale(1)
             .setTintFill("0x000000")
@@ -119,7 +119,32 @@ export default class GameBackground extends Phaser.Scene
             paused: true,
             persist: true
         })
-    //      Mapa Guapi
+        //      Desenvolvedor
+        this.developer_sign = this.add.image( (containerGame_width / 2) , (containerGame_height/2), uiImages.developer.key)
+        .setOrigin(0.5)
+        .setScale(.8)
+        .setAlpha(0)
+
+    this.developer_sign_in = this.tweens.add({
+        targets: this.developer_sign,
+        alpha: 1,
+        duration: 500,
+        ease: 'Linear',
+        repeat: 0,
+        paused: true,
+        persist: true
+    })
+
+    this.developer_sign_out = this.tweens.add({
+        targets: this.developer_sign,
+        alpha: 0,
+        duration: 500,
+        ease: 'Linear',
+        repeat: 0,
+        paused: true,
+        persist: true
+    })
+        //      Mapa Guapi
         this.cityMap_map = this.add.image( (containerGame_width / 2) , (containerGame_height / 2), uiImages.cityMap_Map.key)
             .setOrigin(0.5)
             .setScale(.55)
@@ -184,10 +209,39 @@ export default class GameBackground extends Phaser.Scene
                 })
             }
         } 
+        if(gameState.isDevelopersSignOn)
+        {
+            if(this.cursor.space.isDown){
+                this.developer_sign_out.play()
+                this.heart_1.setAlpha(1)
+                this.heart_2.setAlpha(1)
+                this.heart_3.setAlpha(1)
+                this.clock.setAlpha(1)
+                this.timer.setAlpha(1)
+                this.timerGraficFrame.setAlpha(1)
+                
+                gameState.developerSign_step++
+                
+            }
+        } 
 
         if(gameState.isExploreAble) this.handleExplore()
-
+        if(gameState.isDevelopersSignAble) this.handleDevelopersSign()
     }
+
+    handleDevelopersSign(){
+        if(!gameState.isDevelopersSignOn){
+            this.developer_sign_in.play()
+            this.heart_1.setAlpha(0)
+            this.heart_2.setAlpha(0)
+            this.heart_3.setAlpha(0)
+            this.clock.setAlpha(0)
+            this.timer.setAlpha(0)
+            this.timerGraficFrame.setAlpha(0)
+            gameState.isDevelopersSignOn = true
+        }
+    }
+
     handleExplore(){
         if(gameState.explore){
 

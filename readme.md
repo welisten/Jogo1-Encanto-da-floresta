@@ -45,17 +45,17 @@ OK      3 - Estudar as circunstâncias e possibilidades de substituir as variave
                   OK          - Vida            -> Quando a vida for alterada
 
       2 - OK      Ajustar personagem ao mudar movimentação(a sprite deve ser posta no local do current_point)
-                        - Quando ?
+                  OK    - Quando ?
                               - Quando alternado de default para accessible 
-                        - Como ?
+                  OK    - Como ?
                               - Atualizando a posição(X,Y) do personagem para os respectivos valores (PlayerState. point_x e point_y) 
 
       3 -          Logica para Desenvolvedor e Explorar
-                  Explorar
+            OK     Explorar
                         -   Ao se entrar nas areas de exploração a movimentação deve ser setada altomaticamente para default
                               OQUE OCORRERIA SE O BOTÃO DE ALTERNANCIA DE MOVIMENTAÇÃO FOR APERTADO ?
                               COMO A MOVIMENTAÇÃO IRA SE COMPORTAR IMEDIATAMENTE AO SAIR ?
-                   Desenvolvedor
+            OK     Desenvolvedor
                         -   Exibir imagem feita no canvas com informações sobre o desenvolvedor e o processo de desenvolvimento
                               - Lembrar que essa comunicação é direcionada ao público alvo (Crianças de 4 - 8 anos)
 
@@ -66,17 +66,17 @@ OK      3 - Estudar as circunstâncias e possibilidades de substituir as variave
 
 --------------------------------------------------------------------------------------------------------------------------
 
-PROXIMAS ATIVIDADES
+PROXIMAS ATIVIDADES:
       - IMPLEMENTAR TIMELINE DO LEVEL 1
       - IMPLEMENTAR NA UI DO LEVEL1 CONTROLE PARA PAUSAR
       - REFATORAR TITLE
 
 AJUSTES:
       - SÓ HÁ A NECESSIDADE DE CRIAR AS ANIMAÇOES UMA VEZ POR ISSO O MELHOR LUGAR É EM PRELOAD
-      - AJUSTAR PROFUNDIDADE DO PERSONAGEM EM RELAÇÃO AS ARVORES NO LEVEL 1
+OK    - AJUSTAR PROFUNDIDADE DO PERSONAGEM EM RELAÇÃO AS ARVORES NO LEVEL 1
       - AJUSTAR ALINHAMENTO DOS Decisions_break NO TILED
-      - REPRODUZAIR PASSOS AO ANDAR
+      - REPRODUZIR PASSOS AO ANDAR
       - MUSICAS PARA LEVEL1
 
 OTIMIZAÇÂO:
-      - onde alocar os assets ?
+      - AONDE ALOCAR OS ASSETS ?

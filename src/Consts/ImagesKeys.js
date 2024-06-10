@@ -54,6 +54,12 @@ const uiImages = {
     cityMap_Map:{
         key: 'guapimirim_mapa', 
         url: 'public/assets/imgs/guapimirimMap.png',
+        width: 1009,
+        height: 953
+    },
+    developer:{
+        key: 'desenvolvedor', 
+        url: 'public/assets/imgs/Desenvolvedores.png',
         width: 400,
         height: 300
     },

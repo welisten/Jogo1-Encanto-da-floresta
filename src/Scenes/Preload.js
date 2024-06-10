@@ -84,6 +84,8 @@ export default class Preload extends Phaser.Scene{
         load.image(uiImages.cityMap_Sign.key, uiImages.cityMap_Sign.url)
         //      CityMap_Map
         load.image(uiImages.cityMap_Map.key, uiImages.cityMap_Map.url)
+        //      Developer
+        load.image(uiImages.developer.key, uiImages.developer.url)
         //      Arrows
         load.image(uiImages.arrows.up.key , uiImages.arrows.up.url)
         load.image(uiImages.arrows.down.key , uiImages.arrows.down.url)
