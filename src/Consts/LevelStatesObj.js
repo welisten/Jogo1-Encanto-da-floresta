@@ -5,7 +5,9 @@ const level_data = {
     nextLevel: 1,
     timer: 0,
     running: false,
-    aux_controlDelay: 0
+    aux_controlDelay: 0,
+    playerCollumn: 2,
+    isPlayerOnChagingPosition: false
 }
 
 const levelStatesObj = {                                            // Antigo GameStatesObj

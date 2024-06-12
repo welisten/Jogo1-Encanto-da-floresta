@@ -26,7 +26,7 @@ import { level1Songs } from "../Consts/SongsKey";
 
 // Level data
 import { level_data, levelStatesObj } from "../Consts/LevelStatesObj"
-import { playerState } from "../Consts/GameStateObj";
+import { playerState, gameState } from "../Consts/GameStateObj";
 
 const loadedChunks = new Set()
 const arrayChunks = new Array()
@@ -56,9 +56,6 @@ export default class Game extends Phaser.Scene
     init(){
         this.enableKeyboard = false
         this.currentGameState = levelStatesObj.Running
-        
-        this.GameContainerEl = document.getElementById('gameContainer')
-        this.AcessibleTextBodyEl = document.querySelector('.textBody')
         
         // styles
         const gameCanvas = this.sys.game.canvas
@@ -124,13 +121,62 @@ export default class Game extends Phaser.Scene
             loop: true
         })
         levelStatesObj.hasBegun = true
+
+
+        // -------------------------- DOM ------------------------------------
+        const accessible_btn = document.getElementById('alternativeMovements')
+        const mute_btn = document.getElementById('mute')
+
+        accessible_btn.onclick = () => {
+            if(accessible_btn.classList.contains('active')) { // Default
+                accessible_btn.classList.remove('active')
+
+                gameState.accessibleMotionControls = false
+                gameState.defaultMotionControls = true
+            }else{                                            // Acessible
+                accessible_btn.classList.add('active')
+                
+                gameState.accessibleMotionControls = true
+                gameState.defaultMotionControls = false
+            }            
+            
+        }
+
+        mute_btn.onclick = () => {
+            mute_btn.classList.toggle('active')
+
+            const icone = document.querySelector("#mute_icon")
+
+            icone.classList.toggle('fa-volume-high')
+            icone.classList.toggle('fa-volume-xmark')
+            
+            if(this.sound.volume == 1)
+            {
+                this.sound.volume = 0
+            } 
+            else
+            {
+                this.sound.volume = 1
+            }
+        }
+        gameState.accessibleMotionControls = true
+
     }
 
 
     update() {  // SE O JOGO ESTIVER PAUSADO OU SE ELE NÃO ESTIVER RODADNDO AS FUNÇOES DO UPDATE NÃO IRÃO SER LIDAS 
         if(this.currentGameState != levelStatesObj.Running && !levelStatesObj.hasBegun) return
 
-        this.handleLMainCharacterMovements()
+        if(gameState.accessibleMotionControls) 
+        {
+            this.alternativeCharacterMoveControl()   
+        }
+    
+        if(gameState.defaultMotionControls)
+        {
+            this.handleMainCharacterMovements()
+        }
+
         if (levelStatesObj.hasMapScrolled) this.keepCharacterInCameraBounds()  
         this.time.delayedCall(level1_delayMapScrolling, () => {
             if(level_data.aux_controlDelay == 0)
@@ -243,7 +289,7 @@ export default class Game extends Phaser.Scene
     }
 
 
-    handleLMainCharacterMovements(){
+    handleMainCharacterMovements(){
         if(this.enableKeyboard){  
             const noLeftRightKey = (levelStatesObj.isMapScrolling && !this.cursor.left.isDown && !this.cursor.right.isDown)
             const noUpKey        = (levelStatesObj.isMapScrolling && this.cursor.up.isDown)
@@ -288,7 +334,116 @@ export default class Game extends Phaser.Scene
                 }
             }
         }
-    }  
+    } 
+    
+    alternativeCharacterMoveControl(){
+        const y = !levelStatesObj.isMapScrolling ? 0 : -100
+
+        if(this.cursor.left.isDown)       // LEFT
+        {
+            switch(level_data.playerCollumn) {
+                case 2:
+                    if(!level_data.isPlayerOnChagingPosition){
+                        level_data.isPlayerOnChagingPosition = true
+                        this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, true)
+                        this.tweens.add({
+                        targets: this.player,
+                        x: 312 * l1Map_scale,
+                        duration: 350,
+                        ease: 'Linear',
+                        repeat: 0,
+                        paused: true,
+                        persist: true,
+                        onComplete: () => {
+                            level_data.isPlayerOnChagingPosition = false
+                            level_data.playerCollumn = 1
+                        }                    
+                        }).play()
+                    }
+                break
+                
+                case 3:
+                    this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, true)
+                    if(!level_data.isPlayerOnChagingPosition){
+                        level_data.isPlayerOnChagingPosition = true
+                        this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, true)
+                        this.tweens.add({
+                        targets: this.player,
+                        x: 360 * l1Map_scale,
+                        duration: 350,
+                        ease: 'Linear',
+                        repeat: 0,
+                        paused: true,
+                        persist: true,
+                        onComplete: () => {
+                            level_data.isPlayerOnChagingPosition = false
+                            level_data.playerCollumn = 2
+                        }                    
+                        }).play()
+                    }
+
+                break
+            
+                default:
+                    break
+            }
+        }
+        else if(this.cursor.right.isDown & !playerState.isMoving)      // RIGHT
+        {
+            switch(level_data.playerCollumn) {
+                case 1:
+                    this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: 1}, true)
+                    if(!level_data.isPlayerOnChagingPosition){
+                        level_data.isPlayerOnChagingPosition = true
+                        this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, true)
+                        this.tweens.add({
+                        targets: this.player,
+                        x: 360 * l1Map_scale,
+                        duration: 350,
+                        ease: 'Linear',
+                        repeat: 0,
+                        paused: true,
+                        persist: true,
+                        onComplete: () => {
+                            level_data.isPlayerOnChagingPosition = false
+                            level_data.playerCollumn = 2
+                        }
+                    }).play()
+                    }
+                break
+
+                case 2:
+                    this.player.play({key: userCharacter_animationsKey.walk_right.key, repeat: 1}, true)
+                    if(!level_data.isPlayerOnChagingPosition){
+                        level_data.isPlayerOnChagingPosition = true
+                        this.player.play({key: userCharacter_animationsKey.walk_left.key, repeat: 1}, true)
+                        this.tweens.add({
+                        targets: this.player,
+                        x: 408 * l1Map_scale,
+                        duration: 350,
+                        ease: 'Linear',
+                        repeat: 0,
+                        paused: true,
+                        persist: true,
+                        onComplete: () => {
+                            level_data.isPlayerOnChagingPosition = false
+                            level_data.playerCollumn = 3
+                        }
+                        }).play()
+                    }
+                break
+                
+                default:
+                break
+            }
+        }
+        else
+        {
+            this.player.key = userCharacter_objConfig.up.manUp_key
+            this.player.play({key: userCharacter_animationsKey.walk_up.key, repeat: 0}, true)
+            this.player.setVelocity(0, y)
+        }
+    }
     
     keepCharacterInCameraBounds(){ // se os calculos de velocidade do boneco e velocidade de scrool do mapa estiverem ajustados corretamente essa função não será necessária
         if(this.currentGameState == 'running')
@@ -420,9 +575,6 @@ export default class Game extends Phaser.Scene
             }
         }
     }
-
-    
-
 
     loadChunk(chunkY, session, objConfigTileSetImage, objConfigLayersID){
         const subtrahend = aux2 * (chunk_size * tile_size)
