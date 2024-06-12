@@ -115,6 +115,7 @@ const mapMainLayers_ID = {
     layer12: 'building_f2'
 }
 
+
 const l1_layers_ID = {
     layer1: 'ground',
     layer2: 'terrain',
@@ -124,6 +125,200 @@ const l1_layers_ID = {
     layer6: 'greatTrees_2',
 }
 
+const chuncksData = [
+    {
+        key: 'chunk_0_0',
+        url: `public/assets/map/chunk/level1/chunk_0_0.json`
+    },
+    {
+        key: 'chunk_0_1',
+        url: `public/assets/map/chunk/level1/chunk_0_1.json`
+    },
+    {
+        key: 'chunk_0_2',
+        url: `public/assets/map/chunk/level1/chunk_0_2.json`
+    },
+    {
+        key: 'chunk_0_3',
+        url: `public/assets/map/chunk/level1/chunk_0_3.json`
+    },
+    {
+        key: 'chunk_0_4',
+        url: `public/assets/map/chunk/level1/chunk_0_4.json`
+    },
+    {
+        key: 'chunk_0_5',
+        url: `public/assets/map/chunk/level1/chunk_0_5.json`
+    },
+    {
+        key: 'chunk_0_6',
+        url: `public/assets/map/chunk/level1/chunk_0_6.json`
+    },
+    {
+        key: 'chunk_0_7',
+        url: `public/assets/map/chunk/level1/chunk_0_7.json`
+    },
+    {
+        key: 'chunk_0_8',
+        url: `public/assets/map/chunk/level1/chunk_0_8.json`
+    },
+    {
+        key: 'chunk_0_9',
+        url: `public/assets/map/chunk/level1/chunk_0_9.json`
+    },
+    {
+        key: 'chunk_0_10',
+        url: `public/assets/map/chunk/level1/chunk_0_10.json`
+    },
+    {
+        key: 'chunk_0_11',
+        url: `public/assets/map/chunk/level1/chunk_0_11.json`
+    },
+    /*{
+        key: 'chunk_0_12',
+        url: `public/assets/map/chunk/level1/chunk_0_12.json`
+    },
+    {
+        key: 'chunk_0_13',
+        url: `public/assets/map/chunk/level1/chunk_0_13.json`
+    },
+    {
+        key: 'chunk_0_14',
+        url: `public/assets/map/chunk/level1/chunk_0_14.json`
+    },
+    {
+        key: 'chunk_0_15',
+        url: `public/assets/map/chunk/level1/chunk_0_15.json`
+    },
+    {
+        key: 'chunk_0_16',
+        url: `public/assets/map/chunk/level1/chunk_0_16.json`
+    },
+    {
+        key: 'chunk_0_17',
+        url: `public/assets/map/chunk/level1/chunk_0_17.json`
+    },
+    {
+        key: 'chunk_0_18',
+        url: `public/assets/map/chunk/level1/chunk_0_18.json`
+    },
+    {
+        key: 'chunk_0_19',
+        url: `public/assets/map/chunk/level1/chunk_0_19.json`
+    },
+    {
+        key: 'chunk_0_20',
+        url: `public/assets/map/chunk/level1/chunk_0_20.json`
+    },
+    {
+        key: 'chunk_0_21',
+        url: `public/assets/map/chunk/level1/chunk_0_21.json`
+    },
+    {
+        key: 'chunk_0_22',
+        url: `public/assets/map/chunk/level1/chunk_0_22.json`
+    },
+    {
+        key: 'chunk_0_23',
+        url: `public/assets/map/chunk/level1/chunk_0_23.json`
+    },
+    {
+        key: 'chunk_1_0',
+        url: `public/assets/map/chunk/level1/chunk_1_0.json`
+    },
+    {
+        key: 'chunk_1_1',
+        url: `public/assets/map/chunk/level1/chunk_1_1.json`
+    },
+    {
+        key: 'chunk_1_2',
+        url: `public/assets/map/chunk/level1/chunk_1_2.json`
+    },
+    {
+        key: 'chunk_1_3',
+        url: `public/assets/map/chunk/level1/chunk_1_3.json`
+    },
+    {
+        key: 'chunk_1_4',
+        url: `public/assets/map/chunk/level1/chunk_1_4.json`
+    },
+    {
+        key: 'chunk_1_5',
+        url: `public/assets/map/chunk/level1/chunk_1_5.json`
+    },
+    {
+        key: 'chunk_1_6',
+        url: `public/assets/map/chunk/level1/chunk_1_6.json`
+    },
+    {
+        key: 'chunk_1_7',
+        url: `public/assets/map/chunk/level1/chunk_1_7.json`
+    },
+    {
+        key: 'chunk_1_8',
+        url: `public/assets/map/chunk/level1/chunk_1_8.json`
+    },
+    {
+        key: 'chunk_1_9',
+        url: `public/assets/map/chunk/level1/chunk_1_9.json`
+    },
+    {
+        key: 'chunk_1_10',
+        url: `public/assets/map/chunk/level1/chunk_1_10.json`
+    },
+    {
+        key: 'chunk_1_11',
+        url: `public/assets/map/chunk/level1/chunk_1_11.json`
+    },
+    {
+        key: 'chunk_1_12',
+        url: `public/assets/map/chunk/level1/chunk_1_12.json`
+    },
+    {
+        key: 'chunk_1_13',
+        url: `public/assets/map/chunk/level1/chunk_1_13.json`
+    },
+    {
+        key: 'chunk_1_14',
+        url: `public/assets/map/chunk/level1/chunk_1_14.json`
+    },
+    {
+        key: 'chunk_1_15',
+        url: `public/assets/map/chunk/level1/chunk_1_15.json`
+    },
+    {
+        key: 'chunk_1_16',
+        url: `public/assets/map/chunk/level1/chunk_1_16.json`
+    },
+    {
+        key: 'chunk_1_17',
+        url: `public/assets/map/chunk/level1/chunk_1_17.json`
+    },
+    {
+        key: 'chunk_1_18',
+        url: `public/assets/map/chunk/level1/chunk_1_18.json`
+    },
+    {
+        key: 'chunk_1_19',
+        url: `public/assets/map/chunk/level1/chunk_1_19.json`
+    },
+    {
+        key: 'chunk_1_20',
+        url: `public/assets/map/chunk/level1/chunk_1_20.json`
+    },
+    {
+        key: 'chunk_1_21',
+        url: `public/assets/map/chunk/level1/chunk_1_21.json`
+    },
+    {
+        key: 'chunk_1_22',
+        url: `public/assets/map/chunk/level1/chunk_1_22.json`
+    },
+    {
+        key: 'chunk_1_23',
+        url: `public/assets/map/chunk/level1/chunk_1_23.json`
+    },*/
+]
 
 export {
     mapL1_key, //OK
@@ -136,4 +331,5 @@ export {
     l1_layers_ID,
     mapMain_tilesetObjConfig,
     l1_tilesetObjConfig, // OK
+    chuncksData
 }

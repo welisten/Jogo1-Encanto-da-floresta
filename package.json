@@ -8,10 +8,11 @@
     "build": "parcel build src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [], 
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "fs-extra": "^11.2.0",
     "parcel-bundler": "^1.12.5",
     "phaser": "^3.70.0",
     "webfontloader": "^1.6.28"
@@ -20,5 +21,4 @@
     "staticPath": "public",
     "watcherGlob": "**"
   }
-
 }

@@ -1,14 +1,11 @@
 // Scene de Preload (Carregamento dos assets usados no Jogo)
-    
-
-
 
 import Phaser from "phaser";
 
 // consts
 import { level1, title, mapaMain } from "../Consts/SceneKeys";//                             O-O *
 
-import { mapL1_key, mapL1_URL, l1_tilesetObjConfig } from '../Consts/MapKeys'
+import { mapL1_key, mapL1_URL, l1_tilesetObjConfig,chuncksData } from '../Consts/MapKeys'
 import { userCharacter_objConfig } from '../Consts/CharacterKeys'
 import { lifeBar, stem } from '../Consts/SpriteSheets'
 import { titleImages, uiImages } from '../Consts/ImagesKeys'
@@ -100,6 +97,9 @@ export default class Preload extends Phaser.Scene{
         load.audio(level1Songs.lifeAffected.key, level1Songs.lifeAffected.url, level1Songs.lifeAffected.config)     
 
         load.tilemapTiledJSON(mapL1_key, mapL1_URL, null, Phaser.Tilemaps.TILLED_JSON)
+        chuncksData.forEach(chunk => {
+            load.tilemapTiledJSON(chunk.key, chunk.url, null, Phaser.Tilemaps.TILLED_JSON)
+        })
         
         load.image(l1_tilesetObjConfig[0].key, l1_tilesetObjConfig[0].url, { frameWidth: 16 })
         load.image(l1_tilesetObjConfig[1].key, l1_tilesetObjConfig[1].url, { frameWidth: 16 })
@@ -143,6 +143,6 @@ export default class Preload extends Phaser.Scene{
     
 
     create(){
-        this.scene.start(mapaMain)
+        this.scene.start(level1)
     }
 }
